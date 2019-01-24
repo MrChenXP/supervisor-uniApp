@@ -19,7 +19,7 @@
 		</kw-search>
 		<!-- 分页 -->
 		<view class="pager">
-			<view class="zg" @click="$kwz.router({url: 'zggz'})">整改</view>
+			<view class="zg" @click="$kwz.redirect({url: 'zggz'})">整改</view>
 			<view class="xs">协商</view>
 		</view>
 		<!-- 功能(新增删除) -->
@@ -41,25 +41,28 @@
 				<view class="info">
 					<view>{{item.XXMC}}</view>
 					<view class="clearfix time">
-						<view class="fl">这里放科室</view>
-						<view class="fr">发出时间：2019-10-09</view>
+						<view class="fl">{{item.ORG_MC}}</view>
+						<view class="fr">发出时间：{{item.YWSJ}}</view>
 					</view>
-					<view class="clearfix time">这里放整改类型</view>
+					<view class="clearfix time">{{item.CLZTMC}}</view>
 					<view class="clearfix status">
-						<view v-if="true" class="fl xswc">
+						<view v-if="true" :class="item.zgxsClass">
+							<uni-tag :text="item.ZGXSLYMC" size="small" type="primary"></uni-tag>
+						</view>
+						<!-- <view v-if="true" :class="fl xswc">
 							<uni-tag text="状态=='协商处理完成'用这个样式" size="small" type="primary"></uni-tag>
 						</view>
 						<view v-if="false" class="fl xsz">
 							<uni-tag text="其他状态用这个样式" size="small" type="primary"></uni-tag>
+						</view> -->
+						<view v-if="item.CLZTDM < '22'" class="fr cl">
+							<uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.ZGXSID)" ></uni-tag>
 						</view>
-						<view v-if="false" class="fl shys">
-							<uni-tag text="审核" size="small" type="primary"></uni-tag>
+						<view v-if="item.CLZTDM < '26' && item.CLZTDM >= '22'" class="fr cl">
+							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary" @click="doXsyj(item.ZGXSID, 'xx')"></uni-tag>
 						</view>
-						<view v-if="false" class="fl shys">
-							<uni-tag text="验收" size="small" type="primary"></uni-tag>
-						</view>
-						<view v-if="true" class="fr cl">
-							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary"></uni-tag>
+						<view v-if="item.CLZTDM < '26'" class="fr cl">
+							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" @click="doXsyj(item.ZGXSID, 'dx')" ></uni-tag>
 						</view>
 					</view>
 				</view>
@@ -72,6 +75,7 @@
 <script>
 	import KwSearch from "@kwz/kw-ui/kw-search.vue"
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
+	import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -108,12 +112,22 @@
 				},
 				deleteParam: {
 					'_CHECK_ALL_': false
+				},
+				constParam: {
+					zgxsClass: {
+						'26': 'fl xswc',
+						'21': 'fl xsz',
+						'22': 'fl xsz'
+					}
 				}
 			};
 		},
 		components: {
 			KwSearch,
-			KwListCell
+			KwListCell,
+			uniBadge,
+			uniTag,
+			uniIcon
 		},
 		onShow() {
 			this.initData()
@@ -193,6 +207,8 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
+								console.log(tmp)
+								tmp.zgxsClass = this.constParam.zgxsClass[tmp.CLZTDM]
 								// datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
 								//                 datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
 								//                 datas[i].SFDX = (this.user.orgid === tmp.ORG_ID)
@@ -256,6 +272,22 @@
 			// 删除
 			deleteAction(status) {
 				this.deleteShow = false
+			},
+			toAdd (zgxsid) {
+				if (val !== 'add') { // 不是新增就是审核
+					this.$router.push({path: '/zggz/xsyj/add', query: {id: val}})
+				} else {
+					this.$router.push({path: '/zggz/xsyj/add'})
+				}
+			},
+			doXsyj (zgxsid) {
+				if (status === 'xx') {
+					// 学校处理 进入整改页面
+					this.$router.push({path: '/zggz/xsyj/xsyjs', query: {id: val, SF: status}})
+				} else if (status === 'dx') {
+					// 督学验收  进入整改页面
+					this.$router.push({path: '/zggz/xsyj/xsyjs', query: {id: val, SF: status}})
+				}
 			}
 		}
 	}

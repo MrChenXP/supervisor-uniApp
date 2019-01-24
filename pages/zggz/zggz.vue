@@ -14,7 +14,7 @@
 		<!-- 分页 -->
 		<view class="pager">
 			<view class="zg">整改</view>
-			<view class="xs" @click="$kwz.router({url: 'xsyj'})">协商</view>
+			<view class="xs" @click="$kwz.redirect({url: 'xsyj'})">协商</view>
 		</view>
 		<!-- 功能(新增删除) -->
 		<view class="gn">
@@ -270,6 +270,11 @@
 // 				}
 			},
 			toAdd (zgxsid) {
+				if (val !== 'add') { // 不是新增就是审核
+					this.$router.push({path: '/zggz/add', query: {id: val}})
+				} else {
+					this.$router.push({path: '/zggz/add'})
+				}
 			},
 			// 显示详情
 			toDetail(zgxsid) {
