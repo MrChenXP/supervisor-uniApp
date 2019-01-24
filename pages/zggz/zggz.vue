@@ -39,6 +39,10 @@
 						<view class="fr">发出时间：{{item.YWSJ}}</view>
 					</view>
 					<view class="clearfix status">
+						<view :class="item.ztClass">
+							<uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
+						</view>
+						<!-- 
 						<view class="fl zgwc">
 							<uni-tag text="整改完成" size="small" type="primary"></uni-tag>
 						</view>
@@ -48,8 +52,16 @@
 						<view class="fl yys">
 							<uni-tag text="已验收" size="small" type="primary"></uni-tag>
 						</view>
-						<view class="fr ys">
-							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"></uni-tag>
+						-->
+						<view class="fr ys" v-if="item.SFSH">
+							<uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+							<!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
+							<uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
+							<uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
+						</view>
+						<view class="fr ys" v-else>
+							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1') " size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'xx')"></uni-tag>
+							<uni-tag text="验收" v-if="item.CLZTDM < 6" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'dx')"></uni-tag>
 						</view>
 					</view>
 				</view>
@@ -91,10 +103,19 @@
 				},
 				deleteParam: {
 					'_CHECK_ALL_': false
+				},
+				constParam: {
+					ztClass: {
+						'1': 'fl zgz'
+					}
 				}
 			}
 		},
-		computed: {},
+		computed: {
+			user () {
+				return this.$kwz.getLoginUser()
+			}
+		},
 		components: {
 			KwSearch,
 			KwListCell,
@@ -147,9 +168,17 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
-								datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
-								//                 datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
-								//                 datas[i].SFDX = (this.user.orgid === tmp.ORG_ID)
+								
+								// 徽标的样式
+								tmp.ztClass = this.constParam.ztClass[tmp.CLZTDM]
+								tmp.ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
+								// 确认是否是学校 暂时失效
+                tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
+								// 确认是否时督学 暂时失效
+                tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
+								// 判断是否有审核功能
+                tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
+								
 							}
 							for (let i in this.deleteParam) {
 								deleteParam[i] = this.deleteParam[i]
@@ -210,6 +239,40 @@
 			// 删除
 			deleteAction(status) {
 				this.deleteShow = false
+			},
+			// 处理整改协商
+			doZgxs(id, status) {
+				if (status === 'xx') {
+					// 学校处理 进入整改页面
+					this.$router.push({path: '/zggz/zgtzs', query: {id: val, SF: status}})
+				} else if (status === 'dx') {
+					// 督学验收  进入整改页面
+					this.$router.push({path: '/zggz/zgtzs', query: {id: val, SF: status}})
+				}
+// 				if (status == '2') {
+// 					this.$kwz.ajax.ajaxUrl({
+// 						url: 'dd_zgxs/doUpdate/ZGTZ',
+// 						type: 'POST',
+// 						data: {
+// 							CMS_LMTYPE: '2',
+// 							ZGXSID: id,
+// 							CLBG: '',
+// 							CLLX: status
+// 						},
+// 						vue: this,
+// 						then (response) {
+// 							this.$kwz.alert('处理成功')
+// 							this.pageList(true)
+// 						}
+// 					})
+// 				} else {
+// 					this.toDetail(id)
+// 				}
+			},
+			toAdd (zgxsid) {
+			},
+			// 显示详情
+			toDetail(zgxsid) {
 			},
 			countCs(fcsj, cs) {
 				try {
