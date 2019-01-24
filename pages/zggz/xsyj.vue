@@ -1,7 +1,7 @@
 <template>
 	<view class="xsyj child-content">
     <!-- 搜索 -->
-    <kw-search placeholder="点击进行搜索" :JisInput="false">
+    <kw-search placeholder="点击进行搜索" :isInput="false">
       <view slot="content">
         <picker :range="xdList">
           <kw-list-cell title="学段"></kw-list-cell>
