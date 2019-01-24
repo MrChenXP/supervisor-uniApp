@@ -639,7 +639,15 @@ const kwz = {
 			}
 		}
 		uni.chooseImage(imageOp);
-  }
+  },
+	// 关闭当前页面栈,跳转
+	redirect (op = {}) {
+		uni.redirectTo(op)
+	},
+	// 不关闭当前页面栈,跳转
+	router (op = {}) {
+		uni.navigateTo(op)
+	}
 }
 
 kwz.initVisit()
