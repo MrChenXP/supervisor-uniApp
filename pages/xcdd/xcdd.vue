@@ -23,7 +23,7 @@
     <!-- 列表组 -->
     <view class="lists">
       <!-- 单项列表 -->
-      <view class="list">
+      <view class="list" @click="goLink('xcdd-preview')">
         <view class="check" v-if="!deleteShow">
           <radio checked="true"></radio>
         </view>

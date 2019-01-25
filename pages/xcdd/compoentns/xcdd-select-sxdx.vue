@@ -4,7 +4,7 @@
     <view class="xcdd-select-gzjh-mask" @tap="close"></view>
     <!-- 搜索 -->
     <view class="xcdd-select-gzjh-content">
-      <kw-search placeholder="请输入学校名称"></kw-search>
+      <kw-search placeholder="请输入随行督学姓名"></kw-search>
       <checkbox-group @change="checkboxChange">
         <label class="" v-for="(item,j) in SchoolList" :key="j" :class="{xcddSelectGzjBorderBottom: j < SchoolList.length-1}">
           <checkbox :value="item.value" :checked="item.checked" />
