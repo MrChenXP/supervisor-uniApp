@@ -456,7 +456,7 @@ const kwz = {
     let content = []
     let i = 0;
     if(html){
-      html.replace(/(i?)<img.*? src="?(.*?\.(jpg|gif|bmp|bnp|png))"?.*?\/>/gim, (img, $1, $2, $3, index) => {
+      html.replace(/(i?)<img.*?src="?(.*?\.(jpg|gif|bmp|bnp|png))"?.*?\/?>/gim, (img, $1, $2, $3, index) => {
         content.push({
           content: html.substr(i, index).replace(kwz.htmlPattern,''),
           image: true,
