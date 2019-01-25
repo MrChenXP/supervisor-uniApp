@@ -18,7 +18,7 @@
 			</view>
 			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
 			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr" @click="$kwz.router('xcdd-add')">新增</view>
+			<view class="add fr" @click="$kwz.router({url: 'xcdd-add'})">新增</view>
 		</view>
 		<!-- 列表组 -->
 		<view class="lists">
@@ -181,7 +181,6 @@
 						if (datas && datas.length > 0) {
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
-								console.log(tmp)
 								deleteParam[tmp.ZGXSID] = false
 							}
 							for (let i in this.deleteParam) {
