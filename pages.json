@@ -58,7 +58,13 @@
 		{
 			"path": "pages/xcdd/xcdd-add",
 			"style": {
-				"navigationBarTitleText": "现场督导-新增"
+				"navigationBarTitleText": "现场督导"
+			}
+		},
+		{
+			"path": "pages/xcdd/xcdd-preview",
+			"style": {
+				"navigationBarTitleText": "现场督导"
 			}
 		},
 		{

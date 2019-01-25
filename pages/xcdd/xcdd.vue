@@ -23,7 +23,7 @@
 		<!-- 列表组 -->
 		<view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index">
+			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="$kwz.router({url: 'xcdd-preview'})">
 				<view class="check" v-if="!deleteShow">
 					<radio :checked="deleteParam[item.CONTENT_ID]" @tap="checkAction(item.CONTENT_ID)"></radio>
 				</view>
