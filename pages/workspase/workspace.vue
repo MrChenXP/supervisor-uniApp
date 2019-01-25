@@ -8,7 +8,7 @@
     <view class="statistics">
       <view class="s-body">
         <view class="badge">
-          <text>2</text>        	
+          <text>{{tips.wddb}}</text>        	
         </view>
         <view class="s-title">我的待办</view>
       </view>
@@ -53,6 +53,9 @@
 			return {
 				msg: "...",
 				loginShow: false,
+				tips: {
+					wddb: 0
+				},
 				products : []
 			};
 		},
@@ -70,6 +73,7 @@
 				// 验证是否属于登陆状态
 				if (this.$kwz.isLogin()) {
 					this.initProducts();
+					this.initTips()
 				}
 			},
 			// 关闭登陆框
@@ -88,6 +92,24 @@
 			initProducts () {
 				// let products = this.$kwz.getProducts();
 				this.products = this.$kwz.getProducts();
+			},
+			// 初始化桌面的提示信息
+			initTips () {
+				this.$kwz.ajax.ajaxUrl({
+					url: 'ddGztx/open/getTxData',
+					data: {
+						TXSET: '{"b892eba5fae9493189ac81a510bbbd73":"DDGZAP","ebc60e699bc642a1871f1e017b979483":"DDJL","3758a16aa4e14b3d87bb1f9c7e2fc509":"DDZGTZ","2bc72d87d12e4386b115f301bc4aeda7":"DDHY"}'
+					},
+					vue: this,
+					success (data) {
+						let datas = data.datas;
+						if(datas) {
+							for(let i in datas) {
+								this.tips.wddb += parseInt(datas[i])
+							}
+						}
+					}
+				})
 			}
 		}
 	}
