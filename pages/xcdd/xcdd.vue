@@ -34,7 +34,7 @@
 						<view class="fr">督导时间：{{item.YWSJ}}</view>
 					</view>
 					<view class="clearfix status">
-						<view v-if="true" class="fl clyj">
+						<view v-if="true" class="fl clyj" @click.stop="toZgxs(item.STATUS,item.IDS)">
 							<uni-tag :text="item.STATUS_MC" size="small" type="primary"></uni-tag>
 						</view>
 						<!-- <view v-if="false" class="fl zgz">
@@ -43,14 +43,14 @@
 						<view v-if="false" class="fl yys">
 							<uni-tag text="已验收" size="small" type="primary"></uni-tag>
 						</view> -->
-						<view v-if="item.STATUS == '2' || item.STATUS === '5' " class="fr bj">
+						<!-- <view v-if="item.STATUS == '2' || item.STATUS === '5' " class="fr bj">
 							<uni-tag text="发送整改通知" size="small" circle="true" inverted="true" type="primary" @click="toZgtz(item.IDS)"></uni-tag>
 						</view>
 						<view v-if="item.STATUS == '3' " class="fr bj">
 							<uni-tag text="发送协商意见" size="small" circle="true" inverted="true" type="primary" @click="toXsyj(item.IDS)"></uni-tag>
-						</view>
-						<view v-if="true" class="fr bj">
-							<uni-tag text="编辑" size="small" circle="true" inverted="true" type="primary" @click="toDetail(item.CONTENT_ID)"></uni-tag>
+						</view> -->
+						<view v-if="true" class="fr bj" @click.stop="toDetail(item.CONTENT_ID)">
+							<uni-tag text="编辑" size="small" circle="true" inverted="true" type="primary"></uni-tag>
 						</view>
 					</view>
 				</view>
@@ -64,6 +64,7 @@
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
 	import {uniBadge, uniTag, uniIcon} from '@dcloudio/uni-ui'
 	export default {
+    components: {KwSearch,KwListCell,uniBadge,uniTag,uniIcon},
 		data() {
 			return {
 				// 删除显示隐藏
@@ -98,13 +99,6 @@
 		},
 		onShow() {
 			this.initData()
-		},
-		components: {
-			KwSearch,
-			KwListCell,
-			uniBadge,
-			uniTag,
-			uniIcon
 		},
 		methods: {
 			// 加载数据
@@ -242,14 +236,19 @@
 			deleteAction(status) {
 				this.deleteShow = false
 			},
-			// 整改通知
-			toZgtz(ids) {
+			// 去整改通知 || 协商意见 
+			toZgxs(status,ids) {
+        if(status === '2' || status === '5'){
+          console.log(ids + '这是zgIds')
+          this.$kwz.router({url:'xcdd-zgtzs'})
+        } else if (status === '3'){
+          console.log(ids+'这是sxIds')
+          this.$kwz.router({url:'xcdd-xsyjs'})
+        }
 			},
-			// 协商意见
-			toXsyj(ids) {
-			},
-			// 详情
+			// 去修改
 			toDetail(ids) {
+        console.log(ids)
 			}
 		}
 	}
