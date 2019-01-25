@@ -139,6 +139,7 @@
 					
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
 				}
+				let txt = e.data.data.TXT
 				this.gzjhShow=false
       },
 			changeYwsj (e) {
