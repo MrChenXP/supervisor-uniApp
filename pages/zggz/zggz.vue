@@ -23,7 +23,7 @@
 			</view>
 			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
 			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr">新增</view>
+			<view class="add fr" @click="$kwz.router({url: 'zggz-add'})">新增</view>
 		</view>
 		<!-- 列表组 -->
 		<view class="lists">
@@ -60,7 +60,7 @@
 							<uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
 						</view>
 						<view class="fr ys" v-else>
-							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1') " size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'xx')"></uni-tag>
+							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'xx')"></uni-tag>
 							<uni-tag text="验收" v-if="item.CLZTDM < 6" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'dx')"></uni-tag>
 						</view>
 					</view>
