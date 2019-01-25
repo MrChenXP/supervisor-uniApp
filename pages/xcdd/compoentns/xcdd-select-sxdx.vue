@@ -137,6 +137,7 @@
     margin: auto;
     width: 100%;
     background: white;
+    height: 100%;
     box-shadow: 0 0 15upx 5upx darkgray;
     padding-bottom: 20upx;
     border-radius: 10upx;

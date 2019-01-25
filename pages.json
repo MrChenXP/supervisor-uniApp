@@ -61,6 +61,18 @@
 				"navigationBarTitleText": "现场督导"
 			}
 		},
+    {
+    	"path": "pages/xcdd/xcdd-xsyjs",
+    	"style": {
+    		"navigationBarTitleText": "现场督导"
+    	}
+    },
+    {
+    	"path": "pages/xcdd/xcdd-zgtzs",
+    	"style": {
+    		"navigationBarTitleText": "现场督导"
+    	}
+    },
 		{
 			"path": "pages/xcdd/xcdd-preview",
 			"style": {
