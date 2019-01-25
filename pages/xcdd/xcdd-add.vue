@@ -1,10 +1,10 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="工作计划" :rightNote="gzjh" @click="gzjhShow=true"></kw-list-cell>
-    <kw-list-cell title="学校(校园)" :rightNote="gzjh" @click="schoolShow=true"></kw-list-cell>
-    <kw-list-cell title="随行督学" :rightNote="gzjh" @click="sxdxShow=true"></kw-list-cell>
-    <picker :range="time" mode="date">
-      <kw-list-cell title="时间"></kw-list-cell>
+    <kw-list-cell title="工作计划" :rightNote="gzjh.name" @click="loadGzjh"></kw-list-cell>
+    <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true"></kw-list-cell>
+    <kw-list-cell title="随行督学" :rightNote="sxdx.name" @click="sxdxShow=true"></kw-list-cell>
+    <picker :range="ywsj" mode="date" @change="changeYwsj">
+      <kw-list-cell title="时间" :rightNote="ywsj"></kw-list-cell>
     </picker>
     <kw-list-cell>
       <view>
@@ -48,11 +48,11 @@
 
     <!-- 工作计划(请把工作计划搜索ajax写在该组件里) -->
     <view v-show="gzjhShow">
-      <xcdd-select-gzjh @close="gzjhShow=false" @confirm="gzjhConfirm"></xcdd-select-gzjh>
+      <xcdd-select-gzjh @close="gzjhShow=false" @confirm="confirmGzjh"></xcdd-select-gzjh>
     </view>
     <!-- 学校(请把学校搜索ajax写在该组件里) -->
     <view v-show="schoolShow">
-      <xcdd-select-school @close="schoolShow=false" @confirm="schoolConfirm"></xcdd-select-school>
+      <xcdd-select-school @close="schoolShow=false" @confirm="confirmSchool"></xcdd-select-school>
     </view>
     <!-- 随行督学(请把随行督学搜索ajax写在该组件里) -->
     <view v-show="sxdxShow">
@@ -83,7 +83,21 @@
         // 随行督学显示隐藏
         sxdxShow:false,
         // 工作计划数据
-        gzjh:"工作计划",
+        gzjh: {
+					name: '',
+					value: ''
+				},
+				// 学校(校园)数据
+				xx: {
+					name: '',
+					value: ''
+				},
+				// 随行督学
+				sxdx: {
+					name: '',
+					value: ''
+				},
+				ywsj: '',
         // 督导时间
         time:"",
         // 督导纪实
@@ -99,25 +113,57 @@
         // 后续处理意见状态码
         hxclyValue:2,
         // 后续处理意见显示隐藏
-        hxclyjShow:false
+        hxclyjShow:false,
+				gzjhPage: {
+					keyword: ''
+				}
 			};
 		},
     methods:{
-      // 路由跳转
-      goLink(link){
-        uni.navigateTo({
-          url: link
-        });
-      },
+			// 显示工作计划选择框
+			loadGzjh (e) {
+				this.gzjhShow=true
+			},
       // 工作计划确定
-      gzjhConfirm(e){
-        console.log(e)
+      confirmGzjh(e){
+				let gzjh = e.data
+				if(gzjh) {
+					this.gzjh.name = gzjh.name
+					this.gzjh.value = gzjh.value
+					
+					this.xx.name = gzjh.data.XXMC
+					this.xx.value = gzjh.data.ORG_ID_TARGET
+					
+					this.sxdx.name = gzjh.data.CJID_MC
+					this.sxdx.value = gzjh.data.CJID
+					
+					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
+				}
+				this.gzjhShow=false
       },
+			changeYwsj (e) {
+				this.ywsj = e.detail.value
+			},
       // 学校确定
-      schoolConfirm(e){
+      confirmSchool(e){
+				this.xx.name = e.data.name;
+				this.xx.value = e.data.value;
+				this.schoolShow = false
       },
       // 随行督学确定
-      sxdxConfirm(){},
+      sxdxConfirm(e) {
+				let sxDxList = e.data
+				let sxdxIds = []
+				let sxdxNames = []
+				if (sxDxList && sxDxList.length > 0) {
+					for (let i = 0; i< sxDxList.length; i++) {
+						sxdxIds.push(sxDxList[i].value)
+						sxdxNames.push(sxDxList[i].name)
+					}
+				}
+				this.sxdx.name = sxdxNames.join(',')
+				this.sxdx.value = sxdxIds.join(',')
+			},
       // 后续处理意见改变 按下选择器的确定 0没问题不用弹框
       PickerChange(e) {
         this.hxclyValue = e.target.value

@@ -4,41 +4,38 @@
     <view class="xcdd-select-gzjh-mask" @tap="close"></view>
     <!-- 搜索 -->
     <view class="xcdd-select-gzjh-content">
-      <kw-search placeholder="请输入学校名称"></kw-search>
-      <checkbox-group @change="checkboxChange">
-        <label class="" v-for="(item,j) in SchoolList" :key="j" :class="{xcddSelectGzjBorderBottom: j < SchoolList.length-1}">
-          <checkbox :value="item.value" :checked="item.checked" />
+      <kw-search placeholder="请输入学校名称" @confirm="keywordConfirm" ></kw-search>
+      <checkbox-group @change="radioChange">
+        <label class="" v-for="(item, j) in loadDataList" :key="j" :class="{xcddSelectGzjBorderBottom: j < loadDataList.length-1}">
+          <radio :value="item.value" />
           <view class="xcdd-select-gzjh-radio-label">{{item.name}}</view>
         </label>
       </checkbox-group>
-      <view class="xcdd-select-gzjh-save" @tap="confirm">
+			<view @tap="loadMore">
+				<uni-load-more :status="loadStatus" :content-text="{contentrefresh: '点击加载更多',contentnomore: '加载中...', contentdown: '已无更多数据'}"></uni-load-more>
+			</view>
+      <!-- <view class="xcdd-select-gzjh-save" @tap="confirm">
         <button>确定</button>
-      </view>
+      </view> -->
     </view>
 	</view>
 </template>
 
 <script>
   import KwSearch from "@kwz/kw-ui/kw-search.vue"
+	import uniLoadMore from "@dcloudio/uni-ui/lib/uni-load-more/uni-load-more.vue"
 	export default {
 		data() {
 			return {
         // 搜索学校用的关键字
-        searchSchool:"",
+        searchKeyword: "",
+				page: 1,
         // 学校列表
-        SchoolList:[
-          {
-            value: '11',
-            name: '学校名字',
-          },{
-            value: '22',
-            name: '学校名字',
-          },{
-            value: '33',
-            name: '学校名字',
-          }
-        ]
-			};
+        loadDataList:[
+        ],
+				// 加载标志
+				loadStatus: 'more'
+			}
 		},
     props:{
       // 默认选中的值 多选所以要传数组
@@ -46,45 +43,87 @@
         type: Object,
         default () {
           return [
-            "11","22"
           ]
         }
       }
     },
-    components:{KwSearch},
-//     onLoad(){
-//       // 事先给默认选中 留给专家做
-//       for (var i = 0, lenI = SchoolList.length; i < lenI; i++) {
-//                 SchoolList[i].checked = false;
-//                 for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
-//                     if (SchoolList[i].value == values[j]) {
-//                         SchoolList[i].checked = true;
-//                         break
-//                     }
-//                 }
-//       }
-//     },
+    components:{KwSearch,uniLoadMore},
+    onLoad() {
+			this.loadGzjh(true)
+    },
     methods:{
-      // 路由跳转
-      goLink(link){
-        uni.navigateTo({
-          url: link,
-        });
-      },
+			// 加载工作计划 type => true(全新)/false(增量)
+			loadGzjh (type) {
+				this.page = type ? 1 : this.page
+				this.loadStatus = 'loading'
+				this.$kwz.ajax.ajaxUrl({
+					url: 'dd_gzap/doList/DDGZAP',
+					type: 'POST',
+					data: {
+						page: this.page,
+						SEARCH_TEXT: this.searchKeyword
+					},
+					vue: this,
+					success (data) {
+						let datas = data.datas
+						this.page ++ 
+						if(!datas || datas.length < 1) {
+							this.loadStatus = 'noMore'
+						}else{
+							let loadDataList = []
+							for(let i = 0;i < datas.length; i++) {
+								loadDataList.push({
+									value: datas[i].CONTENT_ID,
+									name: `${datas[i].XXMC}/${datas[i].YWSJ}/${datas[i].SD === '1' ? '上午' : '下午'}/${datas[i].AUTHOR}`,
+									data: datas[i]
+								})
+							}
+							if (type) {
+								this.loadDataList = loadDataList
+							} else {
+								this.loadDataList = this.loadDataList.concat(loadDataList)
+							}
+							this.loadStatus = 'more'
+						}
+					}
+				})				
+			},
+			// 加载更多
+			loadMore () {
+				if(this.loadStatus == 'loadStatus') {
+					this.loadGzjh(false)
+				}
+			},
+			// 从list中取出对象
+			getRadioValue (id) {
+				if(this.loadDataList.length > 0) {
+					for(let i = 0; i<this.loadDataList.length; i++) {
+						if(id == this.loadDataList[i].value ) {
+							return this.loadDataList[i]
+						}
+					}
+				}
+				return {}
+			},
       // 选择时进行改变
-      checkboxChange(e) {
+      radioChange(e) {
         this.checkRadio = e.detail.value;
+				this.$emit("confirm",{
+				  data: this.getRadioValue(this.checkRadio)
+				})
       },
       // 点击确定
-      confirm(){
-        this.$emit("confirm",{
-          checks:"这里返回选中的值 this.checkRadio"
-        })
-      },
+//       confirm(){
+//       },
       // 点击蒙版(取消用的)
       close(){
         this.$emit("close")
-      }
+      },
+			// 关键字输入
+			keywordConfirm (e) {
+				this.searchKeyword = e.value
+				this.loadGzjh(true)
+			}
     }
 	}
 </script>

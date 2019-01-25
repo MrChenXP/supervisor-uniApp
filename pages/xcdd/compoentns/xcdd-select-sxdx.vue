@@ -4,9 +4,9 @@
     <view class="xcdd-select-gzjh-mask" @tap="close"></view>
     <!-- 搜索 -->
     <view class="xcdd-select-gzjh-content">
-      <kw-search placeholder="请输入随行督学姓名"></kw-search>
+      <kw-search placeholder="请输入随行督学姓名" @confirm="keywordConfirm" ></kw-search>
       <checkbox-group @change="checkboxChange">
-        <label class="" v-for="(item,j) in SchoolList" :key="j" :class="{xcddSelectGzjBorderBottom: j < SchoolList.length-1}">
+        <label class="" v-for="(item, j) in dataList" :key="j" :class="{xcddSelectGzjBorderBottom: j < dataList.length-1}">
           <checkbox :value="item.value" :checked="item.checked" />
           <view class="xcdd-select-gzjh-radio-label">{{item.name}}</view>
         </label>
@@ -20,24 +20,18 @@
 
 <script>
   import KwSearch from "@kwz/kw-ui/kw-search.vue"
+	import uniLoadMore from "@dcloudio/uni-ui/lib/uni-load-more/uni-load-more.vue"
 	export default {
 		data() {
 			return {
         // 搜索学校用的关键字
-        searchSchool:"",
+        searchKeyword: "",
+				page: 1,
         // 学校列表
-        SchoolList:[
-          {
-            value: '11',
-            name: '学校名字',
-          },{
-            value: '22',
-            name: '学校名字',
-          },{
-            value: '33',
-            name: '学校名字',
-          }
-        ]
+        dataList: [
+        ],
+				// 加载标志
+				loadStatus: 'more'
 			};
 		},
     props:{
@@ -46,45 +40,95 @@
         type: Object,
         default () {
           return [
-            "11","22"
           ]
         }
       }
     },
-    components:{KwSearch},
-//     onLoad(){
-//       // 事先给默认选中 留给专家做
-//       for (var i = 0, lenI = SchoolList.length; i < lenI; i++) {
-//                 SchoolList[i].checked = false;
-//                 for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
-//                     if (SchoolList[i].value == values[j]) {
-//                         SchoolList[i].checked = true;
-//                         break
-//                     }
-//                 }
-//       }
-//     },
+    components:{KwSearch,uniLoadMore},
+		onLoad() {
+			this.loadDataList(true)
+    },
     methods:{
-      // 路由跳转
-      goLink(link){
-        uni.navigateTo({
-          url: link,
-        });
-      },
+			// 数据列表 type => true(全新)/false(增量)
+			loadDataList (type) {
+				this.page = type ? 1 : this.page
+				this.loadStatus = 'loading'
+				this.$kwz.ajax.ajaxUrl({
+					url: 'jc_group/doDdChoose',
+					type: 'POST',
+					data: {
+						DDJL: 'DDJL',
+						page: this.page,
+						DXLXM: '',
+						U_USERNAME: this.searchKeyword,
+						ORG_MC: '',
+						EXCEPT: '3'
+					},
+					vue: this,
+					success (data) {
+						let datas = data.datas
+						this.page ++ 
+						if(!datas || datas.length < 1) {
+							this.loadStatus = 'noMore'
+						}else{
+							let dataList = []
+							for(let i = 0;i < datas.length; i++) {
+								dataList.push({
+									value: datas[i].U_ID,
+									name: datas[i].U_USERNAME,
+									data: datas[i]
+								})
+							}
+							if (type) {
+								this.dataList = dataList
+							} else {
+								this.dataList = this.dataList.concat(dataList)
+							}
+							this.loadStatus = 'more'
+						}
+					}
+				})				
+			},
+			// 加载更多
+			loadMore () {
+				if(this.loadStatus == 'loadStatus') {
+					this.loadDataList(false)
+				}
+			},
+			// 从list中取出对象
+			getCheckboxValue (ids) {
+				let datas = []
+				if(this.dataList.length > 0) {
+					for(let j = 0; j< ids.length; j++) {
+						for(let i = 0; i<this.dataList.length; i++) {
+							if(ids[j] == this.dataList[i].value ) {
+								datas.push(this.dataList[i])
+								break
+							}
+						}
+					}
+				}
+				return datas
+			},
       // 选择时进行改变
       checkboxChange(e) {
         this.checkRadio = e.detail.value;
+				this.$emit("confirm",{
+				  data: this.getCheckboxValue(this.checkRadio)
+				})
       },
       // 点击确定
-      confirm(){
-        this.$emit("confirm",{
-          checks:"这里返回选中的值 this.checkRadio"
-        })
-      },
+//       confirm(){
+//       },
       // 点击蒙版(取消用的)
       close(){
         this.$emit("close")
-      }
+      },
+			// 关键字输入
+			keywordConfirm (e) {
+				this.searchKeyword = e.value
+				this.loadDataList(true)
+			}      
     }
 	}
 </script>
