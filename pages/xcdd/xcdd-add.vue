@@ -14,7 +14,7 @@
           <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="ddjsShow" class="ddjs-body">
-          <textarea maxlength="4000"></textarea>
+          <kw-editor></kw-editor>
         </view>
       </view>
     </kw-list-cell>
@@ -72,8 +72,10 @@
   import XcddSelectSxdx from "./compoentns/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
   import {uniIcon} from "@dcloudio/uni-ui"
+  import KwEditor from "@kwz/kw-ui/kw-editor.vue"
+
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon},
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor},
 		data() {
 			return {
         // 工作计划显示隐藏

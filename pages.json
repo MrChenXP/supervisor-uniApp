@@ -20,18 +20,6 @@
 			}
 		},
 		{
-			"path": "pages/zggz/zggz",
-			"style": {
-				"navigationBarTitleText": "整改工作"
-			}
-		},
-		{
-			"path": "pages/zggz/xsyj",
-			"style": {
-				"navigationBarTitleText": "协商意见"
-			}
-		},
-		{
 			"path": "pages/my/user-set",
 			"style": {
 				"navigationBarTitleText": "个人设置"
@@ -80,6 +68,42 @@
 			}
 		},
 		{
+			"path": "pages/zggz/zggz",
+			"style": {
+				"navigationBarTitleText": "整改工作"
+			}
+		},
+    {
+    	"path": "pages/zggz/zggz-add",
+    	"style": {
+    		"navigationBarTitleText": "整改工作"
+    	}
+    },
+    {
+    	"path": "pages/zggz/zggz-preview",
+    	"style": {
+    		"navigationBarTitleText": "整改工作"
+    	}
+    },
+		{
+			"path": "pages/zggz/xsyj",
+			"style": {
+				"navigationBarTitleText": "协商意见"
+			}
+		},
+    {
+    	"path": "pages/zggz/xsyj-add",
+    	"style": {
+    		"navigationBarTitleText": "协商意见"
+    	}
+    },
+    {
+    	"path": "pages/zggz/xsyj-preview",
+    	"style": {
+    		"navigationBarTitleText": "协商意见"
+    	}
+    },
+    {
 			"path": "pages/gzjh/gzjh",
 			"style": {
 				"navigationBarTitleText": "工作计划"
