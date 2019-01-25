@@ -380,7 +380,9 @@
 			.info {
 				flex-grow: 2;
 
-				.time {
+				width:100%;
+				.time{
+				  overflow: hidden;
 					color: #999999;
 					font-size: 26upx;
 					margin: 10upx 0;

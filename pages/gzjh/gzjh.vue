@@ -31,10 +31,10 @@
           <view>{{item.XXMC}}</view>
           <view class="clearfix time">
             <view class="fl">{{item.JGXM}}</view>
-            <view class="fr">督导时间：{{item.DDSD}}</view>
+            <view class="fr">{{item.DDSD}}</view>
           </view>
           <view class="clearfix time">
-            <view>{{item.TXT}}</view>
+            <text>{{item.TXT}}</text>
           </view>
           <view class="clearfix status">
             <view v-if="!!item.BZMC" class="fl clyj">
@@ -302,10 +302,13 @@
       }
       .info{
         flex-grow: 2;
+        width:100%;
         .time{
+          overflow: hidden;
           color:#999999;
           font-size: 26upx;
           margin: 10upx 0;
+          max-height: 100upx;
           view{
             color:#999999;
           }
