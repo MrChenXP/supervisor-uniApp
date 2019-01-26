@@ -104,9 +104,11 @@
 					success (data) {
 						let datas = data.datas;
 						if(datas) {
+							let tips = 0;
 							for(let i in datas) {
-								this.tips.wddb += parseInt(datas[i])
+								tips += parseInt(datas[i])
 							}
+							this.tips.wddb = tips
 						}
 					}
 				})
