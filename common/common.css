@@ -39,3 +39,6 @@ view,text,textarea{
 .clear{ /*规定元素左右两侧不允许有浮动*/
     clear: both;
 }
+.text-bold{
+  font-weight: 900;
+}

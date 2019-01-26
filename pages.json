@@ -109,6 +109,18 @@
 				"navigationBarTitleText": "工作计划"
 			}
 		},
+    {
+    	"path": "pages/gzjh/gzjh-add",
+    	"style": {
+    		"navigationBarTitleText": "工作计划"
+    	}
+    },
+    {
+    	"path": "pages/gzjh/gzjh-preview",
+    	"style": {
+    		"navigationBarTitleText": "工作计划"
+    	}
+    },
 		{
 			"path": "pages/tkjl/tkjl",
 			"style": {

@@ -1,6 +1,43 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号"></kw-list-cell>
+    <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
+    <kw-list-cell title="科室中心" :rightNote="data.XXMC"></kw-list-cell>
+    <kw-list-cell>
+      <view>
+        <view class="ddjs-body">
+          <view>
+            <view>
+              我室
+              <text>data.AUTHOR</text>
+              责任督学于
+              <text>data.RQ、</text>
+              对
+              <text>data.XXMC、</text>
+              进行了教育督导，发现该学校(幼儿园)存在以下问题：
+            </view>
+            <view>放XSNR</view>
+            <view>
+              请贵科室（中心）予以支持、配合、协调解决!
+            </view>
+          </view>
+        </view>
+      </view>
+    </kw-list-cell>
+    <kw-list-cell title="日期" :rightNote="data.RQ"></kw-list-cell>
+    <kw-list-cell>
+      <view>
+        <view class="ddjs-head clearfix" @click="cljgShow = !cljgShow">
+          <text class="fl">处理结果</text>
+          <view class="fr" v-show="!cljgShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
+          <view class="fr" v-show="cljgShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+        </view>
+        <view class="ddjs-body" v-show="cljgShow">
+          <view>
+           CLBG
+          </view>
+        </view>
+      </view>
+    </kw-list-cell>
 	</view>
 </template>
 
@@ -10,6 +47,16 @@
 	export default {
 		data() {
 			return {
+        // 表单数据
+        data:{
+          BH:"",
+          XXMC:"",
+          XSNR:"",
+          CLQX:"",
+          RQ:"",
+        },
+        // 处理结果显示隐藏
+        cljgShow:false
 			};
 		},
     components:{uniBadge,uniTag,uniIcon,KwListCell},
@@ -20,5 +67,19 @@
 </script>
 
 <style lang="scss">
-  
+  .ddjs-head{
+      height: 55upx;
+    }
+  .ddjs-body{
+    padding:0 20upx;
+    textarea{
+      width: 100%;
+      border:#D9D9D9 solid 2upx;
+    }
+    input{
+      display: inline-block;
+      width: 100upx;
+      border:#D9D9D9 solid 2upx;
+    }
+  }
 </style>

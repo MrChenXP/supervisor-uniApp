@@ -29,12 +29,12 @@
 			</view>
 			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
 			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr">新增</view>
+			<view class="add fr" @click="$kwz.router({url: 'xsyj-add'})">新增</view>
 		</view>
 		<!-- 列表组 -->
 		<view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index">
+			<view class="list" v-for="(item, index) in dataList" :key="index" @click="$kwz.router({url: 'xsyj-preview'})">
 				<view class="check" v-if="!deleteShow">
 					<radio checked="true" :checked="deleteParam[item.ZGXSID]" @tap="checkAction(item.ZGXSID)"></radio>
 				</view>
