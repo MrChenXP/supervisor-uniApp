@@ -2,36 +2,37 @@
 	<view class="xcdd-hxclyj child-content">
     <!-- 蒙版 -->
     <view class="xcdd-hxclyj-mask" @tap="close"></view>
-    <!-- 内容 -->{{hxclyValue=='1'}}
+    <!-- 内容 -->
     <view class="xcdd-hxclyj-content">
       <!-- 小问题-向学校反馈建议 -->
-      <view v-if="hxclyValue=='1'" class="xcdd-hxclyj-xwt">
-        <textarea :value="xwtValue" @input="xwtChange" maxlength="4000"></textarea>
-      </view>
+      <!-- <view v-if="hxcly.value=='4'" class="xcdd-hxclyj-xwt">
+        <textarea :value="xwtValue" maxlength="4000"></textarea>
+      </view> -->
       <!-- 一般问题-向学校发送整改建议 严重问题-向督导办上报整改建议 -->
-      <view v-if="hxclyValue=='2' || hxclyValue=='3'" class="xcdd-hxclyj-ybwt">
-        <kw-list-cell title="编号" rightNote="这里是编号"></kw-list-cell>
-        <kw-list-cell title="单位" rightNote="这里是单位"></kw-list-cell>
-        <kw-list-cell title="来源渠道" rightNote="这里是来源渠道"></kw-list-cell>
+      <view v-if="hxcly.value=='2' || hxcly.value=='5'" class="xcdd-hxclyj-ybwt">
+        <kw-list-cell title="编号" :rightNote="ybwtBh"></kw-list-cell>
+        <kw-list-cell title="单位" :rightNote="org.name"></kw-list-cell>
+        <kw-list-cell title="来源渠道" rightNote="经常性督导整改"></kw-list-cell>
         <view class="clyj">
           <view>经挂牌督导，你单位存在以下问题及建议:</view>
-          <textarea @input="ybwtChange" maxlength="4000"></textarea>
+          <textarea v-model="czwt" maxlength="4000"></textarea>
           <view>对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-            <input />
+						<uni-number-box :min="0" :max="30" :value="ybwtZgqx"></uni-number-box>
+            <!-- <input :value="ybwtZgqx" /> -->
             日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
           </view>
         </view>
-        <view class="ddsj">督导时间</view>
+        <view class="ddsj">督导时间:{{ywsj}}</view>
       </view>
       <!-- 复杂问题-向科室发送协商意见 -->
-      <view v-if="hxclyValue=='4'" class="xcdd-hxclyj-fzwt">
-        <picker :range="ksList">
-          <kw-list-cell title="科室"></kw-list-cell>
+      <view v-if="hxcly.value=='3'" class="xcdd-hxclyj-fzwt">
+        <picker :range="ksList" range-key="name" :value="fzwtKs.index" @change="changeKs" >
+          <kw-list-cell title="科室" :rightNote="fzwtKs.name" ></kw-list-cell>
         </picker>
         <view class="clyj">
-          <view>我室责任督学于</view><text>time</text>对<text>school</text>
+          <view>我室责任督学于</view><text>{{ywsj}}</text>对<text>{{org.name}}</text>
           进行了教育督导，发现该学校(幼儿园)存在以下问题及建议：
-          <textarea @input="fzwtChange" maxlength="4000"></textarea>
+          <textarea v-model="czwt" maxlength="4000"></textarea>
           <view>请贵科室（中心）予以支持、配合、协调解决!</view>
         </view>
       </view>
@@ -45,73 +46,156 @@
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
+  import { uniBadge,uniTag,uniIcon,uniNumberBox } from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
-        ksList:["这里放复杂问题可以选择的科室"]
+        ksList:[],
+				zgxsid: '',
+				ybwtBh: '',
+				// ybwtCzwt: '',
+				ybwtZgqx: 0,
+				// ybwtYwsj: '',
+				fzwtKs: {
+					name: '点击选择科室',
+					value: '',
+					index: ''
+				}
+				// fzwtYwsj: ''
 			};
 		},
+		onLoad() {
+			this.getBh()
+		},
+		onShow () {
+			if (!this.ksList || this.ksList.length < 1) {
+				this.getKs()
+			}
+		},
     props:{
-      // 后续处理意见的状态 传进来的是0-4 对应的状态是1-5
-      hxclyValue: String,
-      // 小问题的值
-      xwtValue: String,
-      // 一般问题 || 严重问题 的值 
-      ybwtValue: {
-        type: Object,
-        default () {
-          return {
-            bh:"编号",
-            dw:"单位",
-            lyqd:"来源渠道",
-            jy:"建议",
-            sbrq:"上报责任督学日期",
-            ddsj:"督导时间"
-          }
-        }
-      },
-      // 复杂问题的值
-      fzwtValue: {
-        type: Object,
-        default () {
-          return {
-            bh:"编号",
-            ks:"科室、中心",
-            dxname:"督学姓名",
-            school:"学校名称",
-            ddsj: "督导时间",
-            jy:"建议"
-          }
-        }
-      },
+			contentId: '',
+      // 后续处理意见的状态 
+      hxcly: Object,
+			// 机构
+			org: Object,
+			// 存在的问题
+			czwt: String,
+			// 业务时间
+			ywsj: String
     },
-    components:{uniBadge,uniTag,uniIcon,KwListCell},
+    components:{uniBadge,uniTag,uniIcon,KwListCell,uniNumberBox },
     methods:{
       // 点击确定
       confirm(){
-        if(this.hxclyValue=="0"){
-          this.$emit("confirm",this.hxclyValue)
-        } else if(this.hxclyValue=="2" || this.hxclyValue=="3"){
-          this.$emit("confirm",this.ybwtValue)
-        } else{
-          this.$emit("confirm",this.fzwtValue)
-        }
+				this.$emit("confirm", this.saveDisposeIdea)
       },
       // 点击取消用的
-      close(){
-        this.$emit("close")
+      close () {
+        this.$emit("close", {
+					data: this.zgxsid
+				})
       },
-      // 小问题修改
-      xwtChange(e){
-        this.hxclyValue = e.detail.value;
-      },
-      // 一般问题修改
-      ybwtChange(e){
-      },
-      // 复杂问题修改
-      fzwtChange(e){
-      }
+			saveDisposeIdea (cb) {
+				let contentId = this.contentId ? this.contentId : ''
+				// 发送复杂问题，向科室发送协商
+				if(this.hxcly.value == '3') {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_zgxs/doAdd',
+						type: 'POST',
+						vue: this,
+						data: {
+							ORG_ID_TARGET: this.org.value,
+							BH: this.ybwtBh,
+							ZGXSLYMC: '经常性督导整改',
+							XS_ORG_ID: this.fzwtKs.value,
+							ZGXSLY: '1',
+							ZGXSDM: this.hxcly.value,
+							ZGXSMC: this.hxcly.name,
+							XSNR: this.czwt,
+							YWSJ: this.ywsj,
+							YWID: contentId
+						},
+						then (response) {
+							this.zgxsid = data.datas.ZGXSID
+							this.$kwz.alert('发送成功')
+							if (typeof cb == 'function') {
+								cb.apply(this, [response])
+							}
+						}
+					})
+				} else {
+					let isSb = this.hxcly.value == '5' ? '1' : '0'
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_zgxs/doAdd',
+						type: 'POST',
+						vue: this,
+						data: {
+							ORG_ID_TARGET: this.org.value,
+							BH: this.ybwtBh,
+							ZGXSLYMC: '经常性督导整改',
+							CLQX: this.ybwtZgqx,
+							ZGXSLY: '1',
+							ZGXSDM: this.hxcly.value,
+							ZGXSMC: this.hxcly.name,
+							XSNR: this.czwt,
+							YWSJ: this.ywsj,
+							YWID: contenId,
+							IS_SB: isSb // 是否上报
+						},
+						then (response) {
+							this.disposeIdea.ZGXSID = response.data.datas.ZGXSID
+							this.$kwz.alert('发送成功')
+							if (typeof cb == 'function') {
+								cb.apply(this, [response])
+							}
+						}
+					})
+				}
+			},
+			// 获取编号
+			getBh () {
+				if (!this.ybwtBh) {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_zgxs/getNowTimeString',
+						type: 'POST',
+						vue: this,
+						then (response) {
+							let datas = response.datas
+							if (datas.BH) {
+								this.ybwtBh = datas.BH
+								// let date = new Date()
+								// this.disposeIdea.TIME = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+							}
+						}
+					})
+				}
+			},
+			getKs () {
+				this.$kwz.ajax.ajaxUrl({
+					url: 'ddjl/getKsList',
+					type: 'post',
+					vue: this,
+					then (respose) {
+						let datas = respose.datas.KSLIST
+						if (datas && datas.length > 0) {
+							let ksList = []
+							for (let i = 0; i < datas.length; i++) {
+								ksList.push({
+									name: datas[i].ORG_MC,
+									value: datas[i].ORG_ID
+								})
+							}
+							this.ksList = ksList
+						}
+					}
+				})
+			},
+			changeKs (e) {
+				let index = e.detail.value
+				this.fzwtKs.index = index
+				this.fzwtKs.name = this.ksList[index].name
+				this.fzwtKs.value = this.ksList[index].value
+			}
     }
 	}
 </script>

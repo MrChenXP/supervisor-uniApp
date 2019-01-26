@@ -14,7 +14,7 @@
           <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="ddjsShow" class="ddjs-body">
-          <kw-editor></kw-editor>
+          <kw-editor :content="ddjs"></kw-editor>
         </view>
       </view>
     </kw-list-cell>
@@ -26,7 +26,7 @@
           <view class="fr" v-show="jyzfShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="jyzfShow" class="ddjs-body">
-          <textarea maxlength="4000"></textarea>
+          <textarea v-model="dxjyzf" maxlength="4000"></textarea>
         </view>
       </view>
     </kw-list-cell>
@@ -38,12 +38,12 @@
           <view class="fr" v-show="czwtShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="czwtShow" class="ddjs-body">
-          <textarea maxlength="4000"></textarea>
+          <textarea v-model="czwt" maxlength="4000"></textarea>
         </view>
       </view>
     </kw-list-cell>
-    <picker :range="hxclyjList" value="hxclyValue" @change="PickerChange">
-      <kw-list-cell title="后续处理意见" :rightNote="hxclyValue"></kw-list-cell>
+    <picker :range="hxclyjList" :value="hxclyj.index" range-key="name" @change="changeHxcly">
+      <kw-list-cell title="后续处理意见" :rightNote="hxclyj.name"></kw-list-cell>
     </picker>
 
     <!-- 工作计划(请把工作计划搜索ajax写在该组件里) -->
@@ -60,7 +60,8 @@
     </view>
     <!-- 后续处理意见 请把ajax写在该组件里 -->
     <view v-show="hxclyjShow">
-      <xcdd-hxclyj :hxclyValue="hxclyValue" @close="hxclyjShow=false" @confirm="confirmHxclyj"></xcdd-hxclyj>
+      <xcdd-hxclyj :hxcly="hxclyj" :contentId='contentId' @close="closeHxclyj" @confirm="confirmHxclyj" 
+				:org="xx" :czwt="czwt" :ywsj="ywsj" ></xcdd-hxclyj>
     </view>
 	</view>
 </template>
@@ -78,6 +79,7 @@
     components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor},
 		data() {
 			return {
+				contentId: '',
         // 工作计划显示隐藏
         gzjhShow:false,
         // 学校显示隐藏
@@ -99,11 +101,14 @@
 					name: '',
 					value: ''
 				},
-				ywsj: '',
         // 督导时间
-        time:"",
+        ywsj: "",
         // 督导纪实
-        ddjs:"<p>22</p>",
+        ddjs: [],
+				// 典型经验和做法
+				dxjyzf: '',
+				// 存在问题
+				czwt: '',
         // 督导纪实显示隐藏
         ddjsShow: false,
         // 经验做法显示隐藏
@@ -111,9 +116,33 @@
         // 存在问题显示隐藏
         czwtShow:false,
         // 后续处理意见的类型
-        hxclyjList:["无意见","小问题-向学校反馈建议","一般问题-向学校发送整改建议","严重问题-向督导办上报整改建议","复杂问题-向科室发送协商意见"],
-        // 后续处理意见状态码
-        hxclyValue:2,
+        hxclyjList:[{
+						name: '无意见',
+						value: '1'
+					},{
+						name: '小问题--向学校现场反馈建议',
+						value: '4'
+					},{
+						name: '一般问题--向学校发送整改建议',
+						value: '2'
+					},{
+						name: '严重问题--向督导办上报整改建议',
+						value: '5'
+					},{
+						name: '复杂问题--向科室发送协商意见',
+						value: '3'
+					}
+				],
+				// 原后续处理意见==》当切换后续处理意见，并为保存时，使用本值
+				hxclyjOld: 0,
+				// 后续处理意见
+				hxclyj: {
+					name: '',
+					value: '',
+					index: ''
+				},
+				// 整改协商id
+				zgxsid: '',
         // 后续处理意见显示隐藏
         hxclyjShow:false,
 				gzjhPage: {
@@ -140,8 +169,9 @@
 					this.sxdx.value = gzjh.data.CJID
 					
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
+					
+					this.setDdjs(gzjh.data.TXT)
 				}
-				let txt = e.data.data.TXT
 				this.gzjhShow=false
       },
 			changeYwsj (e) {
@@ -167,18 +197,94 @@
 				this.sxdx.name = sxdxNames.join(',')
 				this.sxdx.value = sxdxIds.join(',')
 			},
+			setDdjs (html) {
+				let ddjs = []
+				let ddjsSplit = this.$kwz.splitHtml(html)
+				if (ddjsSplit && ddjsSplit.length > 0) {
+					for (let i in ddjsSplit) {
+						let content = ddjsSplit[i]
+						if (content.content) {
+							ddjs.push({
+								type: 'textarea',
+								content: content.content
+							})
+						}
+						if (content.imageUrl) {
+							ddjs.push({
+								type: 'image',
+								content: content.imageUrl,
+								imageUrl: content.realUrl
+							})
+						}
+					}
+				} else {
+					ddjs.push({
+						type: 'textarea',
+						content: ''
+					})
+				}
+				this.ddjs = ddjs
+			},
       // 后续处理意见改变 按下选择器的确定 0没问题不用弹框
-      PickerChange(e) {
-        this.hxclyValue = e.target.value
-        if(e!="0"){
-          this.hxclyjShow = true
-        }
+      changeHxcly (e) {
+				let index = e.detail.value
+
+				if (index != '0' && index != '1') {
+					if (!this.xx.value) {
+						this.$kwz.alert('请先选择学校或工作计划');
+					}else {
+						this.hxclyj.index = index
+						this.hxclyj.name = this.hxclyjList[index].name
+						this.hxclyj.value = this.hxclyjList[index].value
+						
+						this.hxclyjShow = true
+					}
+				} else {
+					this.hxclyj.index = index
+					this.hxclyj.name = this.hxclyjList[index].name
+					this.hxclyj.value = this.hxclyjList[index].value
+					this.deleteDisposeIdeaId()
+				}
       },
+			// 删除后续处理意见id
+			deleteDisposeIdeaId (cb) {
+				let zgxsSaveCb = (data) => {
+					console.log(data)
+				}
+				if (this.ZGXSID) {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_zgxs/doDelete',
+							type: 'POST',
+							vue: this,
+							data: {
+								ZGXSID: this.ZGXSID
+							},
+							success (data) {
+								this.ZGXSID = ''
+								if (typeof cb == 'function') {
+									cb.apply(this, [zgxsSaveCb])
+								}
+							}
+					})
+				} else {
+						if (typeof cb == 'function') {
+							cb.apply(this, [zgxsSaveCb])
+						}
+				}
+			},
       // 后续处理意见点 确认
-      confirmHxclyj(e){
-        this.hxclyjShow=false;
-        console.log(e);
-      }
+      confirmHxclyj (e) {
+				this.deleteDisposeIdeaId(e.cb)
+      },
+			// 关闭后续处理意见==》恢复打开之前的值
+			closeHxclyj (e) {
+				this.hxclyjShow = false
+				this.hxclyj.index = this.hxclyjOld
+				if (this.hxclyj.index > -1) {
+					this.hxclyj.name = this.hxclyjList[this.hxclyj.index].name
+					this.hxclyj.value = this.hxclyjList[this.hxclyj.index].value
+				}
+			}
     }
 	}
 </script>
