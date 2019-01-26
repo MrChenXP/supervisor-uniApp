@@ -20,6 +20,14 @@
     </kw-list-cell>
     <kw-list-cell>
       <view>
+        <view class="ddjs-head clearfix">
+          <text class="fl">规定任务评价</text>
+          <view class="fr"><button size="mini" type="warn">去评估</button></view>
+        </view>
+      </view>
+    </kw-list-cell>
+    <kw-list-cell>
+      <view>
         <view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
           <text class="fl">典型经验和做法</text>
           <view class="fr" v-show="!jyzfShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
@@ -292,6 +300,10 @@
 <style lang="scss">
   .ddjs-head{
       height: 55upx;
+      .fr,button{
+        height: 55upx;
+        line-height:55rpx;
+      }
     }
   .ddjs-body{
       border:#D9D9D9 solid 2upx;
