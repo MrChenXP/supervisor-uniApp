@@ -141,15 +141,25 @@ const kwz = {
 				// 设置sessionId
 				kwz.setCookies(response)
 				
-				if(response.data.statusCode != '200' && response.data.msg){
+				if(response.data.statusCode != '200' && response.data.msg && response.state != 'SUCCESS' ){
 					kwz.alert(response.data.msg)
 				} else {
 					if (typeof(op.then) === 'function') {
-						op.then.apply(op.vue || this, [response.data])
+						if (response.data) {
+							op.then.apply(op.vue || this, [response.data])
+						// 为了兼容editor上传
+						} else {
+							op.then.apply(op.vue || this, [response])
+						}
 					}
 					cb = cb || op.success
 					if (typeof(cb) === 'function') {
-						cb.apply(op.vue || this, [response.data])
+						if (response.data) {
+							cb.apply(op.vue || this, [response.data])
+						// 为了兼容editor上传
+						} else {
+							cb.apply(op.vue || this, [response])
+						}
 					}
 				}
 			}
@@ -460,7 +470,8 @@ const kwz = {
         content.push({
           content: html.substr(i, index).replace(kwz.htmlPattern,''),
           image: true,
-          imageUrl: kwz.ajax.url($2)
+          imageUrl: kwz.ajax.url($2),
+					realUrl: $2
         });
         i = index + img.length;
       })
@@ -595,7 +606,7 @@ const kwz = {
 		let imageSuccess = imageOp.success;
 		imageOp.count = imageOp.count > 0 ? imageOp.count : 1;
 		imageOp.fail = () => {
-			kwz.alert('选取文件失败')
+			// kwz.alert('选取文件失败')
 		}
 		imageOp.success = (tempFilePaths) => {
 			let isUpload = true;
@@ -614,7 +625,7 @@ const kwz = {
 							}catch(e){
 							}
 						}
-						uploadOpSuccess.apply(vue || this, [response])
+						uploadOpSuccess.apply(vue || this, [response, tempFilePaths])
 					}
 				}
 				uploadOp.success = (response) => {
