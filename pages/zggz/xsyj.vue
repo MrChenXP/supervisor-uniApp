@@ -36,7 +36,7 @@
 			<!-- 单项列表 -->
 			<view class="list" v-for="(item, index) in dataList" :key="index" @click="$kwz.router({url: 'xsyj-preview'})">
 				<view class="check" v-if="!deleteShow">
-					<radio checked="true" :checked="deleteParam[item.ZGXSID]" @tap="checkAction(item.ZGXSID)"></radio>
+					<radio checked="true" :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)"></radio>
 				</view>
 				<view class="info">
 					<view>{{item.XXMC}}</view>
@@ -44,11 +44,11 @@
 						<view class="fl">{{item.ORG_MC}}</view>
 						<view class="fr">发出时间：{{item.YWSJ}}</view>
 					</view>
-					<view class="clearfix time">{{item.CLZTMC}}</view>
+          <view class="clearfix time">{{item.ZGXSLYMC}}</view>
 					<view class="clearfix status">
-						<view v-if="true" :class="item.zgxsClass">
-							<uni-tag :text="item.ZGXSLYMC" size="small" type="primary"></uni-tag>
-						</view>
+						<view v-if="true" :class="item.zgxsClass" class="fl">
+             	<uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
+             </view>
 						<!-- <view v-if="true" :class="fl xswc">
 							<uni-tag text="状态=='协商处理完成'用这个样式" size="small" type="primary"></uni-tag>
 						</view>
@@ -115,9 +115,9 @@
 				},
 				constParam: {
 					zgxsClass: {
-						'26': 'fl xswc',
-						'21': 'fl xsz',
-						'22': 'fl xsz'
+						'26': 'xswc',
+						'21': 'xsz',
+						'22': 'xsz'
 					}
 				}
 			};
@@ -207,7 +207,6 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
-								console.log(tmp)
 								tmp.zgxsClass = this.constParam.zgxsClass[tmp.CLZTDM]
 								// datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
 								//                 datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)

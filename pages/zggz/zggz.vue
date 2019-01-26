@@ -23,14 +23,14 @@
 			</view>
 			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
 			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr" @click="$kwz.router({url: 'zggz-add'})">新增</view>
+			<view class="add fr" @click="toAdd('add')">新增</view>
 		</view>
 		<!-- 列表组 -->
 		<view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index" @click="$kwz.router({url: 'zggz-preview'})">
+			<view class="list" v-for="(item, index) in dataList" :key="index" @click="toZgxs(item.ZGXSID)">
 				<view class="check" v-if="!deleteShow">
-					<radio :checked="deleteParam[item.ZGXSID]" @tap="checkAction(item.ZGXSID)"></radio>
+					<radio :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)"></radio>
 				</view>
 				<view class="info">
 					<view>{{item.XXMC}}</view>
@@ -39,7 +39,7 @@
 						<view class="fr">发出时间：{{item.YWSJ}}</view>
 					</view>
 					<view class="clearfix status">
-						<view :class="item.ztClass">
+						<view :class="item.ztClass" class="fl">
 							<uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
 						</view>
 						<!-- 
@@ -54,14 +54,15 @@
 						</view>
 						-->
 						<view class="fr ys" v-if="item.SFSH">
-							<uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+							<uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
+                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
 							<!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
 							<uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
 							<uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
 						</view>
 						<view class="fr ys" v-else>
-							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'xx')"></uni-tag>
-							<uni-tag text="验收" v-if="item.CLZTDM < 6" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, 'dx')"></uni-tag>
+							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" size="small" circle="true" inverted="true" type="primary" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
+							<uni-tag text="验收" v-if="item.CLZTDM < 6" size="small" circle="true" inverted="true" type="primary" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
 						</view>
 					</view>
 				</view>
@@ -106,7 +107,7 @@
 				},
 				constParam: {
 					ztClass: {
-						'1': 'fl zgz'
+						'1': 'zgz'
 					}
 				}
 			}
@@ -241,13 +242,12 @@
 				this.deleteShow = false
 			},
 			// 处理整改协商
-			doZgxs(id, status) {
-				if (status === 'xx') {
-					// 学校处理 进入整改页面
-					this.$router.push({path: '/zggz/zgtzs', query: {id: val, SF: status}})
-				} else if (status === 'dx') {
-					// 督学验收  进入整改页面
-					this.$router.push({path: '/zggz/zgtzs', query: {id: val, SF: status}})
+			toZgxs(id, status) {
+        // 不是详情那就是-处理验收
+				if (status !== undefined) {
+          this.$kwz.router({url: `zggz-preview?id=${id}&SF=${status}`})
+				} else {
+          this.$kwz.router({url: `zggz-preview?id=${id}`})
 				}
 // 				if (status == '2') {
 // 					this.$kwz.ajax.ajaxUrl({
@@ -269,11 +269,11 @@
 // 					this.toDetail(id)
 // 				}
 			},
-			toAdd (zgxsid) {
+			toAdd (val) {
 				if (val !== 'add') { // 不是新增就是审核
-					this.$router.push({path: '/zggz/add', query: {id: val}})
+          this.$kwz.router({url: `zggz-add?id=${val}`})
 				} else {
-					this.$router.push({path: '/zggz/add'})
+          this.$kwz.router({url: "zggz-add"})
 				}
 			},
 			// 显示详情

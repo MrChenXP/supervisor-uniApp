@@ -23,6 +23,9 @@
         </view>
       </view>
     </kw-list-cell>
+    <view class="save">
+      <button @click="saveUserSet">保存</button>
+    </view>
     
      <!-- 学校(请把学校搜索ajax写在该组件里) -->
     <view v-show="schoolShow">
@@ -91,5 +94,25 @@
         width: 100%;
       }
   }
-  
+  .save{
+    width: 710upx;
+    height: 85upx;
+    border-radius: 42.5upx;
+    border: solid 1upx #e1e1e1;
+    margin: 25upx auto;
+    display: flex;
+    background: white;
+    button{
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      border-radius: 42.5upx;
+      background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
+      color: white;
+      line-height: 83upx;
+    }
+    button:after{
+      border: none;
+    }
+  }
 </style>
