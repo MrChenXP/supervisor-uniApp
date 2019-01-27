@@ -169,6 +169,8 @@ const kwz = {
 			if(error) {
         if(error.statusCode == 402) {
           kwz.logout(op.vue)
+        } else if(error.statusCode == 403) {
+          kwz.alert('暂无权限进行此项操作')
         } else if(error.statusCode == 401) {
           if(!op.tokenTimes || op.tokenTimes < 5) {
             op.tokenTimes = op.tokenTimes ? (op.tokenTimes + 1) : 1
@@ -462,19 +464,30 @@ const kwz = {
 		})
 	},
   htmlPattern: /<[^>]+>/g,
+	// 去掉所有html标签
+	slitHtmlTag (html = '') {
+		return html.replace(kwz.htmlPattern,'')
+	},
   splitHtml (html = '') {
     let content = []
     let i = 0;
     if(html){
+			let flag = true
       html.replace(/(i?)<img.*?src="?(.*?\.(jpg|gif|bmp|bnp|png))"?.*?\/?>/gim, (img, $1, $2, $3, index) => {
+				flag = false
         content.push({
-          content: html.substr(i, index).replace(kwz.htmlPattern,''),
+          content: kwz.slitHtmlTag(html.substr(i, index)),
           image: true,
           imageUrl: kwz.ajax.url($2),
 					realUrl: $2
         });
         i = index + img.length;
       })
+			if(flag) {
+				content.push({
+					content: kwz.slitHtmlTag(html)
+				})
+			}
       return content
     }
   },
