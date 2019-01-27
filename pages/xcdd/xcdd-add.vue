@@ -23,6 +23,9 @@
         <view class="ddjs-head clearfix">
           <text class="fl">规定任务评价</text>
           <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
+					<view>
+						<uni-rate value="3" ></uni-rate>
+					</view>
         </view>
       </view>
     </kw-list-cell>
@@ -54,7 +57,7 @@
       <kw-list-cell title="后续处理意见" :rightNote="hxclyj.name"></kw-list-cell>
     </picker>
     <view class="save">
-      <button @click="saveUserSet">保存</button>
+      <button @click="saveXcdd">保存</button>
     </view>
 
     <!-- 工作计划(请把工作计划搜索ajax写在该组件里) -->
@@ -83,11 +86,11 @@
   import XcddSelectSchool from "./compoentns/xcdd-select-school.vue"
   import XcddSelectSxdx from "./compoentns/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniIcon} from "@dcloudio/uni-ui"
+  import {uniIcon, uniRate } from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor},
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor,uniRate },
 		data() {
 			return {
 				contentId: '',
@@ -115,7 +118,10 @@
         // 督导时间
         ywsj: "",
         // 督导纪实
-        ddjs: [],
+        ddjs: [{
+					type: 'textarea',
+					content: ''
+				}],
 				// 典型经验和做法
 				dxjyzf: '',
 				// 存在问题
@@ -228,6 +234,14 @@
 				}
 				this.sxdx.name = sxdxNames.join(',')
 				this.sxdx.value = sxdxIds.join(',')
+			},
+			getDdjs () {
+				let ddjs = []
+				let length = this.ddjs.length
+				for(let i = 0; i<length;i++){
+					// if(this.ddjs[i])
+				}
+				return ddjs.join('')
 			},
 			setDdjs (html) {
 				let ddjs = []
@@ -423,11 +437,53 @@
 			updateDdpg () {
 				if (this.mxid && this.pgbzID) {
 					this.$kwz.router({
-						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID
+						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID + '&ywsj=' + this.ywsj
 					})
 				}
 			}
-    }
+    },
+			// 保存督导评估
+			saveXcdd () {
+				this.$kwz.ajax.ajaxUrl({
+					url: 'ddjl/doEdit',
+					type: 'POST',
+					vue: this,
+					data: {
+						ORG_ID: this.xx.value,
+						XXMC: this.xx.name,
+						YWSJ: this.ywsj,
+						USERID: this.sxdx.value,
+						USERID_MC: this.sxdx.name,
+						DDJS: this.getDdjs(),
+						CZWT: this.czwt,
+						DXJY: this.dxjyzf,
+						ZTZF: this.dxjyzf,
+						// bug1：待初八来修复
+						XYXS: this.ddd,
+						CYZL: this.data.CYZL,
+						WJDC: this.data.WJDC,
+						LXHY: this.data.LXHY,
+						GZAP_YWID: this.workPlanId,
+						XQID: this.data.xqValue,
+						STATUS: this.disposeIdea.STATUS,
+						STATUS_MC: this.disposeIdea.STATUS_MC,
+						ZGJY: this.disposeIdea.ZGJY,
+						ZGXSID: this.disposeIdea.ZGXSID,
+						// CONTENT_ID: this.contentId, // 传了就代表是修改
+						PGMC: '',
+						BZID: this.data.BZID,
+						PGID: this.data.pgid ? this.data.pgid : '',
+						minDate: this.data.minDate, // 最小时间限制
+						maxDate: this.data.maxDate // 最大时间限制
+					},
+					vue: this,
+					then (response) {
+						this.$kwz.alert('保存成功')
+						this.$kwz.back()
+						// this.$router.push({path: '/b892eba5fae9493189ac81a510bbbd73'})
+					}
+				})
+			}
 	}
 </script>
 

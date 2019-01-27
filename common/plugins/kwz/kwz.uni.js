@@ -463,10 +463,10 @@ const kwz = {
 			}
 		})
 	},
-  htmlPattern: /<[^>]+>/g,
+  htmlPattern: /((<[^>]+>)|(&nbsp;))/g,
 	// 去掉所有html标签
 	slitHtmlTag (html = '') {
-		return html.replace(kwz.htmlPattern,'')
+		return html.replace(kwz.htmlPattern, '').trim()
 	},
   splitHtml (html = '') {
     let content = []
@@ -671,6 +671,11 @@ const kwz = {
 	// 不关闭当前页面栈,跳转
 	router (op = {}) {
 		uni.navigateTo(op)
+	},
+	back () {
+		uni.navigateBack({
+			delta: 1
+		})
 	},
 	// 日期格式化 日期格式 传入的时间 默认:yyyy-MM-dd格式/当前时间(月份传的时候要-1 想要12月传11进来)
   formatDate (fmt = 'yyyy-MM-dd', date = new Date()) {
