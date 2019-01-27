@@ -28,7 +28,6 @@
         </view>
       </scroll-view>
     </view>
-    
     <!-- 登录 -->
     <!-- <kw-login v-if="loginShow"  @closeLogin="closeLogin" @login="login" @toggerVcode="toggerVcode"></kw-login> -->
 	</view>
@@ -36,7 +35,10 @@
 
 <script>
   import KwLogin from "@kwz/kw-ui/kw-login.vue"
+  import { uniRate} from '@dcloudio/uni-ui'
+
 	export default {
+    components: {uniRate},
 		data() {
 			return {
 				// loginShow: true, // 登录显示隐藏

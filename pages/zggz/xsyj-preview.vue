@@ -8,14 +8,14 @@
           <view>
             <view>
               我室
-              <text>data.AUTHOR</text>
+              <text>{{data.AUTHOR}}</text>
               责任督学于
-              <text>data.RQ、</text>
+              <text>{{data.RQ}}</text>
               对
-              <text>data.XXMC、</text>
+              <text>{{data.XXMC}}</text>
               进行了教育督导，发现该学校(幼儿园)存在以下问题：
             </view>
-            <view>放XSNR</view>
+            <view>{{data.XSNR}}</view>
             <view>
               请贵科室（中心）予以支持、配合、协调解决!
             </view>
@@ -32,14 +32,18 @@
           <view class="fr" v-show="cljgShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view class="ddjs-body" v-show="cljgShow">
-          <view>
-           CLBG
+          <view v-if="resultShow">
+           <kw-editor :content="ddjs">11</kw-editor>
+          </view>
+          <view v-if="detailShow">
+           <rich-text :nodes="data.CLBG">22</rich-text>
           </view>
         </view>
       </view>
     </kw-list-cell>
     <view class="save">
-      <button @click="saveUserSet">保存</button>
+      <button @click="fn_zggz_xsyjs_dispose" v-if="!detailShow" v-show="getPermission('dd_zgxs/doUpdate/XSYJ')">处理</button>
+      <button @click="changeStatue('26')" v-if="data.CLZTDM < '26'" v-show="this.SF === 'dx' && getPermission('dd_zgxs/doUpdate/XSYJ')">确认整改完成</button>
     </view>
 	</view>
 </template>
@@ -47,7 +51,10 @@
 <script>
   import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
+  import KwEditor from "@kwz/kw-ui/kw-editor.vue"
+
 	export default {
+    components:{uniBadge,uniTag,uniIcon,KwListCell,KwEditor},
 		data() {
 			return {
         // 表单数据
@@ -59,12 +66,143 @@
           RQ:"",
         },
         // 处理结果显示隐藏
-        cljgShow:false
+        cljgShow:false,
+        // 学校填写处理的值
+        disposeResultData: '',
+        // 已处理的详情页显示隐藏
+        detailShow: false,
+        // 编辑页显示隐藏
+        resultShow: false,
+        // 身份存储 督学||学校
+        SF: '',
+        ddjs:[]
 			};
 		},
-    components:{uniBadge,uniTag,uniIcon,KwListCell},
+    onLoad(query) {
+      this.data.ZGXSID = query.id
+      this.SF = query.SF
+      this.loadData()
+    },
     methods:{
-      
+      // 获取功能权限
+      getPermission (url) {
+        return this.$kwz.hasAuth(url, this)
+      },
+      // 事先加载数据
+      loadData () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/doSelectByPrimary',
+          type: 'POST',
+          data: {
+            ZGXSID: this.data.ZGXSID
+          },
+          vue: this,
+          then (response) {
+            let datas = response.datas
+            datas.IS_PHONE = '2'
+            if (datas && datas.ZGXSID) {
+              this.data = datas
+              console.log(this.data.CLZTDM)
+              console.log(this.SF)
+
+              // 处理结果赋值
+              if (datas.CLBG != null) {
+                this.disposeResultData = datas.CLBG
+              }
+              // 是学校且不是整改完成
+              if (this.SF === 'xx' && datas.CLZTDM < '26') {
+                this.resultShow = true
+                console.log("1"+this.resultShow)
+                this.setDdjs(this.data.CLBG)
+              }
+              if (this.SF === 'dx' || datas.CLZTDM === '26') {
+                console.log("2"+this.detailShow)
+                this.detailShow = true
+              }
+            }
+            if (this.SF) { // 如果是处理/验收进来的
+              if (this.data.CLZTDM <= '23' && this.SF === 'xx') {
+                this.changeStatue('23')
+              } else if (this.data.CLZTDM === '4' && this.SF === 'dx') {
+                this.changeStatue('25')
+              }
+            } else {
+              this.detailShow = true
+            }
+          }
+        })
+      },
+         setDdjs (html) {
+        console.log(html)
+      	let ddjs = []
+      	let ddjsSplit = this.$kwz.splitHtml(html)
+        console.log(ddjsSplit)
+      	if (ddjsSplit && ddjsSplit.length > 0) {
+      		for (let i in ddjsSplit) {
+      			let content = ddjsSplit[i]
+      			if (content.content) {
+      				ddjs.push({
+      					type: 'textarea',
+      					content: content.content
+      				})
+      			}
+      			if (content.imageUrl) {
+      				ddjs.push({
+      					type: 'image',
+      					content: content.imageUrl,
+      					imageUrl: content.realUrl
+      				})
+      			}
+      		}
+      	} else {
+      		ddjs.push({
+      			type: 'textarea',
+      			content: ''
+      		})
+      	}
+      	this.ddjs = ddjs
+      },
+      // 改变处理状态
+      changeStatue (status) {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/doUpdate/XSYJ',
+          type: 'POST',
+          data: {
+            CMS_LMTYPE: '1',
+            ZGXSID: this.data.ZGXSID,
+            CLLX: status
+          },
+          vue: this,
+          then (response) {
+            if (status === '26') {
+              this.$router.push({path: '/zggz/xsyj'})
+            }
+          }
+        })
+      },
+      // 点击处理事件
+      fn_zggz_xsyjs_dispose () {
+        if (!this.disposeResultData) {
+          this.$kwz.alert('请填写处理结果')
+          return
+        }
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/doUpdate/XSYJ',
+          type: 'POST',
+          data: {
+            CLBG: this.disposeResultData,
+            CMS_LMTYPE: '1',
+            IS_PHONE: '2',     // 标记此内容是来自手机端
+            ZGXSID: this.data.ZGXSID,
+            CLLX: '24'
+          },
+          vue: this,
+          then (response) {
+            this.$kwz.alert('保存成功')
+            this.$router.push({path: '/zggz/xsyj'})
+          }
+        })
+      },
     }
 	}
 </script>
