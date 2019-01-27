@@ -25,7 +25,7 @@
       <!-- 单项列表 -->
       <view class="list" v-for="(item, index) in dataList" :key="index">
         <view class="check" v-if="!deleteShow">
-          <radio :checked="deleteParam[item.MXID]" @tap="checkAction(item.MXID)"></radio>
+          <radio :checked="deleteParam[item.MXID]" @tap.stop="checkAction(item.MXID)"></radio>
         </view>
         <view class="info">
           <view>{{item.XXMC}}</view>
