@@ -18,11 +18,11 @@
         </view>
       </view>
     </kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell v-if="ddpgShow">
       <view>
         <view class="ddjs-head clearfix">
           <text class="fl">规定任务评价</text>
-          <view class="fr"><button size="mini" type="warn">去评估</button></view>
+          <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
         </view>
       </view>
     </kw-list-cell>
@@ -82,7 +82,7 @@
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
   import {uniIcon} from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
-
+	
 	export default {
     components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor},
 		data() {
@@ -155,8 +155,23 @@
         hxclyjShow:false,
 				gzjhPage: {
 					keyword: ''
-				}
-			};
+				},
+				// 是否显示去评估
+				ddpgShow: false,
+				// 督导评估id ==>BZID
+				pgbzID: '',
+				// 不知道是啥id
+				pgid: '',
+				// 同上
+				bid: '',
+				// 同上
+				mxid: '',
+				// 登陆用户
+				loginUser: {}
+			}
+		},
+		onLoad() {
+			this.loginUser = this.$kwz.getLoginUser()
 		},
     methods:{
 			// 显示工作计划选择框
@@ -179,6 +194,12 @@
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
 					
 					this.setDdjs(gzjh.data.TXT)
+					
+					if (gzjh.data.BZID) {
+						this.ddpgShow = true
+						this.pgbzID = gzjh.data.BZID
+					}
+					
 				}
 				this.gzjhShow=false
       },
@@ -291,6 +312,116 @@
 				if (this.hxclyj.index > -1) {
 					this.hxclyj.name = this.hxclyjList[this.hxclyj.index].name
 					this.hxclyj.value = this.hxclyjList[this.hxclyj.index].value
+				}
+			},
+			// 去评估
+			toDdpg () {
+				if (this.pgbzID) {
+					if (this.pgid) {
+            this.ddGetMxid()
+          }else {
+            this.$kwz.ajax.ajaxUrl({
+              // 根据标准id查找最新批次
+              url: 'jc_batch/selectBatchByMbid/DDPGBZ',
+              type: 'POST',
+              data: {
+                MBID: this.pgbzID
+              },
+              vue: this,
+              then (response) {
+                let datas = response.datas
+                this.BID = datas.BID
+                if (datas && this.BID) {
+                  // 查找评估记录是否已存在
+                  this.$kwz.ajax.ajaxUrl({
+                    url: 'jc_pgbzmx/getMbMx/DDPGBZ',
+                    type: 'POST',
+                    data: {
+                      MB_ORG_ID: this.xx.value,
+                      BID: this.BID
+                    },
+                    vue: this,
+                    then (response) {
+                      let datas1 = response.datas
+                      // 未填报督学
+                      let wtbDx = []
+                      let sxdx = this.sxdx.value ? this.sxdx.value.split(',') : []
+                      if (sxdx.length > 0) {
+                        if (datas1 && datas1.length > 0) {
+                          for (let j = 0; j < sxdx.length; j++) {
+                            let eSxdx = false
+                            for (let i = 0; i < datas1.length; i++) {
+                              if (datas1[i].TBR === sxdx[j]) {
+                                eSxdx = true
+                                break
+                              }
+                            }
+                            if (!eSxdx) {
+                              wtbDx.push(sxdx[j])
+                            }
+                          }
+                        } else {
+                          wtbDx = sxdx
+                        }
+                        // 如果存在还未填报的督学==》就新增
+                        if (wtbDx.length > 0) {
+                          // 新增评估
+                          this.$kwz.ajax.ajaxUrl({
+                            url: 'jc_pgbzmb/doAddBatch/DDPGBZ',
+                            type: 'POST',
+                            data: {
+                              BID: this.BID,
+                              PGMC: datas.BMC,
+                              PGLX: '2',
+                              MB_ORG_ID: this.xx.value,
+                              TBR: wtbDx.join(',')
+                            },
+                            vue: this,
+                            then (response) {
+                              this.ddGetMxid()
+                            }
+                          })
+                        } else {
+                          this.ddGetMxid()
+                        }
+                      }
+                    }
+                  })
+                }
+              }
+            })
+          }
+				} else {
+          this.$kwz.alert('工作计划数据有误')
+        }
+			},
+			ddGetMxid () {
+				this.$kwz.ajax.ajaxUrl({
+					url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
+					type: 'POST',
+					data: {
+						BID: this.pgid ? '' : this.BID,
+						PGID: this.pgid ? this.pgid : '',
+						tbr: this.loginUser.unicode,
+						MB_ORG_ID: this.xx.value
+					},
+					vue: this,
+					then (response) {
+						let datas = response.datas
+						if (datas && datas.MXID) {
+							this.pgid = datas.PGID
+							this.mxid = datas.MXID
+							this.updateDdpg()
+						}
+					}
+				})
+			},
+			// 更新督导评估
+			updateDdpg () {
+				if (this.mxid && this.pgbzID) {
+					this.$kwz.router({
+						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID
+					})
 				}
 			}
     }
