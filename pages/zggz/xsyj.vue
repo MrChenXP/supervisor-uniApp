@@ -34,7 +34,7 @@
 		<!-- 列表组 -->
 		<view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index" @click="$kwz.router({url: 'xsyj-preview'})">
+			<view class="list" v-for="(item, index) in dataList" :key="index" @click="doXsyj(item.ZGXSID)">
 				<view class="check" v-if="!deleteShow">
 					<radio checked="true" :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)"></radio>
 				</view>
@@ -272,20 +272,19 @@
 			deleteAction(status) {
 				this.deleteShow = false
 			},
-			toAdd (zgxsid) {
+			toAdd (val) {
 				if (val !== 'add') { // 不是新增就是审核
-					this.$router.push({path: '/zggz/xsyj/add', query: {id: val}})
+          this.$kwz.router({url: `xsyj-add?id=${val}`})
 				} else {
-					this.$router.push({path: '/zggz/xsyj/add'})
+          this.$kwz.router({url: "xsyj-add"})
 				}
 			},
-			doXsyj (zgxsid) {
-				if (status === 'xx') {
-					// 学校处理 进入整改页面
-					this.$router.push({path: '/zggz/xsyj/xsyjs', query: {id: val, SF: status}})
-				} else if (status === 'dx') {
-					// 督学验收  进入整改页面
-					this.$router.push({path: '/zggz/xsyj/xsyjs', query: {id: val, SF: status}})
+			doXsyj (id, status) {
+				// 不是详情那就是-处理验收
+				if (status !== undefined) {
+          this.$kwz.router({url: `xsyj-preview?id=${id}&SF=${status}`})
+				} else {
+          this.$kwz.router({url: `xsyj-preview?id=${id}`})
 				}
 			}
 		}
