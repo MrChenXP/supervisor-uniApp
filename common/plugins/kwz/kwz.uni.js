@@ -349,11 +349,12 @@ const kwz = {
 		}
 	},
 	// 弹窗提示
-	alert(msg=''){
+	alert(msg='',cb = () => {}){
 		kwz.msg({
 			title: msg,
 			icon: 'none',
-			duration: 5000
+			duration: 5000,
+			success: cb
 		})
 	},
 	// 确认框

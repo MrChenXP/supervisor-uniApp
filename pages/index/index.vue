@@ -80,9 +80,9 @@
 			},
       toNews (newsId) {
         if(newsId) {
-         uni.navigateTo({
+				 this.$kwz.router({
          	url: '/pages/news/news?CONTENT_ID=' + newsId
-         }) 
+         })
         }
       }
     }

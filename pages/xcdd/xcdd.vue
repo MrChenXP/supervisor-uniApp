@@ -97,14 +97,16 @@
 				}
 			}
 		},
-		onShow() {
+		onLoad() {
 			this.initData()
 		},
 		methods: {
 			// 加载数据
 			initData() {
+				// 加载代码
 				this.$kwz.loadVueDms('DM_XD', dms => {
 					this.searchCondition = dms || {}
+					// 加载学期
 					this.$kwz.ajax.ajaxUrl({
 						url: 'jc_xq/doList',
 						type: 'POST',
@@ -248,7 +250,9 @@
 			},
 			// 去修改
 			toDetail(ids) {
-        console.log(ids)
+        this.$kwz.router({
+        	url: 'xcdd-add?CONTENT_ID=' + ids
+        })
 			}
 		}
 	}

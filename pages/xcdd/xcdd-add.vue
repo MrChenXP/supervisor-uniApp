@@ -16,6 +16,9 @@
         <view v-show="ddjsShow" class="ddjs-body">
           <kw-editor :content="ddjs"></kw-editor>
         </view>
+				<view v-show="ddjsShow" class="ddjs-body">
+				  <kw-editor :content="ddjs"></kw-editor>
+				</view>
       </view>
     </kw-list-cell>
     <kw-list-cell v-if="ddpgShow">
@@ -37,7 +40,7 @@
           <view class="fr" v-show="jyzfShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="jyzfShow" class="ddjs-body">
-          <textarea v-model="dxjyzf" maxlength="4000"></textarea>
+          <textarea :value="dxjyzf" maxlength="4000" @blur="blurDxjyzf"></textarea>
         </view>
       </view>
     </kw-list-cell>
@@ -49,13 +52,20 @@
           <view class="fr" v-show="czwtShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="czwtShow" class="ddjs-body">
-          <textarea v-model="czwt" maxlength="4000"></textarea>
+          <textarea :value="czwt" maxlength="4000" @blur="blurCzwt"></textarea>
         </view>
       </view>
     </kw-list-cell>
     <picker :range="hxclyjList" :value="hxclyj.index" range-key="name" @change="changeHxcly">
       <kw-list-cell title="后续处理意见" :rightNote="hxclyj.name"></kw-list-cell>
     </picker>
+		<kw-list-cell :show="hxclyjXwt">
+		  <view>
+		    <view class="ddjs-body">
+		      <textarea :value="zgxsyj" maxlength="4000" placeholder="请输入反馈意见" @blur="blurZgxsyj"></textarea>
+		    </view>
+		  </view>
+		</kw-list-cell>
     <view class="save">
       <button @click="saveXcdd">保存</button>
     </view>
@@ -118,10 +128,22 @@
         // 督导时间
         ywsj: "",
         // 督导纪实
-        ddjs: [{
-					type: 'textarea',
-					content: ''
-				}],
+        ddjs: {
+					content: '',
+					images: []
+				},
+				// 学期id,来源工作计划
+				xqid: '',
+				// 查阅资料
+				cyzl: 0,
+				// 列席会议
+				lxhy: 0,
+				// 座谈走访
+				ztzf: 0,
+				// 问卷调查
+				wjdc: 0,
+				// 校园巡视
+				xyxs: 0,
 				// 典型经验和做法
 				dxjyzf: '',
 				// 存在问题
@@ -158,8 +180,12 @@
 					value: '',
 					index: ''
 				},
+				// 后续处理意见小问题框输入
+				hxclyjXwt: false,
 				// 整改协商id
 				zgxsid: '',
+				// 整改协商意见
+				zgxsyj: '',
         // 后续处理意见显示隐藏
         hxclyjShow:false,
 				gzjhPage: {
@@ -176,10 +202,16 @@
 				// 同上
 				mxid: '',
 				// 登陆用户
-				loginUser: {}
+				loginUser: {},
+				minDate: '',
+				maxDate: ''
 			}
 		},
-		onLoad() {
+		onLoad(param) {
+			if(param && param.CONTENT_ID) {
+				this.contentId = param.CONTENT_ID
+				this.loadData()
+			}
 			this.loginUser = this.$kwz.getLoginUser()
 		},
     methods:{
@@ -212,6 +244,7 @@
 				}
 				this.gzjhShow=false
       },
+			// 修改业务时间
 			changeYwsj (e) {
 				this.ywsj = e.detail.value
 			},
@@ -234,42 +267,43 @@
 				}
 				this.sxdx.name = sxdxNames.join(',')
 				this.sxdx.value = sxdxIds.join(',')
+				this.sxdxShow = false
 			},
 			getDdjs () {
-				let ddjs = []
-				let length = this.ddjs.length
-				for(let i = 0; i<length;i++){
-					// if(this.ddjs[i])
+				let ddjs = [this.ddjs.content]
+				if(this.ddjs.images && this.ddjs.images.length > 0) {
+					let images = this.ddjs.images
+					for(let i = 0;i < images.length; i++) {
+						ddjs.push('<p><img src="')
+						ddjs.push(images[i].imageUrl)
+						ddjs.push('" ></p>')
+					}
 				}
 				return ddjs.join('')
 			},
 			setDdjs (html) {
 				let ddjs = []
+				let ddjsImage = []
 				let ddjsSplit = this.$kwz.splitHtml(html)
 				if (ddjsSplit && ddjsSplit.length > 0) {
 					for (let i in ddjsSplit) {
 						let content = ddjsSplit[i]
 						if (content.content) {
-							ddjs.push({
-								type: 'textarea',
-								content: content.content
-							})
+							ddjs.push(content.content)
 						}
 						if (content.imageUrl) {
-							ddjs.push({
+							ddjsImage.push({
 								type: 'image',
 								content: content.imageUrl,
 								imageUrl: content.realUrl
 							})
 						}
 					}
-				} else {
-					ddjs.push({
-						type: 'textarea',
-						content: ''
-					})
 				}
-				this.ddjs = ddjs
+				this.ddjs = {
+					content: ddjs.join(''),
+					images: ddjsImage
+				}
 			},
       // 后续处理意见改变 按下选择器的确定 0没问题不用弹框
       changeHxcly (e) {
@@ -285,7 +319,13 @@
 						
 						this.hxclyjShow = true
 					}
+					this.hxclyjXwt = false
 				} else {
+					if(index == '1') {
+						this.hxclyjXwt = true
+					}else{
+						this.hxclyjXwt = false
+					}
 					this.hxclyj.index = index
 					this.hxclyj.name = this.hxclyjList[index].name
 					this.hxclyj.value = this.hxclyjList[index].value
@@ -412,7 +452,7 @@
           this.$kwz.alert('工作计划数据有误')
         }
 			},
-			ddGetMxid () {
+			ddGetMxid (isNotShow) {
 				this.$kwz.ajax.ajaxUrl({
 					url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
 					type: 'POST',
@@ -428,62 +468,190 @@
 						if (datas && datas.MXID) {
 							this.pgid = datas.PGID
 							this.mxid = datas.MXID
-							this.updateDdpg()
+							this.updateDdpg(isNotShow)
 						}
 					}
 				})
 			},
 			// 更新督导评估
-			updateDdpg () {
-				if (this.mxid && this.pgbzID) {
+			updateDdpg (isNotShow) {
+				if (this.mxid && this.pgbzID && !isNotShow) {
 					this.$kwz.router({
 						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID + '&ywsj=' + this.ywsj
 					})
 				}
-			}
-    },
+			},
 			// 保存督导评估
-			saveXcdd () {
-				this.$kwz.ajax.ajaxUrl({
-					url: 'ddjl/doEdit',
-					type: 'POST',
-					vue: this,
-					data: {
-						ORG_ID: this.xx.value,
-						XXMC: this.xx.name,
-						YWSJ: this.ywsj,
-						USERID: this.sxdx.value,
-						USERID_MC: this.sxdx.name,
-						DDJS: this.getDdjs(),
-						CZWT: this.czwt,
-						DXJY: this.dxjyzf,
-						ZTZF: this.dxjyzf,
-						// bug1：待初八来修复
-						XYXS: this.ddd,
-						CYZL: this.data.CYZL,
-						WJDC: this.data.WJDC,
-						LXHY: this.data.LXHY,
-						GZAP_YWID: this.workPlanId,
-						XQID: this.data.xqValue,
-						STATUS: this.disposeIdea.STATUS,
-						STATUS_MC: this.disposeIdea.STATUS_MC,
-						ZGJY: this.disposeIdea.ZGJY,
-						ZGXSID: this.disposeIdea.ZGXSID,
-						// CONTENT_ID: this.contentId, // 传了就代表是修改
-						PGMC: '',
-						BZID: this.data.BZID,
-						PGID: this.data.pgid ? this.data.pgid : '',
-						minDate: this.data.minDate, // 最小时间限制
-						maxDate: this.data.maxDate // 最大时间限制
-					},
-					vue: this,
-					then (response) {
-						this.$kwz.alert('保存成功')
-						this.$kwz.back()
-						// this.$router.push({path: '/b892eba5fae9493189ac81a510bbbd73'})
+			saveXcdd (sfXq) {
+				let xcddData = {
+					ORG_ID: this.xx.value,
+					XXMC: this.xx.name,
+					YWSJ: this.ywsj,
+					USERID: this.sxdx.value,
+					USERID_MC: this.sxdx.name,
+					DDJS: this.getDdjs(),
+					CYZL: this.cyzl,
+					LXHY: this.lxhy,
+					ZTZF: this.ztzf,
+					WJDC: this.wjdc,
+					XYXS: this.xyxs,
+					DXJY: this.dxjyzf,
+					CZWT: this.czwt,
+					GZAP_YWID: this.gzjh.value,
+					// XQID: this.data.xqValue,
+					STATUS: this.hxclyj.value,
+					STATUS_MC: this.hxclyj.name,
+					ZGJY: this.zgxsyj,
+					ZGXSID: this.zgxsid,
+					PGMC: '',
+					BZID: this.pgbzID,
+					PGID: this.pgid,
+					minDate: this.minDate, // 最小时间限制
+					maxDate: this.maxDate // 最大时间限制
+				}
+				let saveData = () => {
+					xcddData.XQID = this.xqid
+					if(this.contentId) {
+						// 传了就代表是修改
+						xcddData.CONTENT_ID = this.contentId
 					}
-				})
+					console.log(JSON.stringify(xcddData))
+					this.$kwz.ajax.ajaxUrl({
+						url: 'ddjl/doEdit',
+						type: 'POST',
+						vue: this,
+						data: xcddData,
+						vue: this,
+						then (response) {
+							this.$kwz.alert('保存成功')
+							let vue = this
+							setTimeout(()=>{
+								vue.$kwz.back()
+							},2000)
+						}
+					})
+				}
+				// 如果没有选择工作计划,则学期id会为空,那么默认取当前学期
+				if(!this.xqid) {
+					this.$kwz.ajax.ajaxUrl({
+            url: 'jc_xq/getCurXq',
+            type: 'POST',
+            vue: this,
+            then (response) {
+              let datas = response.datas
+              if (datas && datas.curXq && datas.curXq.XQ_ID) {
+								this.xqid = datas.curXq.XQ_ID
+                saveData.apply(this)
+              }
+            }
+          })
+				} else {
+					saveData.apply(this)
+				}
+			},
+			// 加载督导纪实
+			loadData () {
+				if(this.contentId) {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'ddjl/doSelectByPrimaryKey',
+						type: 'POST',
+						data: {
+							CONTENT_ID: this.contentId
+						},
+						vue: this,
+						then (response) {
+							let datas = response.datas
+							console.log(datas)
+							if (datas && datas.CONTENT_ID) {
+								this.gzjh.value = datas.GZAP_YWID
+								let workPlanName = (datas.JHXXMC ? (datas.JHXXMC + '') : datas.JHXXMC) + (datas.JHYWSJ ? (datas.JHYWSJ + '/') : datas.JHYWSJ) + (datas.JHSD ? (datas.JHSD + '/') : datas.JHSD) + datas.AUTHOR ? (datas.AUTHOR + '/') : datas.AUTHOR
+								this.gzjh.name = workPlanName && workPlanName.length > 12 ? workPlanName.substr(0, 12) : workPlanName
+								this.xx.value = datas.ORG_ID
+								this.xx.name = datas.XXMC
+								this.ywsj = datas.YWSJ
+								this.hxclyj.value = datas.STATUS
+								// this.disposeIdeaInit = datas.STATUS // 现存好进来时的状态值，等返回的时候来判断有没有修改
+								// this.disposeIdea.STATUS = datas.STATUS
+								let status = datas.STATUS
+								if(status == '4') {
+									this.hxclyjXwt = true
+								}
+								for(let i = 0; i < this.hxclyjList;i++) {
+									if(this.hxclyjList[i].value == status) {
+										this.hxclyj.name = this.hxclyjList[i].name
+									}
+								}
+								this.sxdx.name = datas.USERNAME
+								this.sxdx.value = datas.USERID
+								this.dxjyzf = datas.DXJY || ''
+
+								this.czwt = datas.CZWT || ''
+								
+								this.cyzl = datas.CYZL || 0
+								this.lxhy = datas.LXHY || 0
+								this.ztzf = datas.ZTZF || 0
+								this.wjdc = datas.WJDC || 0
+								this.xyxs = datas.XYXS || 0
+								this.pgid = datas.PGID
+								if (this.pgid) {
+									this.ddGetMxid(true)
+								}
+// 								let ddsx = this.$kwz.spiltHtml(datas.JHTXT)
+// 								this.ddsxText = ddsx.text
+// 								if (ddsx.imgSrcs && ddsx.imgSrcs.length > 0) {
+// 									let previewerListDDSX = []
+// 									for (let i = 0; i < ddsx.imgSrcs.length; i++) {
+// 										previewerListDDSX.push({
+// 											src: this.$kwz.ajax.url(ddsx.imgSrcs[i]),
+// 											msrc: this.$kwz.ajax.url(ddsx.imgSrcs[i]),
+// 											rSrc: ddsx.imgSrcs[i],
+// 											rMsrc: ddsx.imgSrcs[i]
+// 										})
+// 									}
+// 									this.previewerListDDSX = previewerListDDSX
+// 								}
+// 								this.ddsxShow = !!this.ddsxText || this.previewerListDDSX.length > 0
+// 								this.ddjsData = datas.DDJS
+// 								this.ddjsDataShow = true
+							}
+// 							this.loadNowWorkPlanData()
+// 							// 获取上述数据后判断(2,3,5)是否加载后续处理意见id
+// 							if (datas.STATUS === '2' || datas.STATUS === '3' || datas.STATUS === '5') {
+// 								// 获取后续处理意见数据
+// 								this.$kwz.ajax.ajaxUrl({
+// 									url: 'dd_zgxs/selectZgxsList',
+// 									type: 'POST',
+// 									data: {
+// 										CONTENT_ID: this.contentId
+// 									},
+// 									vue: this,
+// 									then (response) {
+// 										let zgdatas = response.data.datas
+// 										if (zgdatas && zgdatas.length > 0) {
+// 											let zgxsData = zgdatas[0]
+// 											this.disposeIdea.BH = zgxsData.BH
+// 											this.disposeIdea.DW = zgxsData.ORG_MC ? zgxsData.ORG_MC : datas.XXMC
+// 											this.disposeIdea.XSNR = zgxsData.XSNR
+// 											this.disposeIdea.CLQX = zgxsData.CLQX
+// 											this.disposeIdea.ZGXSID = zgxsData.ZGXSID
+// 										}
+// 									}
+// 								})
+// 							}
+						}
+					})
+				}
+			},
+			blurDxjyzf (e) {
+				this.dxjyzf = e.detail.value
+			},
+			blurCzwt (e) {
+				this.czwt = e.detail.value
+			},
+			blurZgxsyj (e) {
+				this.zgxsyj = e.detail.value
 			}
+    }
 	}
 </script>
 

@@ -37,7 +37,7 @@
     props:{
       // 默认选中的值 多选所以要传数组
       checkRadio: {
-        type: Object,
+        type: Array,
         default () {
           return [
           ]
@@ -113,13 +113,17 @@
       // 选择时进行改变
       checkboxChange(e) {
         this.checkRadio = e.detail.value;
-				this.$emit("confirm",{
+				this.$emit("change",{
 				  data: this.getCheckboxValue(this.checkRadio)
 				})
       },
       // 点击确定
-//       confirm(){
-//       },
+      confirm(){
+				// this.checkRadio = e.detail.value;
+				this.$emit("confirm",{
+				  data: this.getCheckboxValue(this.checkRadio)
+				})
+      },
       // 点击蒙版(取消用的)
       close(){
         this.$emit("close")
