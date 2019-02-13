@@ -35,10 +35,8 @@
 
 <script>
   import KwLogin from "@kwz/kw-ui/kw-login.vue"
-  import { uniRate} from '@dcloudio/uni-ui'
-
 	export default {
-    components: {uniRate},
+    components: {},
 		data() {
 			return {
 				// loginShow: true, // 登录显示隐藏
