@@ -5,7 +5,10 @@
             "path" : "pages/index/index"
         },
         {
-            "path" : "pages/workspase/workspace"
+            "path" : "pages/workspase/workspace",
+            "style" : {
+                "navigationBarTitleText" : "督导工作区"
+            }
         },
         {
             "path" : "pages/my/my",

@@ -2,13 +2,13 @@
 	<view class="child-content revise-institution">
 		<radio-group @change="radioChange">
       <label class="" v-for="(item, index) in userOrgs" :key="index" :class="{borderBottom: index < userOrgs.length-1}">
-				<radio :checked="item.value == userOrg" :value="item.value"  />
+				<radio :checked="item.value == userOrg" :value="item.value" />
         <view class="radio-label">{{item.label}}</view>
       </label>
     </radio-group>
-		<view class="save">
+		<!-- <view class="save">
       <button @click="radioChange">保存</button>
-    </view>
+    </view> -->
 	</view>
 </template>
 
@@ -21,7 +21,8 @@
 				userOrgs: [
           {label: '暂无机构', value: ''}
         ],
-				userOrg: ''
+				userOrg: '',
+				userOrgName: ''
 			};
 		},
 		onLoad() {
@@ -29,17 +30,28 @@
 		},
     methods:{
       // 修改选项
-      radioChange(){
+      radioChange(e){
+				this.userOrg = e.detail.value
         if (this.userOrg) {
 					this.$kwz.ajax.ajaxUrl({
 						url: 'index/resetOrgRole',
 						data: {
 							'ORG_ID': this.userOrg
 						},
+						vue: this,
 						success (data) {
 							let loginUser = this.$kwz.getLoginUser()
+							if(this.userOrgs && this.userOrgs.length > 0) {
+								for (let i = 0; i < this.userOrgs.length; i++) {
+									if(this.userOrgs[i].ORG_ID == this.userOrg) {
+										this.userOrgName = this.userOrgs[i].ORG_MC
+									}
+								}
+							}
 							loginUser.orgid = this.userOrg
+							loginUser.orgMc = this.userOrgName
 							this.$kwz.setLoginUser(loginUser)
+							this.$kwz.back()
 						}
 					})
 				}
