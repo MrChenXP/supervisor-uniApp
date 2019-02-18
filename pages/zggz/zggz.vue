@@ -53,16 +53,20 @@
 							<uni-tag text="已验收" size="small" type="primary"></uni-tag>
 						</view>
 						-->
-						<view class="fr ys" v-if="item.SFSH">
-							<uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
-                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+						<view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
+              <uni-tag text="审核" size="small" circle="true" 
+                inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+							<!-- <uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
+                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag> -->
 							<!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
 							<uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
 							<uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
 						</view>
 						<view class="fr ys" v-else>
-							<uni-tag text="处理" v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" size="small" circle="true" inverted="true" type="primary" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
-							<uni-tag text="验收" v-if="item.CLZTDM < 6" size="small" circle="true" inverted="true" type="primary" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
+							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
+                v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
+							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"
+                v-if="item.CLZTDM < 6" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
 						</view>
 					</view>
 				</view>
@@ -94,6 +98,7 @@
 					// 关键字
 					keyword: ''
 				},
+        // 列表数据
 				dataList: [],
 				// 搜索参数
 				searchCondition: {
@@ -173,12 +178,12 @@
 								// 徽标的样式
 								tmp.ztClass = this.constParam.ztClass[tmp.CLZTDM]
 								tmp.ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
-								// 确认是否是学校 暂时失效
-                tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
-								// 确认是否时督学 暂时失效
-                tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
-								// 判断是否有审核功能
-                tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
+// 								// 确认是否是学校 暂时失效
+//                 tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
+// 								// 确认是否时督学 暂时失效
+//                 tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
+// 								// 判断是否有审核功能
+//                 tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
 								
 							}
 							for (let i in this.deleteParam) {

@@ -19,6 +19,7 @@
     </kw-list-cell>
     <kw-list-cell title="日期" :rightNote="data.RQ"></kw-list-cell>
     <kw-list-cell title="处理状态" :rightNote="data.CLZTMC"></kw-list-cell>
+    <!-- 处理结果 -->
     <kw-list-cell>
       <view>
         <view class="ddjs-head clearfix" @click="cljgShow = !cljgShow">
@@ -36,10 +37,12 @@
         </view>
       </view>
     </kw-list-cell>
-    <view class="save">
-      <button @click="fn_zggz_zgtzs_dispose" v-if="clickSHOw" v-show="getPermission('dd_zgxs/doUpdate/ZGTZ')">处理</button>
-      <button @click="changeStatue('6')" v-if="data.CLZTDM < '6'" v-show="this.SF === 'dx' && getPermission('dd_zgxs/doUpdate/ZGTZ')">确认整改完成</button>
-
+    <!-- 处理和确认整改完成 -->
+    <view class="save" v-if="SF != undefined">
+      <button @click="fn_zggz_zgtzs_dispose" v-if="resultShow" 
+        >处理</button>
+      <button @click="changeStatue('6')" v-if="data.CLZTDM < '6'"
+        v-show="SF === 'dx'">确认整改完成</button>
     </view>
 	</view>
 </template>
@@ -129,10 +132,10 @@
         })
       },
       setDdjs (html) {
-        console.log(html)
+        // console.log(html)
       	let ddjs = []
       	let ddjsSplit = this.$kwz.splitHtml(html)
-        console.log(ddjsSplit)
+        // console.log(ddjsSplit)
       	if (ddjsSplit && ddjsSplit.length > 0) {
       		for (let i in ddjsSplit) {
       			let content = ddjsSplit[i]
@@ -171,7 +174,7 @@
           vue: this,
           then (response) {
             if (status === '6') {
-              this.$router.push({path: '/3758a16aa4e14b3d87bb1f9c7e2fc509'})
+              this.$kwz.redirect({url: 'zggz'})
             }
           }
         })
@@ -195,7 +198,7 @@
           vue: this,
           then (response) {
             this.$kwz.alert('保存成功')
-            this.$router.push({path: '/3758a16aa4e14b3d87bb1f9c7e2fc509'})
+            this.$kwz.redirect({url: 'zggz'})
           }
         })
       },

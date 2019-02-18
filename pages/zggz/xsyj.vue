@@ -36,7 +36,8 @@
 			<!-- 单项列表 -->
 			<view class="list" v-for="(item, index) in dataList" :key="index" @click="doXsyj(item.ZGXSID)">
 				<view class="check" v-if="!deleteShow">
-					<radio checked="true" :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)"></radio>
+					<radio :checked="deleteParam[item.ZGXSID]" 
+            @tap.stop="checkAction(item.ZGXSID)"></radio>
 				</view>
 				<view class="info">
 					<view>{{item.XXMC}}</view>
@@ -48,7 +49,7 @@
 					<view class="clearfix status">
 						<view v-if="true" :class="item.zgxsClass" class="fl">
              	<uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
-             </view>
+            </view>
 						<!-- <view v-if="true" :class="fl xswc">
 							<uni-tag text="状态=='协商处理完成'用这个样式" size="small" type="primary"></uni-tag>
 						</view>
@@ -56,13 +57,16 @@
 							<uni-tag text="其他状态用这个样式" size="small" type="primary"></uni-tag>
 						</view> -->
 						<view v-if="item.CLZTDM < '22'" class="fr cl">
-							<uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.ZGXSID)" ></uni-tag>
+							<uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" 
+                @click="toAdd(item.ZGXSID)" ></uni-tag>
 						</view>
 						<view v-if="item.CLZTDM < '26' && item.CLZTDM >= '22'" class="fr cl">
-							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary" @click="doXsyj(item.ZGXSID, 'xx')"></uni-tag>
+							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
+                @click="doXsyj(item.ZGXSID, 'xx')"></uni-tag>
 						</view>
 						<view v-if="item.CLZTDM < '26'" class="fr cl">
-							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" @click="doXsyj(item.ZGXSID, 'dx')" ></uni-tag>
+							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary" 
+                @click="doXsyj(item.ZGXSID, 'dx')" ></uni-tag>
 						</view>
 					</view>
 				</view>
