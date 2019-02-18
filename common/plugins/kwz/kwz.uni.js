@@ -55,12 +55,14 @@ const extend = (...args) => {
 
 const kwz = {
 	baseUrl: 'http://192.168.8.35:8080/',
+	// baseUrl: 'https://app.qgjydd.cn',
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
 	sessionId: '',
 	sessionName: 'JSESSIONID',
+	// sessionName: 'KSESSIONID1',
 	// 获取本地缓存的sessionId
 	getSessionId () {
 		if (!kwz.sessionId) {
@@ -98,7 +100,7 @@ const kwz = {
 				setTimeout(() => {
 					kwz.ajax.ajaxUrl.apply(this, [op])
 				}, 500)
-			} else {
+			} else {	
 				if (op && op.url) {
 					op = kwz.ajax.formatParam(op)
           
@@ -143,23 +145,22 @@ const kwz = {
 				
 				if(response.data.statusCode != '200' && response.data.msg && response.state != 'SUCCESS' ){
 					kwz.alert(response.data.msg)
-				} else {
-					if (typeof(op.then) === 'function') {
-						if (response.data) {
-							op.then.apply(op.vue || this, [response.data])
-						// 为了兼容editor上传
-						} else {
-							op.then.apply(op.vue || this, [response])
-						}
+				}
+				if (typeof(op.then) === 'function') {
+					if (response.data) {
+						op.then.apply(op.vue || this, [response.data])
+					// 为了兼容editor上传
+					} else {
+						op.then.apply(op.vue || this, [response])
 					}
-					cb = cb || op.success
-					if (typeof(cb) === 'function') {
-						if (response.data) {
-							cb.apply(op.vue || this, [response.data])
-						// 为了兼容editor上传
-						} else {
-							cb.apply(op.vue || this, [response])
-						}
+				}
+				cb = cb || op.success
+				if (typeof(cb) === 'function') {
+					if (response.data) {
+						cb.apply(op.vue || this, [response.data])
+					// 为了兼容editor上传
+					} else {
+						cb.apply(op.vue || this, [response])
 					}
 				}
 			}
@@ -194,8 +195,12 @@ const kwz = {
 			}
 		},
 		url(url = '') {
-			url = url.startsWith('/') ? url : ('/' + url);
-			return kwz.baseUrl + (kwz.dev ? 'api' + url : url)
+			if(!url.startsWith('http')) {
+				url = url.startsWith('/') ? url : ('/' + url);
+				url = kwz.dev ? ('api' + url) : url,
+				url = kwz.baseUrl + url
+			}
+			return url
 		},
 		loadSource (url, cb, vue) {
 			url = kwz.ajax.url(url)
@@ -335,11 +340,23 @@ const kwz = {
 		});
 	},
 	setCookies(data) {
-		if (data && data.cookies){
-			let cookies = data.cookies;
-			if(cookies && cookies.length > 0) {
-				let length = cookies.length;
-				for(var i = 0; i< length;i++){
+		if (data) {
+			let cookies ;
+			if(data.cookies) {
+				cookies = data.cookies
+			} else if (data.header && data.header['Set-Cookie']) {
+				cookies = []
+				let setCookies = data.header['Set-Cookie'].split(';')
+				for(let i = 0; i < setCookies.length; i++) {
+					let c = setCookies[i].split("=")
+					cookies.push({
+						name: c[0],
+						value: c[1]
+					})
+				}
+			}
+			if (cookies && cookies.length > 0) {
+				for(var i = 0; i< cookies.length;i++){
 					if(cookies[i].name == kwz.sessionName) {
 						kwz.setSessionId(cookies[i].value);
 						break;
@@ -353,7 +370,7 @@ const kwz = {
 		kwz.msg({
 			title: msg,
 			icon: 'none',
-			duration: 5000,
+			duration: 2000,
 			success: cb
 		})
 	},
@@ -361,8 +378,14 @@ const kwz = {
 	confirm(msg='', sb = () => {}, eb= () => {}, op = {}){
 		op.title = op.title || '提示';
 		op.content = msg;
-		op.success = sb;
-		op.fail = eb;
+		op.success = (res) => {
+			if(res.confirm) {
+				sb.apply(this)
+			}else if(res.cancel){
+				eb.apply(this)
+			}
+		}; 
+		// op.fail = eb;
 		uni.showModal(op)
 	},
 	msg(op) {
@@ -468,6 +491,24 @@ const kwz = {
 	// 去掉所有html标签
 	slitHtmlTag (html = '') {
 		return html.replace(kwz.htmlPattern, '').trim()
+	},
+	splitAttachHtml (html = '') {
+		let content = []
+		let i = 0;
+		if(html){
+			let flag = true
+			html.replace(/(i?)<a.*?href="?(.*?\.(docx|doc|xlsx|xls|txt|pdf))"?.*?>(.*?)<\/a>/gim, (img, $1, $2, $3, $4, index) => {
+				flag = false
+			  content.push({
+			    attach: true,
+			    attachUrl: kwz.ajax.url($2),
+					attachName: $4,
+					realUrl: $2
+			  });
+			  i = index + img.length;
+			})
+		}
+		return content
 	},
   splitHtml (html = '') {
     let content = []
@@ -673,10 +714,18 @@ const kwz = {
 	router (op = {}) {
 		uni.navigateTo(op)
 	},
-	back () {
-		uni.navigateBack({
-			delta: 1
-		})
+	back (miils = 0) {
+		if(!miils || miils <= 0) {
+			uni.navigateBack({
+				delta: 1
+			})
+		}else{
+			setTimeout(()=>{
+				uni.navigateBack({
+					delta: 1
+				})
+			},miils)
+		}
 	},
 	// 日期格式化 日期格式 传入的时间 默认:yyyy-MM-dd格式/当前时间(月份传的时候要-1 想要12月传11进来)
   formatDate (fmt = 'yyyy-MM-dd', date = new Date()) {
@@ -699,7 +748,36 @@ const kwz = {
       }
     }
     return fmt
-  }
+  },
+	// 下载文件
+	downloadAttach (url, cb=()=>{}, vue) {
+		uni.downloadFile({
+			url,
+			header:{
+				//#ifdef MP-WEIXIN
+				'Cookie': kwz.sessionName + '='+kwz.getSessionId(),
+				//#endif
+			},
+			success(res) {
+				if(res.statusCode == 200) {
+					uni.saveFile({
+						tempFilePath: res.tempFilePath,
+						success(savedFilePath) {
+							if(typeof cb == 'function') {
+								cb.apply(vue || this, savedFilePath)
+							}
+							console.log(savedFilePath)
+						}
+					})
+				} else {
+					kwz.alert(res.statusCode + '-加载文件失败')
+				}
+			},
+			fail() {
+				kwz.alert('加载文件失败')
+			}
+		})
+	}
 }
 
 kwz.initVisit()

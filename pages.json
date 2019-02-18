@@ -16,7 +16,7 @@
         {
             "path" : "pages/news/news",
             "style" : {
-                "navigationBarTitleText" : "江西省督导平台"
+                "navigationBarTitleText" : "挂牌督导"
             }
         },
         {
@@ -136,7 +136,7 @@
     ],
     "globalStyle" : {
         "navigationBarTextStyle" : "white",
-        "navigationBarTitleText" : "江西省督导平台",
+        "navigationBarTitleText" : "挂牌督导",
         "navigationBarBackgroundColor" : "#028edf",
         "backgroundColor" : "#F8F8F8"
     },

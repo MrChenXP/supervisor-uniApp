@@ -32,6 +32,32 @@
         </view>
       </view>
     </kw-list-cell>
+		<kw-list-cell>
+		  <view>
+		    <view class="ddjs-head clearfix" @click="zlcjShow = !zlcjShow">
+		      <text class="fl">资料采集</text>
+		      <view class="fr" v-show="!zlcjShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
+		      <view class="fr" v-show="zlcjShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+		    </view>
+		    <view v-show="zlcjShow" class="ddjs-body">
+					<view>
+		      查阅资料<uni-number-box :value="cyzl" @change="changeCyzl"></uni-number-box>份
+					</view>
+					<view>
+					列席会议<uni-number-box :value="lxhy" @change="changeLxhy"></uni-number-box>次
+					</view>
+					<view>
+					座谈走访<uni-number-box :value="ztzf" @change="changeZtzf"></uni-number-box>次
+					</view>
+					<view>
+					问卷调查<uni-number-box :value="wjdc" @change="changeWjdc"></uni-number-box>次
+					</view>
+					<view>
+					校园巡视<uni-number-box :value="xyxs" @change="changeXyxs"></uni-number-box>次
+					</view>
+		    </view>
+		  </view>
+		</kw-list-cell>
     <kw-list-cell>
       <view>
         <view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
@@ -40,7 +66,7 @@
           <view class="fr" v-show="jyzfShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="jyzfShow" class="ddjs-body">
-          <textarea :value="dxjyzf" maxlength="4000" @blur="blurDxjyzf"></textarea>
+          <textarea :value="dxjyzfHide" maxlength="4000" @input="blurDxjyzf"></textarea>
         </view>
       </view>
     </kw-list-cell>
@@ -52,7 +78,7 @@
           <view class="fr" v-show="czwtShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
         </view>
         <view v-show="czwtShow" class="ddjs-body">
-          <textarea :value="czwt" maxlength="4000" @blur="blurCzwt"></textarea>
+          <textarea :value="czwtHide" maxlength="4000" @input="blurCzwt"></textarea>
         </view>
       </view>
     </kw-list-cell>
@@ -62,7 +88,7 @@
 		<kw-list-cell :show="hxclyjXwt">
 		  <view>
 		    <view class="ddjs-body">
-		      <textarea :value="zgxsyj" maxlength="4000" placeholder="请输入反馈意见" @blur="blurZgxsyj"></textarea>
+		      <textarea :value="zgxsyjHide" maxlength="4000" placeholder="请输入反馈意见" @input="blurZgxsyj"></textarea>
 		    </view>
 		  </view>
 		</kw-list-cell>
@@ -96,11 +122,11 @@
   import XcddSelectSchool from "./compoentns/xcdd-select-school.vue"
   import XcddSelectSxdx from "./compoentns/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniIcon, uniRate } from "@dcloudio/uni-ui"
+  import {uniIcon, uniRate,uniNumberBox } from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor,uniRate },
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor,uniRate,uniNumberBox },
 		data() {
 			return {
 				contentId: '',
@@ -146,10 +172,14 @@
 				xyxs: 0,
 				// 典型经验和做法
 				dxjyzf: '',
+				dxjyzfHide: '',
 				// 存在问题
 				czwt: '',
+				czwtHide: '',
         // 督导纪实显示隐藏
         ddjsShow: false,
+				// 资料采集显示隐藏
+				zlcjShow: false,
         // 经验做法显示隐藏
         jyzfShow:false,
         // 存在问题显示隐藏
@@ -186,6 +216,7 @@
 				zgxsid: '',
 				// 整改协商意见
 				zgxsyj: '',
+				zgxsyjHide: '',
         // 后续处理意见显示隐藏
         hxclyjShow:false,
 				gzjhPage: {
@@ -208,9 +239,14 @@
 			}
 		},
 		onLoad(param) {
-			if(param && param.CONTENT_ID) {
-				this.contentId = param.CONTENT_ID
-				this.loadData()
+			if(param) {
+				if(param.CONTENT_ID) {
+					this.contentId = param.CONTENT_ID
+					this.loadData()
+				} else if(param.workplanId){
+					this.gzjh.value = param.workplanId
+					this.loadDdGzjh()
+				}
 			}
 			this.loginUser = this.$kwz.getLoginUser()
 		},
@@ -223,7 +259,6 @@
       confirmGzjh(e){
 				let gzjh = e.data
 				if(gzjh) {
-					this.gzjh.name = gzjh.name
 					this.gzjh.value = gzjh.value
 					
 					this.xx.name = gzjh.data.XXMC
@@ -234,8 +269,10 @@
 					
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
 					
-					this.setDdjs(gzjh.data.TXT)
+					let gzjhMc = `${this.xx.name}/${this.sxdx.name}/${this.ywsj}`
+					this.gzjh.name = gzjhMc.length > 20 ? (gzjhMc.substr(0, 19) + '...') : gzjhMc
 					
+					// this.setDdjs(gzjh.data.TXT)
 					if (gzjh.data.BZID) {
 						this.ddpgShow = true
 						this.pgbzID = gzjh.data.BZID
@@ -269,6 +306,7 @@
 				this.sxdx.value = sxdxIds.join(',')
 				this.sxdxShow = false
 			},
+			// 获取督导纪实内容
 			getDdjs () {
 				let ddjs = [this.ddjs.content]
 				if(this.ddjs.images && this.ddjs.images.length > 0) {
@@ -281,6 +319,7 @@
 				}
 				return ddjs.join('')
 			},
+			// 设置督导纪实内容
 			setDdjs (html) {
 				let ddjs = []
 				let ddjsImage = []
@@ -452,7 +491,7 @@
           this.$kwz.alert('工作计划数据有误')
         }
 			},
-			ddGetMxid (isNotShow) {
+			ddGetMxid () {
 				this.$kwz.ajax.ajaxUrl({
 					url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
 					type: 'POST',
@@ -468,14 +507,14 @@
 						if (datas && datas.MXID) {
 							this.pgid = datas.PGID
 							this.mxid = datas.MXID
-							this.updateDdpg(isNotShow)
+							this.updateDdpg()
 						}
 					}
 				})
 			},
 			// 更新督导评估
-			updateDdpg (isNotShow) {
-				if (this.mxid && this.pgbzID && !isNotShow) {
+			updateDdpg () {
+				if (this.mxid && this.pgbzID) {
 					this.$kwz.router({
 						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID + '&ywsj=' + this.ywsj
 					})
@@ -504,8 +543,8 @@
 					ZGJY: this.zgxsyj,
 					ZGXSID: this.zgxsid,
 					PGMC: '',
-					BZID: this.pgbzID,
-					PGID: this.pgid,
+					// BZID: this.pgbzID,
+					PGID: this.pgid || '',
 					minDate: this.minDate, // 最小时间限制
 					maxDate: this.maxDate // 最大时间限制
 				}
@@ -515,7 +554,6 @@
 						// 传了就代表是修改
 						xcddData.CONTENT_ID = this.contentId
 					}
-					console.log(JSON.stringify(xcddData))
 					this.$kwz.ajax.ajaxUrl({
 						url: 'ddjl/doEdit',
 						type: 'POST',
@@ -524,10 +562,7 @@
 						vue: this,
 						then (response) {
 							this.$kwz.alert('保存成功')
-							let vue = this
-							setTimeout(()=>{
-								vue.$kwz.back()
-							},2000)
+							this.$kwz.back(1500)
 						}
 					})
 				}
@@ -574,17 +609,22 @@
 								// this.disposeIdea.STATUS = datas.STATUS
 								let status = datas.STATUS
 								if(status == '4') {
+									this.zgxsyj = datas.ZGJY || ''
+									this.zgxsyjHide = datas.ZGJY || ''
 									this.hxclyjXwt = true
 								}
-								for(let i = 0; i < this.hxclyjList;i++) {
+								for(let i = 0; i < this.hxclyjList.length; i++) {
 									if(this.hxclyjList[i].value == status) {
 										this.hxclyj.name = this.hxclyjList[i].name
 									}
 								}
 								this.sxdx.name = datas.USERNAME
 								this.sxdx.value = datas.USERID
+								
+								this.dxjyzfHide = datas.DXJY || ''
 								this.dxjyzf = datas.DXJY || ''
 
+								this.czwtHide = datas.CZWT || ''
 								this.czwt = datas.CZWT || ''
 								
 								this.cyzl = datas.CYZL || 0
@@ -593,51 +633,9 @@
 								this.wjdc = datas.WJDC || 0
 								this.xyxs = datas.XYXS || 0
 								this.pgid = datas.PGID
-								if (this.pgid) {
-									this.ddGetMxid(true)
-								}
-// 								let ddsx = this.$kwz.spiltHtml(datas.JHTXT)
-// 								this.ddsxText = ddsx.text
-// 								if (ddsx.imgSrcs && ddsx.imgSrcs.length > 0) {
-// 									let previewerListDDSX = []
-// 									for (let i = 0; i < ddsx.imgSrcs.length; i++) {
-// 										previewerListDDSX.push({
-// 											src: this.$kwz.ajax.url(ddsx.imgSrcs[i]),
-// 											msrc: this.$kwz.ajax.url(ddsx.imgSrcs[i]),
-// 											rSrc: ddsx.imgSrcs[i],
-// 											rMsrc: ddsx.imgSrcs[i]
-// 										})
-// 									}
-// 									this.previewerListDDSX = previewerListDDSX
-// 								}
-// 								this.ddsxShow = !!this.ddsxText || this.previewerListDDSX.length > 0
-// 								this.ddjsData = datas.DDJS
-// 								this.ddjsDataShow = true
+								
+								this.setDdjs(datas.DDJS)
 							}
-// 							this.loadNowWorkPlanData()
-// 							// 获取上述数据后判断(2,3,5)是否加载后续处理意见id
-// 							if (datas.STATUS === '2' || datas.STATUS === '3' || datas.STATUS === '5') {
-// 								// 获取后续处理意见数据
-// 								this.$kwz.ajax.ajaxUrl({
-// 									url: 'dd_zgxs/selectZgxsList',
-// 									type: 'POST',
-// 									data: {
-// 										CONTENT_ID: this.contentId
-// 									},
-// 									vue: this,
-// 									then (response) {
-// 										let zgdatas = response.data.datas
-// 										if (zgdatas && zgdatas.length > 0) {
-// 											let zgxsData = zgdatas[0]
-// 											this.disposeIdea.BH = zgxsData.BH
-// 											this.disposeIdea.DW = zgxsData.ORG_MC ? zgxsData.ORG_MC : datas.XXMC
-// 											this.disposeIdea.XSNR = zgxsData.XSNR
-// 											this.disposeIdea.CLQX = zgxsData.CLQX
-// 											this.disposeIdea.ZGXSID = zgxsData.ZGXSID
-// 										}
-// 									}
-// 								})
-// 							}
 						}
 					})
 				}
@@ -650,6 +648,55 @@
 			},
 			blurZgxsyj (e) {
 				this.zgxsyj = e.detail.value
+			},
+			changeCyzl (val) {
+				this.cyzl = val
+			},
+			changeLxhy (val) {
+				this.lxhy = val
+			},
+			changeZtzf (val) {
+				this.ztzf = val
+			},
+			changeWjdc (val) {
+				this.wjdc = val
+			},
+			changeXyxs (val) {
+				this.xyxs = val
+			},
+			// 加载工作计划数据=>从工作计划列表点击去督导,传过来工作计划id,然后加载工作计划内容填充至督导纪实
+			loadDdGzjh () {
+				this.$kwz.ajax.ajaxUrl({
+          url: 'dd_gzap/doSelectByPrimary/DDGZAP',
+          type: 'POST',
+          data: {
+            CONTENT_ID: this.gzjh.value
+          },
+          vue: this,
+          then (response) {
+						let datas = response.datas
+            if (datas && datas.map) {
+							let gzjh = datas.map
+							
+							this.xx.name = gzjh.ORG_ID_TARGET_MC
+							this.xx.value = gzjh.ORG_ID_TARGET
+							
+							this.sxdx.name = gzjh.JGID_MC || ''
+							this.sxdx.value = gzjh.JGID || ''
+							
+							this.ywsj = gzjh.YWSJ && gzjh.YWSJ.length > 10 ? gzjh.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
+							
+							let gzjhMc = `${this.xx.name}/${this.sxdx.name}/${this.ywsj}`
+							this.gzjh.name = gzjhMc.length > 25 ? (gzjhMc.substr(0, 24) + '...') : gzjhMc
+							
+							// this.setDdjs(gzjh.data.TXT)
+							if (gzjh.BZID) {
+								this.ddpgShow = true
+								this.pgbzID = gzjh.BZID
+							}
+						}
+					}
+				});
 			}
     }
 	}
