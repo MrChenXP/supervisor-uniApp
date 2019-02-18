@@ -5,7 +5,7 @@
       <image class="img" src="../../static/images/loginBG.png" mode="scaleToFill"></image>
       <!-- 用户简略信息 -->
       <view class="info">
-        <image class="info-img" src="../../static/logo.png"></image>
+        <image class="info-img" src="../../static/images/DefaultImg.png"></image>
         <view>
           <view class="name-zw">
             <text class="name">{{user.name}}</text>

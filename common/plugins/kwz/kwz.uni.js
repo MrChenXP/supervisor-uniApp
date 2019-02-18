@@ -54,7 +54,7 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	baseUrl: 'http://192.168.8.35:8080/',
+	baseUrl: 'http://www.ddsjd.com:8080/',
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码

@@ -1,11 +1,13 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号" :rightNote="bh"></kw-list-cell>
-    <kw-list-cell title="学校" :rightNote="schoolName" @click="schoolShow=true"></kw-list-cell>
-    <picker :range="ywsj" mode="date" @change="changeYwsj">
-      <kw-list-cell title="时间" :rightNote="ywsj"></kw-list-cell>
+    <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
+    <kw-list-cell v-if="!data.ZGXSID" title="学校" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
+    <kw-list-cell v-else title="学校" :rightNote="data.XXMC"></kw-list-cell>
+    <picker v-if="!data.ZGXSID" :range="data.YWSJ" mode="date" @change="changeYwsj">
+      <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
-    <kw-list-cell title="督学" :rightNote="bh"></kw-list-cell>
+    <kw-list-cell v-else title="时间" :rightNote="data.YWSJ"></kw-list-cell>
+    <kw-list-cell title="督学" :rightNote="loginUser.name"></kw-list-cell>
     <kw-list-cell>
       <view>
         <!-- <view class="ddjs-head clearfix" @click="zggzShow = !zggzShow">
@@ -16,10 +18,10 @@
         <view class="ddjs-body">
           <view>
             <view>经挂牌督导，你单位存在以下问题:</view>
-            <textarea maxlength="4000"></textarea>
+            <textarea maxlength="4000" :value="data.XSNR"></textarea>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-              <input />
+              <input :value="data.CLQX"/>
               日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
             </view>
           </view>
@@ -27,7 +29,10 @@
       </view>
     </kw-list-cell>
     <view class="save">
-      <button @click="saveUserSet">保存</button>
+      <button @click="fn_ddjs_send">
+        <text v-if="data.ZGXSID">审核</text>
+        <text v-else>发送</text>
+      </button>
     </view>
     
     <!-- 学校(请把学校搜索ajax写在该组件里) -->
@@ -44,23 +49,170 @@
 	export default {
 		data() {
 			return {
-        bh:"laji",
+        // 表单数据
+        data: {
+          BH: '',
+          ORG_ID_TARGET: '',  // 学校id
+          XXMC: '', // 学校名称
+          YWSJ: '', // 业务时间
+          XSNR: '', // 协商内容
+          CLQX: 3, // 处理期限
+          
+          zgValue: [],
+          ZGXSID: ''
+        },
         // 学校显示隐藏
         schoolShow:false,
-        // 学校名字
-        schoolName:'laja',
-        // 时间
-        ywsj:"22",
         // 整改详情显示隐藏
         zggzShow:false
 			};
 		},
     components:{uniBadge,uniTag,uniIcon,KwListCell,XcddSelectSchool},
+    onLoad(query) {
+    	this.loginUser = this.$kwz.getLoginUser()
+      this.data.ZGXSID = query.id
+      this.initPage()
+    },
     methods:{
+      // 判断来源(是否是审核) 获取id并预先加载数据
+      initPage () {
+        if (this.data.ZGXSID) {
+          this.loadData()
+        } else {
+          this.loadBh()
+          // 默认当前时间
+          this.data.YWSJ = !this.data.YWSJ ? this.$kwz.formatDate() : this.data.YWSJ
+          // 加载整改类型代码
+          this.$kwz.loadVueDms('DM_DD_ZGXSLY', dms => {
+            this.zgList = dms.DM_DD_ZGXSLY
+          }, this)
+        }
+        this.getdateImpose()
+      },
       // 更改时间
       changeYwsj (e) {
       	this.ywsj = e.detail.value
       },
+      // 获取日期限制
+      getdateImpose () {
+        // let startEnd = this.$kwz.dateImpose('3758a16aa4e14b3d87bb1f9c7e2fc509', this)
+//         if (!startEnd) {
+//           setTimeout(() => {
+//             this.getdateImpose()
+//           }, 500)
+//         } else {
+//           this.startDate = this.$kwz.getLimdat(JSON.parse(startEnd.minDate))
+//           this.endDate = this.$kwz.getLimdat(JSON.parse(startEnd.maxDate))
+//           this.data.minDate = startEnd.minDate
+//           this.data.maxDate = startEnd.maxDate
+//         }
+      },
+      // 获取功能权限
+      getPermission (url) {
+        return this.$kwz.hasAuth(url, this)
+      },
+      // 预先加载数据
+      loadData () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/doSelectByPrimary',
+          type: 'POST',
+          data: {
+            ZGXSID: this.data.ZGXSID
+          },
+          vue: this,
+          then (response) {
+            let datas = response.datas
+            this.data.BH = datas.BH
+            this.data.XXMC = datas.XXMC
+            this.data.YWSJ = datas.YWSJ
+            this.data.XSNR = datas.XSNR
+            this.data.CLQX = datas.CLQX
+          }
+        })
+      },
+      // 加载编号
+      loadBh () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/getNowTimeString',
+          type: 'POST',
+          vue: this,
+          then (response) {
+            let datas = response.datas
+            if (datas && datas.BH) {
+              this.data.BH = datas.BH
+            }
+          }
+        })
+      },
+      // 点击发送事件
+      fn_ddjs_send () {
+        if (!this.data.XXMC) {
+          this.$kwz.alert('请选择学校')
+          return
+        }
+        if (!this.data.YWSJ) {
+          this.$kwz.alert('请选择时间')
+          return
+        }
+        if (!this.data.XSNR) {
+          this.$kwz.alert('请填写问题')
+          return
+        }
+        if (!this.data.CLQX) {
+          this.$kwz.alert('请填写整改期限')
+          return
+        } else if (isNaN(this.data.CLQX)) {
+          this.$kwz.alert('整改期限必须为数字')
+          return
+        }
+        this.saveZgtzs()
+      },
+      // 发送/审核ajax 有整改id就是审核
+      saveZgtzs () {
+        if (this.data.ZGXSID) {
+          this.$kwz.ajax.ajaxUrl({
+            url: 'dd_zgxs/doUpdate/ZGTZ',
+            type: 'POST',
+            data: {
+              CMS_LMTYPE: '2',
+              ZGXSID: this.data.ZGXSID,
+              CLLX: '2',
+              XSNR: this.data.XSNR,
+              CLQX: this.data.CLQX
+            },
+            vue: this,
+            then (response) {
+              this.$kwz.redirect({url: 'zggz'})
+              this.$kwz.alert('审核成功')
+            }
+          })
+        } else {
+          this.$kwz.ajax.ajaxUrl({
+            url: 'dd_zgxs/doAddtzyj',
+            type: 'POST',
+            data: {
+              BH: this.data.BH,
+              YWID: '',
+              ZGXSDM: '1',
+              ZGXSMC: '整改通知',
+              ZGXSLY: 3, // 先写死整改来源
+  //          ZGXSLYMC: this.$kwz.getPopupName(this.zgList, this.data.zgValue[0], 'value', 'name'), //如果不是写死在注释回来
+              ZGXSLYMC: '其他整改',
+              ORG_ID_TARGET: this.data.ORG_ID_TARGET,
+              CLQX: this.data.CLQX,
+              YWSJ: this.data.YWSJ,
+              XSNR: this.data.XSNR,
+              minDate: this.data.minDate,
+              maxDate: this.data.maxDate
+            },
+            vue: this,
+            then (response) {
+              this.$kwz.redirect({url: 'zggz'})
+              this.$kwz.alert('发送成功')
+            }
+          })
+        }
+      }
     }
 	}
 </script>
@@ -97,6 +249,9 @@
       background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
       color: white;
       line-height: 83upx;
+    }
+    text{
+      color: white;
     }
     button:after{
       border: none;

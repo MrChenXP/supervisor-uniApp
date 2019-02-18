@@ -41,9 +41,11 @@
         </view>
       </view>
     </kw-list-cell>
-    <view class="save">
-      <button @click="fn_zggz_xsyjs_dispose" v-if="!detailShow" v-show="getPermission('dd_zgxs/doUpdate/XSYJ')">处理</button>
-      <button @click="changeStatue('26')" v-if="data.CLZTDM < '26'" v-show="this.SF === 'dx' && getPermission('dd_zgxs/doUpdate/XSYJ')">确认整改完成</button>
+    <view class="save" v-if="SF != undefined">
+      <button @click="fn_zggz_xsyjs_dispose" v-if="!detailShow" 
+        >处理</button>
+      <button @click="changeStatue('26')" v-if="data.CLZTDM < '26'" 
+        v-show="SF === 'dx'">确认整改完成</button>
     </view>
 	</view>
 </template>
@@ -102,9 +104,6 @@
             datas.IS_PHONE = '2'
             if (datas && datas.ZGXSID) {
               this.data = datas
-              console.log(this.data.CLZTDM)
-              console.log(this.SF)
-
               // 处理结果赋值
               if (datas.CLBG != null) {
                 this.disposeResultData = datas.CLBG
@@ -112,15 +111,15 @@
               // 是学校且不是整改完成
               if (this.SF === 'xx' && datas.CLZTDM < '26') {
                 this.resultShow = true
-                console.log("1"+this.resultShow)
                 this.setDdjs(this.data.CLBG)
               }
+              // 是督学且不是整改完成
               if (this.SF === 'dx' || datas.CLZTDM === '26') {
-                console.log("2"+this.detailShow)
                 this.detailShow = true
               }
             }
-            if (this.SF) { // 如果是处理/验收进来的
+            // 处理/验收进来的时候修改状态码
+            if (this.SF) {
               if (this.data.CLZTDM <= '23' && this.SF === 'xx') {
                 this.changeStatue('23')
               } else if (this.data.CLZTDM === '4' && this.SF === 'dx') {
@@ -133,10 +132,8 @@
         })
       },
          setDdjs (html) {
-        console.log(html)
       	let ddjs = []
       	let ddjsSplit = this.$kwz.splitHtml(html)
-        console.log(ddjsSplit)
       	if (ddjsSplit && ddjsSplit.length > 0) {
       		for (let i in ddjsSplit) {
       			let content = ddjsSplit[i]
@@ -175,7 +172,7 @@
           vue: this,
           then (response) {
             if (status === '26') {
-              this.$router.push({path: '/zggz/xsyj'})
+              this.$kwz.redirect({url: 'xsyj'})
             }
           }
         })
@@ -199,7 +196,7 @@
           vue: this,
           then (response) {
             this.$kwz.alert('保存成功')
-            this.$router.push({path: '/zggz/xsyj'})
+            this.$kwz.redirect({url: 'xsyj'})
           }
         })
       },
