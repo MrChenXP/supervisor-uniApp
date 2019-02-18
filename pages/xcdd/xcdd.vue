@@ -23,7 +23,7 @@
 		<!-- 列表组 -->
 		<view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="$kwz.router({url: 'xcdd-preview'})">
+			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="toPreview(item.CONTENT_ID)">
 				<view class="check" v-if="!deleteShow">
 					<radio :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)"></radio>
 				</view>
@@ -97,7 +97,7 @@
 				}
 			}
 		},
-		onLoad() {
+		onShow() {
 			this.initData()
 		},
 		methods: {
@@ -253,6 +253,11 @@
         this.$kwz.router({
         	url: 'xcdd-add?CONTENT_ID=' + ids
         })
+			},
+			toPreview (id) {
+				if(id) {
+					this.$kwz.router({url: 'xcdd-preview?contentId=' + id})
+				}
 			}
 		}
 	}
@@ -345,7 +350,6 @@
 						font-size: 24upx;
 					}
 				}
-
 			}
 		}
 	}

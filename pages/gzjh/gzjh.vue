@@ -23,14 +23,14 @@
     <!-- 列表组 -->
     <view class="lists">
       <!-- 单项列表 -->
-      <view class="list" v-for="(item, index) in dataList" :key="index" @click="$kwz.router({url: 'gzjh-preview'})">
+      <view class="list" v-for="(item, index) in dataList" :key="index" @click="toPreview(item.CONTENT_ID)">
         <view class="check" v-if="!deleteShow">
           <radio :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)"></radio>
         </view>
         <view class="info">
           <view>{{item.XXMC}}</view>
           <view class="clearfix time">
-            <view class="fl">{{item.JGXM}}</view>
+            <view class="fl">{{item.AUTHOR}}</view>
             <view class="fr">{{item.DDSD}}</view>
           </view>
           <view class="clearfix time">
@@ -43,13 +43,13 @@
             <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
             <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
             <view v-if="item.STATUS == '1'" class="fr bj">
-							<uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="toDD(item.CONTENT_ID, item.BZID)"></uni-tag>
+							<uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
 						</view>
             <view v-if="item.STATUS == '1'" class="fr bj">
 							<uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toUpdate(item.CONTENT_ID)"></uni-tag>
 						</view>
 						<view v-if="item.STATUS == '1'" class="fr bj">
-							<uni-tag text="督导" size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
+							<uni-tag text="督导" size="small" circle="true" inverted="true" type="primary" @click="toDD(item.CONTENT_ID)"></uni-tag>
 						</view>
 						<view v-if="item.ISQS" class="fr bj">
 							<uni-tag text="签收" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
@@ -252,12 +252,37 @@
       },
 			// 处理
 			doDispose (contentId) {
+				if (contentId) {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_gzap/doDeal',
+						type: 'POST',
+						data: {
+							CONTENT_ID: contentId
+						},
+						vue: this,
+						then (response) {
+							this.$kwz.alert('操作成功')
+							this.pageList(true)
+						}
+					})
+				}
 			},
 			// 修改
 			toUpdate (contentId) {
+				this.$kwz.router({
+					url: `gzjh-add?contentId=${contentId}`
+				})
+			},
+			toPreview (contentId) {
+				this.$kwz.router({
+					url: `gzjh-preview?contentId=${contentId}`,
+				})
 			},
 			// 督导
-			toDD (contentId, bzId) {
+			toDD (contentId) {
+				this.$kwz.router({
+					url: `../xcdd/xcdd-add?workplanId=${contentId}`,
+				})
 			}
     }
 	}

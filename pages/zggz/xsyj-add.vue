@@ -121,7 +121,7 @@
             },
             vue: this,
             then (response) {
-              let datas = response.datas
+             let datas = response.datas
               this.formData.BH = datas.BH
               this.formData.XXMC[0] = datas.XXMC
               this.formData.YWSJ = datas.YWSJ
