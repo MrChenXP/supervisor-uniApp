@@ -21,12 +21,15 @@
 			<view class="add fr" @click="$kwz.router({url: 'xcdd-add'})">新增</view>
 		</view>
 		<!-- 列表组 -->
-		<view class="lists">
+    <checkbox-group>
+      <view class="lists">
 			<!-- 单项列表 -->
 			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="toPreview(item.CONTENT_ID)">
-				<view class="check" v-if="!deleteShow">
-					<radio :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)"></radio>
-				</view>
+        <label>
+          <view class="check" v-if="!deleteShow">
+            <checkbox :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)" />
+          </view>
+        </label>
 				<view class="info">
 					<view>{{item.XXMC}}</view>
 					<view class="clearfix time">
@@ -55,7 +58,8 @@
 					</view>
 				</view>
 			</view>
-		</view>
+      </view>
+    </checkbox-group>
 	</view>
 </template>
 

@@ -1,4 +1,5 @@
 <template>
+  <!-- 学校选择页面 -->
 	<view class="xcdd-select-gzjh child-content">
 		<!-- 蒙版 -->
 		<view class="xcdd-select-gzjh-mask" @tap="close"></view>

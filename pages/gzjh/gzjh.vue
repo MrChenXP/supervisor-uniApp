@@ -21,44 +21,48 @@
       <view class="add fr" @click="$kwz.router({url: 'gzjh-add'})">新增</view>
     </view>
     <!-- 列表组 -->
-    <view class="lists">
-      <!-- 单项列表 -->
-      <view class="list" v-for="(item, index) in dataList" :key="index" @click="toPreview(item.CONTENT_ID)">
-        <view class="check" v-if="!deleteShow">
-          <radio :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)"></radio>
-        </view>
-        <view class="info">
-          <view>{{item.XXMC}}</view>
-          <view class="clearfix time">
-            <view class="fl">{{item.AUTHOR}}</view>
-            <view class="fr">{{item.DDSD}}</view>
-          </view>
-          <view class="clearfix time">
-            <text>{{item.TXT}}</text>
-          </view>
-          <view class="clearfix status">
-            <view v-if="!!item.BZMC" class="fl clyj">
-							<uni-tag :text="item.BZMC" size="small" type="primary"></uni-tag>
-						</view>
-            <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
-            <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
-            <view v-if="item.STATUS == '1'" class="fr bj">
-							<uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
-						</view>
-            <view v-if="item.STATUS == '1'" class="fr bj">
-							<uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toUpdate(item.CONTENT_ID)"></uni-tag>
-						</view>
-						<view v-if="item.STATUS == '1'" class="fr bj">
-							<uni-tag text="督导" size="small" circle="true" inverted="true" type="primary" @click="toDD(item.CONTENT_ID)"></uni-tag>
-						</view>
-						<view v-if="item.ISQS" class="fr bj">
-							<uni-tag text="签收" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
-						</view>
+    <checkbox-group>
+      <view class="lists">
+        <!-- 单项列表 -->
+        <view class="list" v-for="(item, index) in dataList" :key="index" @click="toPreview(item.CONTENT_ID)">
+          <label>
+            <view class="check" v-if="!deleteShow">
+              <checkbox :checked="deleteParam[item.CONTENT_ID]" 
+                @tap.stop="checkAction(item.CONTENT_ID)" />
+            </view>
+          </label>
+          <view class="info">
+            <view>{{item.XXMC}}</view>
+            <view class="clearfix time">
+              <view class="fl">{{item.AUTHOR}}</view>
+              <view class="fr">{{item.DDSD}}</view>
+            </view>
+            <view class="clearfix time">
+              <text>{{item.TXT}}</text>
+            </view>
+            <view class="clearfix status">
+              <view v-if="!!item.BZMC" class="fl clyj">
+                <uni-tag :text="item.BZMC" size="small" type="primary"></uni-tag>
+              </view>
+              <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
+              <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
+              <view v-if="item.STATUS == '1'" class="fr bj">
+                <uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
+              </view>
+              <view v-if="item.STATUS == '1'" class="fr bj">
+                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toUpdate(item.CONTENT_ID)"></uni-tag>
+              </view>
+              <view v-if="item.STATUS == '1'" class="fr bj">
+                <uni-tag text="督导" size="small" circle="true" inverted="true" type="primary" @click="toDD(item.CONTENT_ID)"></uni-tag>
+              </view>
+              <view v-if="item.ISQS" class="fr bj">
+                <uni-tag text="签收" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
+              </view>
+            </view>
           </view>
         </view>
       </view>
-    
-    </view>
+    </checkbox-group>
 	 </view>
 </template>
 
