@@ -25,13 +25,15 @@
       <view class="lists">
 			<!-- 单项列表 -->
 			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="toPreview(item.CONTENT_ID)">
-        <label>
-          <view class="check" v-if="!deleteShow">
-            <checkbox :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)" />
-          </view>
-        </label>
 				<view class="info">
-					<view>{{item.XXMC}}</view>
+					<view>
+            <label v-if="!deleteShow">
+              <view class="check">
+                <checkbox :checked="deleteParam[item.CONTENT_ID]" @tap.stop="checkAction(item.CONTENT_ID)" />
+              </view>
+            </label>
+            {{item.XXMC}}
+          </view>
 					<view class="clearfix time">
 						<view class="fl">{{item.AUTHOR}}</view>
 						<view class="fr">督导时间：{{item.YWSJ}}</view>
@@ -308,7 +310,9 @@
 			border-radius: 15upx;
 			display: flex;
 			flex-direction: row;
-
+      label{
+        display: inline-block;
+      }
 			.check {
 				width: 50upx;
 			}

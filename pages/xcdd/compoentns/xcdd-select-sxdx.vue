@@ -144,7 +144,7 @@
     top:44upx;
     left: 0;
     width: 750upx;
-    padding: 20upx;
+    padding:50upx 20upx;
     z-index: 1001;
     background: none;
     height: calc(100vh - 44px);

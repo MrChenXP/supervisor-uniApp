@@ -36,14 +36,16 @@
       <view class="lists">
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="doXsyj(item.ZGXSID)">
-          <label>  
-            <view class="check" v-if="!deleteShow">
-              <checkbox :checked="deleteParam[item.ZGXSID]" 
-                @tap.stop="checkAction(item.ZGXSID)" />
-            </view>
-          </label>  
           <view class="info">
-            <view>{{item.XXMC}}</view>
+            <view>
+              <label v-if="!deleteShow">  
+                <view class="check">
+                  <checkbox :checked="deleteParam[item.ZGXSID]" 
+                    @tap.stop="checkAction(item.ZGXSID)" />
+                </view>
+              </label>  
+              {{item.XXMC}}
+            </view>
             <view class="clearfix time">
               <view class="fl">{{item.ORG_MC}}</view>
               <view class="fr">发出时间：{{item.YWSJ}}</view>
@@ -370,7 +372,9 @@
 			border-radius: 15upx;
 			display: flex;
 			flex-direction: row;
-
+      label{
+        display:inline-block;
+      }
 			.check {
 				width: 50upx;
 			}
