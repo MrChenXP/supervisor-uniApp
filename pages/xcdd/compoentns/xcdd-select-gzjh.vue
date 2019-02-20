@@ -1,16 +1,17 @@
 <template>
+  <!-- 工作计划选择页面 -->
 	<view class="xcdd-select-gzjh child-content">
     <!-- 蒙版 -->
     <view class="xcdd-select-gzjh-mask" @tap="close"></view>
     <!-- 搜索 -->
     <view class="xcdd-select-gzjh-content">
       <kw-search placeholder="请输入学校名称" @confirm="keywordConfirm" ></kw-search>
-      <checkbox-group @change="radioChange">
+      <radio-group @change="radioChange">
         <label class="" v-for="(item, j) in loadDataList" :key="j" :class="{xcddSelectGzjBorderBottom: j < loadDataList.length-1}">
           <radio :value="item.value" />
           <view class="xcdd-select-gzjh-radio-label">{{item.name}}</view>
         </label>
-      </checkbox-group>
+      </radio-group>
 			<view @tap="loadMore">
 				<uni-load-more :status="loadStatus" :content-text="{contentrefresh: '点击加载更多',contentnomore: '加载中...', contentdown: '已无更多数据'}"></uni-load-more>
 			</view>
@@ -134,7 +135,7 @@
     top:44upx;
     left: 0;
     width: 750upx;
-    padding: 20upx;
+    padding:50upx 20upx;
     z-index: 1001;
     background: none;
     height: calc(100vh - 44px);
@@ -150,7 +151,7 @@
       position: relative;
       box-sizing: border-box;
     }
-    checkbox-group{
+    radio-group{
       max-height: calc(100% - 235upx);
       overflow: auto;
     }

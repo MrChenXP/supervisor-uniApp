@@ -21,32 +21,36 @@
       <view class="add fr">新增</view>
     </view>
     <!-- 列表组 -->
-    <view class="lists">
-      <!-- 单项列表 -->
-      <view class="list" v-for="(item, index) in dataList" :key="index">
-        <view class="check" v-if="!deleteShow">
-          <radio :checked="deleteParam[item.MXID]" @tap.stop="checkAction(item.MXID)"></radio>
-        </view>
-        <view class="info">
-          <view>{{item.XXMC}}</view>
-          <view class="clearfix time">
-            <view class="fl">{{item.XZRMC}}</view>
-            <view class="fr">督导时间：{{item.DDSJ}}</view>
-          </view>
-          <view class="clearfix status">
-            <view v-if="true" class="fl clyj">
-							<uni-tag text="这里放处理意见" size="small" type="primary"></uni-tag>
-						</view>
-            <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
-            <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
-            <view v-if="item.SELF =='1'" class="fr bj">
-							<uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.MXID,item.ISNEW)"></uni-tag>
-						</view>
+    <checkbox-group>
+      <view class="lists">
+        <!-- 单项列表 -->
+        <view class="list" v-for="(item, index) in dataList" :key="index">
+          <label>
+            <view class="check" v-if="!deleteShow">
+              <checkbox :checked="deleteParam[item.MXID]" 
+                @tap.stop="checkAction(item.MXID)" />
+            </view>
+          </label>
+          <view class="info">
+            <view>{{item.XXMC}}</view>
+            <view class="clearfix time">
+              <view class="fl">{{item.XZRMC}}</view>
+              <view class="fr">督导时间：{{item.DDSJ}}</view>
+            </view>
+            <view class="clearfix status">
+              <view v-if="true" class="fl clyj">
+                <uni-tag text="这里放处理意见" size="small" type="primary"></uni-tag>
+              </view>
+              <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
+              <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
+              <view v-if="item.SELF =='1'" class="fr bj">
+                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.MXID,item.ISNEW)"></uni-tag>
+              </view>
+            </view>
           </view>
         </view>
       </view>
-    
-    </view>
+    </checkbox-group>
 	 </view>
 </template>
 

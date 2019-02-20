@@ -26,53 +26,58 @@
 			<view class="add fr" @click="toAdd('add')">新增</view>
 		</view>
 		<!-- 列表组 -->
-		<view class="lists">
+    <checkbox-group>
+      <view class="lists">
 			<!-- 单项列表 -->
-			<view class="list" v-for="(item, index) in dataList" :key="index" @click="toZgxs(item.ZGXSID)">
-				<view class="check" v-if="!deleteShow">
-					<radio :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)"></radio>
-				</view>
-				<view class="info">
-					<view>{{item.XXMC}}</view>
-					<view class="clearfix time">
-						<view class="fl">整改天数：{{item.CLQX}}天</view>
-						<view class="fr">发出时间：{{item.YWSJ}}</view>
-					</view>
-					<view class="clearfix status">
-						<view :class="item.ztClass" class="fl">
-							<uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
-						</view>
-						<!-- 
-						<view class="fl zgwc">
-							<uni-tag text="整改完成" size="small" type="primary"></uni-tag>
-						</view>
-						<view class="fl zgz">
-							<uni-tag text="整改中" size="small" type="primary"></uni-tag>
-						</view>
-						<view class="fl yys">
-							<uni-tag text="已验收" size="small" type="primary"></uni-tag>
-						</view>
-						-->
-						<view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
-              <uni-tag text="审核" size="small" circle="true" 
-                inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
-							<!-- <uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
-                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag> -->
-							<!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
-							<uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
-							<uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
-						</view>
-						<view class="fr ys" v-else>
-							<uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
-                v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
-							<uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"
-                v-if="item.CLZTDM < 6" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
-						</view>
-					</view>
-				</view>
-			</view>
-
-		</view>
+        <view class="list" v-for="(item, index) in dataList" :key="index" @click="toZgxs(item.ZGXSID)">
+          <view class="info">
+            <view>
+              <label v-if="!deleteShow">
+                <view class="check">
+                  <checkbox :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)" />
+                </view>
+              </label>
+              {{item.XXMC}}
+            </view>
+            <view class="clearfix time">
+              <view class="fl">整改天数：{{item.CLQX}}天</view>
+              <view class="fr">发出时间：{{item.YWSJ}}</view>
+            </view>
+            <view class="clearfix status">
+              <view :class="item.ztClass" class="fl">
+                <uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
+              </view>
+              <!-- 
+              <view class="fl zgwc">
+                <uni-tag text="整改完成" size="small" type="primary"></uni-tag>
+              </view>
+              <view class="fl zgz">
+                <uni-tag text="整改中" size="small" type="primary"></uni-tag>
+              </view>
+              <view class="fl yys">
+                <uni-tag text="已验收" size="small" type="primary"></uni-tag>
+              </view>
+              -->
+              <view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
+                <uni-tag text="审核" size="small" circle="true" 
+                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+                <!-- <uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
+                    inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag> -->
+                <!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
+                <uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
+                <uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
+              </view>
+              <view class="fr ys" v-else>
+                <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
+                  v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
+                <uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"
+                  v-if="item.CLZTDM < 6" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </checkbox-group>
 	</view>
 </template>
 
@@ -377,7 +382,9 @@
 			border-radius: 15upx;
 			display: flex;
 			flex-direction: row;
-
+      label{
+        display: inline-block;
+      }
 			.check {
 				width: 50upx;
 			}
