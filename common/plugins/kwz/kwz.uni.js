@@ -64,15 +64,15 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	baseUrl: 'http://www.ddsjd.com:8080/',
-	// baseUrl: 'https://app.qgjydd.cn',
+	// baseUrl: 'http://www.ddsjd.com:8080/',
+	baseUrl: 'https://app.qgjydd.cn',
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
 	sessionId: '',
-	sessionName: 'JSESSIONID',
-	// sessionName: 'KSESSIONID1',
+	// sessionName: 'JSESSIONID',
+	sessionName: 'KSESSIONID1',
 	// 获取本地缓存的sessionId
 	getSessionId () {
 		if (!kwz.sessionId) {
@@ -89,19 +89,19 @@ const kwz = {
 	},
 	ajax: {
 		formatParam(op) {
-			// 参数加密处理
-			let data = op.data ? kwz.handleData(op.data) : {}
-			// 默认get请求
-			op.type = op.type ? op.type.toUpperCase() : 'GET'
+			if(!op.realUrl) {
+				op.realUrl = op.url
+			}
+			op.url = kwz.ajax.url(op.realUrl)
 			// token处理
 			if (kwz.token) {
 				// data.token = kwz.token
 				op.url += op.url.indexOf('?') > 0 ? ('&token=' + kwz.token) : ('?token=' + kwz.token)
 			}
-			if(!op.realUrl) {
-				op.realUrl = op.url
-			}
-			op.url = kwz.ajax.url(op.realUrl)
+			// 参数加密处理
+			let data = op.data ? kwz.handleData(op.data) : {}
+			// 默认get请求
+			op.type = op.type ? op.type.toUpperCase() : 'GET'
 			op.data = data
 			return op
 		},
