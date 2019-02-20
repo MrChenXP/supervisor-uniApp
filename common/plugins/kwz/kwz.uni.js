@@ -3,10 +3,14 @@ import Vue from 'vue'
 
 const $products = require('./products.json');
 
-const hasFunc = (comonProductsTree = {}) => {
+const hasFunc = (comonProductsTree = [], userReadPro = []) => {
 	let commonMenu = []
 	if(comonProductsTree.length > 0) {
 		let workspace = $products.workspace;
+		
+		if(typeof userReadPro == 'string') {
+			userReadPro = userReadPro.split(',')
+		}
 		
 		for(let i = 0; i< comonProductsTree.length ;i++){
 			for(let j = 0; j< workspace.length;j++){
@@ -15,11 +19,17 @@ const hasFunc = (comonProductsTree = {}) => {
 					let comonChildrenFun = comonProductsTree[i].children;
 					for(let m = 0; m< childrenFun.length ;m++){
 						for(let n = 0; n< comonChildrenFun.length;n++){
-							if(childrenFun[m].funId == comonChildrenFun[n].FUN_ID) {
-								comonChildrenFun[n].THUMB = childrenFun[m].icon;
-								comonChildrenFun[n].PRO_MC = childrenFun[m].funMc || comonChildrenFun[n].PRO_MC;
-								comonChildrenFun[n].LINK = childrenFun[m].link;
-								commonMenu.push(comonChildrenFun[n]);
+							if(childrenFun[m].funId == comonChildrenFun[n].FUN_ID
+							 && userReadPro.length > 0) {
+								 for(let k = 0; k<userReadPro.length; k++) {
+									 if(userReadPro[k] == comonChildrenFun[n].PRO_ID) {
+										 comonChildrenFun[n].THUMB = childrenFun[m].icon;
+										 comonChildrenFun[n].PRO_MC = childrenFun[m].funMc || comonChildrenFun[n].PRO_MC;
+										 comonChildrenFun[n].LINK = childrenFun[m].link;
+										 commonMenu.push(comonChildrenFun[n]);
+										 break;
+									 }
+								 }
 							}
 						}
 					}
@@ -54,15 +64,15 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	baseUrl: 'http://www.ddsjd.com:8080/',
-	// baseUrl: 'https://app.qgjydd.cn',
+	// baseUrl: 'http://www.ddsjd.com:8080/',
+	baseUrl: 'https://app.qgjydd.cn',
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
 	sessionId: '',
-	sessionName: 'JSESSIONID',
-	// sessionName: 'KSESSIONID1',
+	// sessionName: 'JSESSIONID',
+	sessionName: 'KSESSIONID1',
 	// 获取本地缓存的sessionId
 	getSessionId () {
 		if (!kwz.sessionId) {
@@ -79,16 +89,19 @@ const kwz = {
 	},
 	ajax: {
 		formatParam(op) {
-			// 参数加密处理
-			let data = op.data ? kwz.handleData(op.data) : {}
-			// 默认get请求
-			op.type = op.type ? op.type.toUpperCase() : 'GET'
+			if(!op.realUrl) {
+				op.realUrl = op.url
+			}
+			op.url = kwz.ajax.url(op.realUrl)
 			// token处理
 			if (kwz.token) {
 				// data.token = kwz.token
 				op.url += op.url.indexOf('?') > 0 ? ('&token=' + kwz.token) : ('?token=' + kwz.token)
 			}
-			op.url = kwz.ajax.url(op.url)
+			// 参数加密处理
+			let data = op.data ? kwz.handleData(op.data) : {}
+			// 默认get请求
+			op.type = op.type ? op.type.toUpperCase() : 'GET'
 			op.data = data
 			return op
 		},
@@ -169,7 +182,7 @@ const kwz = {
 			// 未登录
 			if(error) {
         if(error.statusCode == 402) {
-          kwz.logout(op.vue)
+          kwz.logout(true)
         } else if(error.statusCode == 403) {
           kwz.alert('暂无权限进行此项操作')
         } else if(error.statusCode == 401) {
@@ -408,6 +421,19 @@ const kwz = {
 	},
 	// 判断是否有权限
 	hasAuth (url = '') {
+		if (url) {
+			let commonMenus = kwz.getCommonMenus();
+			if(!commonMenus.writePathList) {
+				commonMenus.writePathList = commonMenus.writePath.split(',')
+			}
+			let length = commonMenus.writePathList.length
+			for(let i = 0; i < length; i++) {
+				if(commonMenus.writePathList[i] == url) {
+					return true
+				}
+			}
+		}
+		return false
 	},
 	// 根据权限获取工作区的产品
 	getProducts () {
@@ -415,7 +441,7 @@ const kwz = {
 		let retMenus = [];
 		if(commonMenus && commonMenus._menus_ && commonMenus._menus_.children){
 			// 产品树
-			let menus = hasFunc(commonMenus._menus_.children);
+			let menus = hasFunc(commonMenus._menus_.children, commonMenus.readPro);
 			retMenus.push(...menus)
 		}
 		return retMenus;
@@ -533,7 +559,7 @@ const kwz = {
       return content
     }
   },
-  clearLogin (vue) {
+  clearLogin (flag) {
     uni.removeStorage({key: '_login'});
     uni.removeStorage({key: '_login_milles'});
     uni.removeStorage({key: '_loginuser'});
@@ -541,24 +567,19 @@ const kwz = {
     
     //#ifdef H5
     kwz.alert('登陆已经过期，请重新登陆')
-    // 退回首页
-    uni.navigateBack({
-        delta: -1
-    });
-    if(vue && vue instanceof Vue) {
-      vue.loginShow = true
-    }
+		kwz.redirect({
+			url: '/my/my.vue'
+		})
     //#endif
     //#ifndef H5
-    kwz.autoLogin()
+		if(flag) {
+			kwz.autoLogin()
+		}
     //#endif
   },
-  logout (vue) {
-    kwz.clearLogin(vue);
+  logout (flag) {
     uni.removeStorage({key: '_login_token'});
-    if(vue && vue instanceof Vue) {
-      vue.loginShow = true
-    }
+		kwz.clearLogin(flag);
   },
   loginToken: '',
   getLoginToken () {
@@ -574,12 +595,12 @@ const kwz = {
       data: loginToken
     })
   },
-  // 自动登陆
+  // 自动登陆 从本地缓存中拿出_login_token，
   autoLogin (cb = () => {}, vue) {
     let loginToken = kwz.getLoginToken();
-    let _loginToken = uni.getStorageSync('_lk')
+    // let _loginToken = uni.getStorageSync('_lk')
     let data = {
-      _loginToken
+      loginToken
     }
     kwz.ajax.ajaxUrl({
     	url: 'login/open/loginToken',
@@ -590,12 +611,15 @@ const kwz = {
     	type: 'POST',
     	then (data) {
           if (data.statusCode == '200'){
-            let loginToken = data.datas._token;
-            uni.setStorage({
-            	key: '_lk',
-              data: loginToken
-            });
-            cb.apply(vue || this, [data])
+            let _loginToken = data.datas._token;
+						if(_loginToken) {
+							kwz.setLoginToken(_loginToken)
+						}
+						kwz.loadLoginUser(()=>{
+						  kwz.loadProducts(() => {
+								cb.apply(vue || this, [data])
+							})
+						})
           }
     	}
     })
