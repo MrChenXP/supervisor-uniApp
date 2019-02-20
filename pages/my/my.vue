@@ -74,7 +74,7 @@
 			},
 			// 退出
 			logout () {
-				this.$kwz.logout(this)
+				this.$kwz.logout(false)
 			}
 		}
 	}

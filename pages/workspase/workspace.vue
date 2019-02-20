@@ -14,19 +14,19 @@
       </view>
       <view class="s-body">
         <view class="badge">
-          <text>2</text>        	
+          <text>{{tips.cxcs}}</text>        	
         </view>
         <view class="s-title">出行次数</view>
       </view>
       <view class="s-body">
         <view class="badge">
-          <text>2</text>        	
+          <text>{{tips.tkcs}}</text>        	
         </view>
         <view class="s-title">听课次数</view>
       </view>
       <view class="s-body">
         <view class="badge">
-          <text>2</text>        	
+          <text>{{tips.yss}}</text>        	
         </view>
         <view class="s-title">验收数</view>
       </view>
@@ -48,13 +48,28 @@
 <script>
 	import KwLogin from "@kwz/kw-ui/kw-login.vue"
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
+// 	const TIPS_CONFIG = {
+// 		DDGZAP: "b892eba5fae9493189ac81a510bbbd73",	//工作安排
+//     DDJL: "ebc60e699bc642a1871f1e017b979483",	//督导记录
+//     DDZGTZ: "3758a16aa4e14b3d87bb1f9c7e2fc509",	//整改工作
+//     DDHY: "2bc72d87d12e4386b115f301bc4aeda7",	//会议通知
+//     SJDDJL: "2bc72d87d12e4386b115f301bc4aeda7",	//本月督导次数
+//     TKJL: "2bc72d87d12e4386b115f301bc4aeda7"	//本月听课记录
+// 	}
 	export default {
 		data() {
 			return {
 				msg: "...",
 				loginShow: false,
 				tips: {
-					wddb: 0
+					// 我的代办
+					wddb: 0,
+					// 出行次数
+					cxcs: 0,
+					// 听课次数
+					tkcs: 0,
+					// 验收数
+					yss: 0
 				},
 				products : []
 			};
@@ -104,11 +119,19 @@
 					success (data) {
 						let datas = data.datas;
 						if(datas) {
-							let tips = 0;
-							for(let i in datas) {
-								tips += parseInt(datas[i])
+							let wddb = 0
+							// 工作安排
+							wddb += datas['b892eba5fae9493189ac81a510bbbd73'] || 0	
+							// 督导记录
+							wddb += datas['ebc60e699bc642a1871f1e017b979483'] || 0	
+							// 整改工作
+							wddb += datas['3758a16aa4e14b3d87bb1f9c7e2fc509'] || 0	
+							this.tips = {
+								wddb,
+								cxcs: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0,
+								tkcs: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0,
+								yss: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0
 							}
-							this.tips.wddb = tips
 						}
 					}
 				})
