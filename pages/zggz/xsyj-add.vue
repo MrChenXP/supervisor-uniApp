@@ -12,7 +12,7 @@
       <kw-list-cell title="时间" :rightNote="formData.YWSJ"></kw-list-cell>
     </picker>
     <kw-list-cell  v-else title="时间" :rightNote="formData.YWSJ"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <!-- <view class="ddjs-head clearfix" @click="xsyjShow = !xsyjShow">
           <text class="fl">填写协商意见</text>
@@ -51,7 +51,6 @@
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
 
@@ -73,7 +72,7 @@
         xsyjShow:false
 			};
 		},
-    components:{uniBadge,uniTag,uniIcon,KwListCell,XcddSelectSchool},
+    components:{KwListCell,XcddSelectSchool},
     onLoad(query) {
       this.loginUser = this.$kwz.getLoginUser()
     	this.formData.ZGXSID = query.id

@@ -17,7 +17,7 @@
         </view>
       </view>
     </kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow=false>
       <view>
         <view class="cljg-head clearfix" @click="cljgShow = !cljgShow">
           <text class="fl">处理结果</text>

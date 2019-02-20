@@ -84,7 +84,6 @@
 <script>
 	import KwSearch from "@kwz/kw-ui/kw-search.vue"
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-	import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -134,9 +133,6 @@
 		components: {
 			KwSearch,
 			KwListCell,
-			uniBadge,
-			uniTag,
-			uniIcon
 		},
 		onShow() {
 			this.initData()

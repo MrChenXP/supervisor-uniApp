@@ -2,7 +2,7 @@
 	<view class="child-content">
     <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
     <kw-list-cell title="科室中心" :rightNote="data.XXMC"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-body">
           <view>
@@ -24,7 +24,7 @@
       </view>
     </kw-list-cell>
     <kw-list-cell title="日期" :rightNote="data.RQ"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="cljgShow = !cljgShow">
           <text class="fl">处理结果</text>
@@ -51,12 +51,11 @@
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 
 	export default {
-    components:{uniBadge,uniTag,uniIcon,KwListCell,KwEditor},
+    components:{KwListCell,KwEditor},
 		data() {
 			return {
         // 表单数据

@@ -15,7 +15,7 @@
     </kw-list-cell>
     <kw-list-cell title="日期" rightNote="傻白"></kw-list-cell>
     <kw-list-cell title="状态" rightNote="傻白"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow=false>
       <view>
         <view class="cljg-head clearfix" @click="cljgShow = !cljgShow">
           <text class="fl">处理结果</text>

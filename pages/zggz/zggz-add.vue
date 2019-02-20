@@ -7,8 +7,8 @@
       <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
     <kw-list-cell v-else title="时间" :rightNote="data.YWSJ"></kw-list-cell>
-    <kw-list-cell title="督学" :rightNote="loginUser.name"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell title="督学" :rightNote="loginUser.name" :isArrow="false"></kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <!-- <view class="ddjs-head clearfix" @click="zggzShow = !zggzShow">
           <text class="fl">填写整改工作</text>
@@ -18,7 +18,7 @@
         <view class="ddjs-body">
           <view>
             <view>经挂牌督导，你单位存在以下问题:</view>
-            <textarea maxlength="4000" :value="data.XSNR"></textarea>
+            <textarea maxlength="4000" :value="data.XSNR" @input="changeCzwt"></textarea>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
               <input :value="data.CLQX"/>
@@ -43,12 +43,15 @@
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
 	export default {
 		data() {
 			return {
+         // 学校显示隐藏
+        schoolShow:false,
+        // 整改详情显示隐藏
+        zggzShow:false,
         // 表单数据
         data: {
           BH: '',
@@ -57,17 +60,14 @@
           YWSJ: '', // 业务时间
           XSNR: '', // 协商内容
           CLQX: 3, // 处理期限
-          
           zgValue: [],
           ZGXSID: ''
         },
-        // 学校显示隐藏
-        schoolShow:false,
-        // 整改详情显示隐藏
-        zggzShow:false
+        // 存在问题值
+        czwt:""
 			};
 		},
-    components:{uniBadge,uniTag,uniIcon,KwListCell,XcddSelectSchool},
+    components:{KwListCell,XcddSelectSchool},
     onLoad(query) {
     	this.loginUser = this.$kwz.getLoginUser()
       this.data.ZGXSID = query.id
@@ -93,6 +93,12 @@
       changeYwsj (e) {
       	this.ywsj = e.detail.value
       },
+      // 学校确定
+      confirmSchool(e){
+      	this.data.XXMC = e.data.name;
+      	this.data.ORG_ID_TARGET = e.data.value;
+      	this.schoolShow = false
+      },
       // 获取日期限制
       getdateImpose () {
         // let startEnd = this.$kwz.dateImpose('3758a16aa4e14b3d87bb1f9c7e2fc509', this)
@@ -110,6 +116,10 @@
       // 获取功能权限
       getPermission (url) {
         return this.$kwz.hasAuth(url, this)
+      },
+      // 改变存在问题变量值
+      changeCzwt (e) {
+      	this.data.XSNR = e.detail.value
       },
       // 预先加载数据
       loadData () {

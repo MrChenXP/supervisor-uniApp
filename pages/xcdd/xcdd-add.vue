@@ -6,7 +6,7 @@
     <picker :range="ywsj" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="ywsj"></kw-list-cell>
     </picker>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
           <text class="fl">督导纪实</text>
@@ -32,7 +32,7 @@
         </view>
       </view>
     </kw-list-cell>
-		<kw-list-cell>
+		<kw-list-cell :isArrow="false">
 		  <view>
 		    <view class="ddjs-head clearfix" @click="zlcjShow = !zlcjShow">
 		      <text class="fl">资料采集</text>
@@ -58,7 +58,7 @@
 		    </view>
 		  </view>
 		</kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
           <text class="fl">典型经验和做法</text>
@@ -70,7 +70,7 @@
         </view>
       </view>
     </kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
           <text class="fl">存在问题</text>
@@ -118,15 +118,15 @@
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectGzjh from "./compoentns/xcdd-select-gzjh.vue"
-  import XcddSelectSchool from "./compoentns/xcdd-select-school.vue"
-  import XcddSelectSxdx from "./compoentns/xcdd-select-sxdx.vue"
+  import XcddSelectGzjh from "@kwz/kw-ui/xcdd-select-gzjh.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniIcon, uniRate,uniNumberBox } from "@dcloudio/uni-ui"
+  import {uniNumberBox } from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor,uniRate,uniNumberBox },
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox },
 		data() {
 			return {
 				contentId: '',
@@ -260,24 +260,18 @@
 				let gzjh = e.data
 				if(gzjh) {
 					this.gzjh.value = gzjh.value
-					
 					this.xx.name = gzjh.data.XXMC
 					this.xx.value = gzjh.data.ORG_ID_TARGET
-					
 					this.sxdx.name = gzjh.data.CJID_MC
 					this.sxdx.value = gzjh.data.CJID
-					
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
-					
 					let gzjhMc = `${this.xx.name}/${this.sxdx.name}/${this.ywsj}`
 					this.gzjh.name = gzjhMc.length > 20 ? (gzjhMc.substr(0, 19) + '...') : gzjhMc
-					
 					// this.setDdjs(gzjh.data.TXT)
 					if (gzjh.data.BZID) {
 						this.ddpgShow = true
 						this.pgbzID = gzjh.data.BZID
 					}
-					
 				}
 				this.gzjhShow=false
       },
@@ -355,7 +349,6 @@
 						this.hxclyj.index = index
 						this.hxclyj.name = this.hxclyjList[index].name
 						this.hxclyj.value = this.hxclyjList[index].value
-						
 						this.hxclyjShow = true
 					}
 					this.hxclyjXwt = false
