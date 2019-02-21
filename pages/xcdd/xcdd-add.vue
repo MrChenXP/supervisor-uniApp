@@ -21,7 +21,7 @@
 				</view> -->
       </view>
     </kw-list-cell>
-    <kw-list-cell v-if="ddpgShow">
+    <kw-list-cell v-if="pgAuth && ddpgShow">
       <view>
         <view class="ddjs-head clearfix">
           <text class="fl">规定任务评价</text>
@@ -92,7 +92,7 @@
 		    </view>
 		  </view>
 		</kw-list-cell>
-    <view class="save">
+    <view class="save" v-if="xgAuth">
       <button @click="saveXcdd">保存</button>
     </view>
 
@@ -238,6 +238,14 @@
 				maxDate: ''
 			}
 		},
+		computed: {
+			pgAuth () {
+				return this.$kwz.hasAuth('dd_ddjl/toPg')
+			},
+			xgAuth () {
+				return this.$kwz.hasAuth('ddjl/doEdit')
+			}
+		},
 		onLoad(param) {
 			if(param) {
 				if(param.CONTENT_ID) {
@@ -276,8 +284,42 @@
 					if (gzjh.data.BZID) {
 						this.ddpgShow = true
 						this.pgbzID = gzjh.data.BZID
+						
+						this.$kwz.ajax.ajaxUrl({
+							url: 'jc_pgbz/selectTbmbglByKey',
+							type: 'POST',
+							data: {
+								BZID: this.pgbzId
+							},
+							vue: this,
+							then(response) {
+								let datas = response.datas
+								if (datas && datas.tbmbglData) {
+									// 获取评估详情
+									this.$kwz.ajax.ajaxUrl({
+										url: 'jc_pgbzmx/doSelectByPrimary/DDJL',
+										type: 'POST',
+										data: {
+											MXID: this.mxid
+										},
+										vue: this,
+										then(response) {
+											let datas1 = response.datas
+											let sj = {}
+											if (datas1 && datas1.SJ) {
+												try {
+													sj = JSON.parse(datas1.SJ)
+												} catch (e) {
+													console.error(e)
+												}
+												console.log(sj)
+											}
+										}
+									})
+								}
+							}
+						})
 					}
-					
 				}
 				this.gzjhShow=false
       },
@@ -351,7 +393,7 @@
 				if (index != '0' && index != '1') {
 					if (!this.xx.value) {
 						this.$kwz.alert('请先选择学校或工作计划');
-					}else {
+					} else {
 						this.hxclyj.index = index
 						this.hxclyj.name = this.hxclyjList[index].name
 						this.hxclyj.value = this.hxclyjList[index].value
@@ -399,7 +441,7 @@
 			},
       // 后续处理意见点 确认
       confirmHxclyj (e) {
-				this.deleteDisposeIdeaId(e.cb)
+				this.deleteDisposeIdeaId(e.callback)
       },
 			// 关闭后续处理意见==》恢复打开之前的值
 			closeHxclyj (e) {
@@ -596,7 +638,6 @@
 						vue: this,
 						then (response) {
 							let datas = response.datas
-							console.log(datas)
 							if (datas && datas.CONTENT_ID) {
 								this.gzjh.value = datas.GZAP_YWID
 								let workPlanName = (datas.JHXXMC ? (datas.JHXXMC + '') : datas.JHXXMC) + (datas.JHYWSJ ? (datas.JHYWSJ + '/') : datas.JHYWSJ) + (datas.JHSD ? (datas.JHSD + '/') : datas.JHSD) + datas.AUTHOR ? (datas.AUTHOR + '/') : datas.AUTHOR
@@ -696,7 +737,7 @@
 							}
 						}
 					}
-				});
+				})
 			}
     }
 	}

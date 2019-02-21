@@ -319,8 +319,6 @@
 													}
 												}
 												let attach = this.$kwz.splitAttachHtml(zgxs.CLBG)
-												console.log(zgxs.CLBG)
-												console.log(attach)
 												this.ZGCLBG = {
 													content: clgb.join(''),
 													images: clgbImage,

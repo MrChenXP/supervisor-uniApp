@@ -88,7 +88,9 @@
     methods:{
       // 点击确定
       confirm(){
-				this.$emit("confirm", this.saveDisposeIdea)
+				this.$emit("confirm", {
+					callback: this.saveDisposeIdea
+				})
       },
       // 点击取消用的
       close () {
@@ -117,7 +119,7 @@
 							YWID: contentId
 						},
 						then (response) {
-							this.zgxsid = data.datas.ZGXSID
+							this.zgxsid = response.ZGXSID
 							this.$kwz.alert('发送成功')
 							if (typeof cb == 'function') {
 								cb.apply(this, [response])

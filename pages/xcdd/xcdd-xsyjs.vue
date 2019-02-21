@@ -1,6 +1,6 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号" rightNote="22"></kw-list-cell>
+    <kw-list-cell title="编号" :rightNote="BH"></kw-list-cell>
     <kw-list-cell title="科室/中心" rightNote="傻白"></kw-list-cell>
     <kw-list-cell>
       <view>
@@ -38,12 +38,36 @@
 	export default {
 		data() {
 			return {
-        cljgShow:false
+        cljgShow: false,
+				zgxsId: ''
 			};
 		},
     components:{uniBadge,uniTag,uniIcon,KwListCell},
+		onLoad(param) {
+			if(param && param.zgxsId) {
+				this.zgxsId = param.zgxsId
+				this.initData()
+			}
+		},
     methods:{
-      
+      initData () {
+				if (this.zgxsId) {
+					this.$kwz.ajax.ajaxUrl({
+						url: 'dd_zgxs/doSelectByPrimary',
+						type: 'POST',
+						data: {
+							ZGXSID: this.zgxsId
+						},
+						vue: this,
+						then (response) {
+							let datas = response.datas
+							if (datas && datas.ZGXSID) {
+								console.log(datas)
+							}
+						}
+					})
+				}
+			}
     }
 	}
 </script>
