@@ -38,8 +38,8 @@
     </kw-list-cell>
     <view class="save">
       <button @click="fn_ddjs_send">
-        <text v-if="formData.ZGXSID">审核</text>
-        <text v-else>发送</text>
+        <text v-if="formData.ZGXSID && hasShAuth">审核</text>
+        <text v-if="!formData.ZGXSID && hasFsAuth">发送</text>
       </button>
     </view>
     
@@ -77,6 +77,15 @@
       this.loginUser = this.$kwz.getLoginUser()
     	this.formData.ZGXSID = query.id
       this.initPage()
+    },
+    computed:{
+      // 发送权限
+      hasFsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doAddtzyj')
+      },// 审核权限
+      hasShAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/xsyj_sh')
+      }
     },
     methods:{
       // 判断来源(是否是审核) 获取id并预先加载数据

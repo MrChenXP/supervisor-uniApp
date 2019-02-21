@@ -42,9 +42,9 @@
       </view>
     </kw-list-cell>
     <view class="save" v-if="SF != undefined">
-      <button @click="fn_zggz_xsyjs_dispose" v-if="!detailShow" 
+      <button @click="fn_zggz_xsyjs_dispose" v-if="!detailShow && hasClAuth" 
         >处理</button>
-      <button @click="changeStatue('26')" v-if="data.CLZTDM < '26'" 
+      <button @click="changeStatue('26')" v-if="data.CLZTDM < '26' && hasYsAuth" 
         v-show="SF === 'dx'">确认整改完成</button>
     </view>
 	</view>
@@ -81,6 +81,16 @@
       this.data.ZGXSID = query.id
       this.SF = query.SF
       this.loadData()
+    },
+    computed:{
+      // 处理权限
+      hasClAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doUpdate/XSYJ')
+      },
+      // 确认整改(验收)权限
+      hasYsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_done')
+      }
     },
     methods:{
       // 获取功能权限

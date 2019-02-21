@@ -30,8 +30,8 @@
     </kw-list-cell>
     <view class="save">
       <button @click="fn_ddjs_send">
-        <text v-if="data.ZGXSID">审核</text>
-        <text v-else>发送</text>
+        <text v-if="data.ZGXSID && hasShAuth">审核</text>
+        <text v-if="!data.ZGXSID && hasFsAuth">发送</text>
       </button>
     </view>
     
@@ -73,6 +73,15 @@
       this.data.ZGXSID = query.id
       this.initPage()
     },
+    computed:{
+      // 发送权限
+      hasFsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doAddtzyj')
+      },// 审核权限
+      hasShAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_sh')
+      }
+    },
     methods:{
       // 判断来源(是否是审核) 获取id并预先加载数据
       initPage () {
@@ -112,10 +121,6 @@
 //           this.data.minDate = startEnd.minDate
 //           this.data.maxDate = startEnd.maxDate
 //         }
-      },
-      // 获取功能权限
-      getPermission (url) {
-        return this.$kwz.hasAuth(url, this)
       },
       // 改变存在问题变量值
       changeCzwt (e) {

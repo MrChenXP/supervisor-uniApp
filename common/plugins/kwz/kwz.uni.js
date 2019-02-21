@@ -106,8 +106,8 @@ const kwz = {
 			return op
 		},
 		ajaxInited: false,
-		// 执行ajax处理
-		ajaxUrl(op) {
+		// ajax
+		ajax(op) {
 			// 如果ajax还未初始化完成,延迟500ms执行
 			if (!kwz.ajax.ajaxInited) {
 				setTimeout(() => {
@@ -116,11 +116,11 @@ const kwz = {
 			} else {	
 				if (op && op.url) {
 					op = kwz.ajax.formatParam(op)
-          
-          let header = extend(op.header || {}, {
-            //#ifdef MP-WEIXIN
+			    
+			    let header = extend(op.header || {}, {
+			      //#ifdef MP-WEIXIN
 						'Cookie': kwz.sessionName + '='+kwz.getSessionId(),
-            //#endif
+			      //#endif
 						'Content-type': 'application/x-www-form-urlencoded'
 					})
 					// 显示加载效果
@@ -133,14 +133,14 @@ const kwz = {
 						header,
 						// dataType: 'JSON',
 						success (response) {
-              kwz.setCookies(response)
+			        kwz.setCookies(response)
 							kwz.ajax.ajaxThen.apply(this, [response, op])
 						},
 						fail (error) {
 							kwz.ajax.ajaxCatch.apply(this, [error, op])
 						},
 						complete (info) {
-              kwz.setCookies(info)
+			        kwz.setCookies(info)
 							if (!info || info.statusCode != 200) {
 								kwz.ajax.ajaxCatch.apply(this, [info, op])
 							}
@@ -150,6 +150,21 @@ const kwz = {
 					});
 				}
 			}
+		},
+		// 执行ajax处理
+		ajaxUrl(op) {
+			let sc = op.success
+			op.success = (data) => {
+				if('200' == data.statusCode) {
+					if(typeof sc == 'function'){
+						sc.apply(op.vue || this, [data])
+					}
+					if (typeof(op.then) === 'function') {
+						op.then.apply(op.vue || this, [data])
+					}	
+				}
+			}
+			kwz.ajax.ajax(op)
 		},
 		ajaxThen(response, op, cb) {
 			if (200 == response.statusCode && response.data) {
@@ -422,13 +437,14 @@ const kwz = {
 	// 判断是否有权限
 	hasAuth (url = '') {
 		if (url) {
+			url = url.trim()
 			let commonMenus = kwz.getCommonMenus();
 			if(!commonMenus.writePathList) {
 				commonMenus.writePathList = commonMenus.writePath.split(',')
 			}
 			let length = commonMenus.writePathList.length
 			for(let i = 0; i < length; i++) {
-				if(commonMenus.writePathList[i] == url) {
+				if(commonMenus.writePathList[i] == url || (commonMenus.writePathList[i] && commonMenus.writePathList[i].trim() == url)) {
 					return true
 				}
 			}

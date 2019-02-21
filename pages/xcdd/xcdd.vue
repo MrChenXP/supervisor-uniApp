@@ -14,11 +14,11 @@
 		<!-- 功能(新增删除) -->
 		<view class="gn">
 			<view class="check fl" v-if="!deleteShow">
-				<radio :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</radio>
+				<checkbox :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</checkbox>
 			</view>
-			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
+			<view class="delete fl" v-if="hasScAuth && deleteShow" @click="deleteAction" >删除</view>
 			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr" @click="$kwz.router({url: 'xcdd-add'})">新增</view>
+			<view class="add fr" @click="$kwz.router({url: 'xcdd-add'})" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
     <checkbox-group>
@@ -54,7 +54,7 @@
 						<view v-if="item.STATUS == '3' " class="fr bj">
 							<uni-tag text="发送协商意见" size="small" circle="true" inverted="true" type="primary" @click="toXsyj(item.IDS)"></uni-tag>
 						</view> -->
-						<view v-if="true" class="fr bj" @click.stop="toDetail(item.CONTENT_ID)">
+						<view v-if="hasXgAuth" class="fr bj" @click.stop="toDetail(item.CONTENT_ID)">
 							<uni-tag text="编辑" size="small" circle="true" inverted="true" type="primary"></uni-tag>
 						</view>
 					</view>
@@ -105,6 +105,20 @@
 		},
 		onShow() {
 			this.initData()
+		},
+		computed:{
+			// 新增权限
+			hasXzAuth () {
+				return this.$kwz.hasAuth('ddjl/doEdit')
+			},
+			// 修改权限
+			hasXgAuth () {
+				return this.$kwz.hasAuth('ddjl/doEdit')
+			},
+			// 删除权限
+			hasScAuth () {
+				return this.$kwz.hasAuth('ddjl/deleteddjl')
+			}
 		},
 		methods: {
 			// 加载数据
@@ -181,10 +195,12 @@
 						let datas = data.datas
 						let deleteParam = {}
 						if (datas && datas.length > 0) {
+							// 将数据集中的id放入删除集中的id
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
-								deleteParam[tmp.ZGXSID] = false
+								deleteParam[tmp.CONTENT_ID] = false
 							}
+							// 复制老的删除集至新的删除集
 							for (let i in this.deleteParam) {
 								deleteParam[i] = this.deleteParam[i]
 							}
@@ -232,7 +248,7 @@
 							ids: ids.join(',')
 						},
 						vue: this,
-						then(response) {
+						then (response) {
 							this.$kwz.alert('操作成功')
 							this.pageList(true)
 						}
@@ -241,17 +257,15 @@
 				this.deleteShow = true
 			},
 			// 删除
-			deleteAction(status) {
+			deleteAction() {
 				this.deleteShow = false
 			},
 			// 去整改通知 || 协商意见 
-			toZgxs(status,ids) {
-        if(status === '2' || status === '5'){
-          console.log(ids + '这是zgIds')
-          this.$kwz.router({url:'xcdd-zgtzs'})
-        } else if (status === '3'){
-          console.log(ids+'这是sxIds')
-          this.$kwz.router({url:'xcdd-xsyjs'})
+			toZgxs(status, ids) {
+        if(status == '2' || status == '5'){
+          this.$kwz.router({url:'xcdd-zgtzs?zgxsId=' + ids})
+        } else if (status == '3'){
+          this.$kwz.router({url:'xcdd-xsyjs?zgxsId=' + ids})
         }
 			},
 			// 去修改

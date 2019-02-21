@@ -23,13 +23,13 @@
 			<view class="xs">协商</view>
 		</view>
 		<!-- 功能(新增删除) -->
-		<view class="gn">
-			<view class="check fl" v-if="!deleteShow">
+		<view class="gn" v-if="hasScAuth || hasXzAuth">
+			<view class="check fl" v-if="!deleteShow && hasScAuth">
 				<radio :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</radio>
 			</view>
-			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
-			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr" @click="$kwz.router({url: 'xsyj-add'})">新增</view>
+			<view class="delete fl" v-if="deleteShow && hasScAuth" @click="deleteAction" >删除</view>
+			<view class="delete fl" v-if="!deleteShow && hasScAuth" @click="confirmDeleteAction">确认删除</view>
+			<view class="add fr" @click="$kwz.router({url: 'xsyj-add'})" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
     <checkbox-group>
@@ -61,18 +61,17 @@
               <view v-if="false" class="fl xsz">
                 <uni-tag text="其他状态用这个样式" size="small" type="primary"></uni-tag>
               </view> -->
-              <view v-if="item.CLZTDM < '22'" class="fr cl">
+              <view v-if="item.CLZTDM < '22' && hasShAuth" class="fr cl">
                 <uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" 
                   @click="toAdd(item.ZGXSID)" ></uni-tag>
               </view>
-              <view v-if="item.CLZTDM < '26' && item.CLZTDM >= '22'" class="fr cl">
+              <view v-else class="fr cl">
                 <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
-                  @click="doXsyj(item.ZGXSID, 'xx')"></uni-tag>
-              </view>
-              <view v-if="item.CLZTDM < '26'" class="fr cl">
+                  @click="doXsyj(item.ZGXSID, 'xx')" v-if="item.CLZTDM < '26' && item.CLZTDM >= '22' && hasClAuth"></uni-tag>
                 <uni-tag text="验收" size="small" circle="true" inverted="true" type="primary" 
-                  @click="doXsyj(item.ZGXSID, 'dx')" ></uni-tag>
+                  @click="doXsyj(item.ZGXSID, 'dx')" v-if="item.CLZTDM < '26' && hasYsAuth"></uni-tag>
               </view>
+              
             </view>
           </view>
         </view>
@@ -137,6 +136,28 @@
 		onShow() {
 			this.initData()
 		},
+    computed: {
+      // 新增权限
+      hasXzAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/toZgtz/XSYJ')
+      },
+      // 删除权限
+      hasScAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doDeleteBatch/XSYJ')
+      },
+      // 审核权限
+      hasShAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/xsyj_sh')
+      },
+      // 处理权限
+      hasClAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/xsyj_deal')
+      },
+      // 验收权限
+      hasYsAuth () {
+        return this.$kwz.hasAuth('dd_zgxs/zgtz_done')
+      }
+    },
 		methods: {
 			// 加载数据
 			initData() {
