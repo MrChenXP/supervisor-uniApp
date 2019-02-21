@@ -1,12 +1,12 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
+    <kw-list-cell title="编号" :rightNote="data.BH" :isArrow="false"></kw-list-cell>
     <kw-list-cell v-if="!data.ZGXSID" title="学校" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
-    <kw-list-cell v-else title="学校" :rightNote="data.XXMC"></kw-list-cell>
+    <kw-list-cell v-else title="学校" :rightNote="data.XXMC" :isArrow="false"></kw-list-cell>
     <picker v-if="!data.ZGXSID" :range="data.YWSJ" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
-    <kw-list-cell v-else title="时间" :rightNote="data.YWSJ"></kw-list-cell>
+    <kw-list-cell v-else title="时间" :rightNote="data.YWSJ" :isArrow="false"></kw-list-cell>
     <kw-list-cell title="督学" :rightNote="loginUser.name" :isArrow="false"></kw-list-cell>
     <kw-list-cell :isArrow="false">
       <view>

@@ -4,7 +4,7 @@
 		<kw-list-cell title="学校" :rightNote="XXMC"></kw-list-cell>
 		<kw-list-cell title="督导时间" :rightNote="YWSJ"></kw-list-cell>
 		<kw-list-cell title="创建人" :rightNote="AUTHOR"></kw-list-cell>
-		<kw-list-cell :show="ddsxCellShow" :isArrow=false>
+		<kw-list-cell :show="ddsxCellShow" :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
 					<text class="fl">督导事项</text>
@@ -20,7 +20,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow=false >
+		<kw-list-cell :isArrow="false" >
 			<view>
 				<view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
 					<text class="fl">督导纪实</text>
@@ -37,7 +37,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow=false >
+		<kw-list-cell :isArrow="false" >
 			<view>
 				<view class="ddjs-head clearfix" @click="pgjgShow = !pgjgShow">
 					<text class="fl">评估结果</text>
@@ -53,7 +53,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow=false>
+		<kw-list-cell :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
 					<text class="fl">亮点</text>
@@ -69,7 +69,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow=false>
+		<kw-list-cell :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
 					<text class="fl">存在问题</text>
@@ -101,7 +101,7 @@
 				</view>
 			</view>
 		</kw-list-cell> -->
-		<kw-list-cell :show="hxclyjCellShow" :isArrow=false>
+		<kw-list-cell :show="hxclyjCellShow" :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="hxclyjShow = !hxclyjShow">
 					<text class="fl">后续处理意见</text>
@@ -142,11 +142,6 @@
 <script>
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
 	import KwEditorPreview from "@kwz/kw-ui/kw-editor-preview.vue"
-	import {
-		uniBadge,
-		uniTag,
-		uniIcon
-	} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -199,9 +194,6 @@
 			};
 		},
 		components: {
-			uniBadge,
-			uniTag,
-			uniIcon,
 			KwListCell,
 			KwEditorPreview
 		},

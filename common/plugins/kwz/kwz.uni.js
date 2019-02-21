@@ -64,15 +64,15 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	// baseUrl: 'http://www.ddsjd.com:8080/',
-	baseUrl: 'https://app.qgjydd.cn',
+	baseUrl: 'http://www.ddsjd.com:8080/',
+	// baseUrl: 'https://app.qgjydd.cn',
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
 	sessionId: '',
-	// sessionName: 'JSESSIONID',
-	sessionName: 'KSESSIONID1',
+	sessionName: 'JSESSIONID',
+	// sessionName: 'KSESSIONID1',
 	// 获取本地缓存的sessionId
 	getSessionId () {
 		if (!kwz.sessionId) {

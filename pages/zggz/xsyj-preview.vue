@@ -36,7 +36,7 @@
            <kw-editor :content="ddjs">11</kw-editor>
           </view>
           <view v-if="detailShow">
-           <rich-text :nodes="data.CLBG">22</rich-text>
+           <kw-editor-preview :content="ddjs"></kw-editor-preview>
           </view>
         </view>
       </view>
@@ -53,9 +53,9 @@
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
-
+  import KwEditorPreview from "@kwz/kw-ui/kw-editor-preview.vue"
 	export default {
-    components:{KwListCell,KwEditor},
+    components:{KwListCell,KwEditor,KwEditorPreview},
 		data() {
 			return {
         // 表单数据
@@ -68,8 +68,6 @@
         },
         // 处理结果显示隐藏
         cljgShow:false,
-        // 学校填写处理的值
-        disposeResultData: '',
         // 已处理的详情页显示隐藏
         detailShow: false,
         // 编辑页显示隐藏
@@ -103,14 +101,11 @@
             datas.IS_PHONE = '2'
             if (datas && datas.ZGXSID) {
               this.data = datas
-              // 处理结果赋值
-              if (datas.CLBG != null) {
-                this.disposeResultData = datas.CLBG
-              }
+              this.setDdjs(this.data.CLBG)
+
               // 是学校且不是整改完成
               if (this.SF === 'xx' && datas.CLZTDM < '26') {
                 this.resultShow = true
-                this.setDdjs(this.data.CLBG)
               }
               // 是督学且不是整改完成
               if (this.SF === 'dx' || datas.CLZTDM === '26') {
@@ -130,33 +125,43 @@
           }
         })
       },
-         setDdjs (html) {
+      // 获取督导纪实内容 将ddjs转成html
+      getDdjs () {
+      	let ddjs = [this.ddjs.content]
+      	if(this.ddjs.images && this.ddjs.images.length > 0) {
+      		let images = this.ddjs.images
+      		for(let i = 0;i < images.length; i++) {
+      			ddjs.push('<p><img src="')
+      			ddjs.push(images[i].imageUrl)
+      			ddjs.push('" ></p>')
+      		}
+      	}
+      	return ddjs.join('')
+      },
+      // 设置督导纪实内容 将html转成ddjs
+      setDdjs (html) {
       	let ddjs = []
+      	let ddjsImage = []
       	let ddjsSplit = this.$kwz.splitHtml(html)
       	if (ddjsSplit && ddjsSplit.length > 0) {
       		for (let i in ddjsSplit) {
       			let content = ddjsSplit[i]
       			if (content.content) {
-      				ddjs.push({
-      					type: 'textarea',
-      					content: content.content
-      				})
+      				ddjs.push(content.content)
       			}
       			if (content.imageUrl) {
-      				ddjs.push({
+      				ddjsImage.push({
       					type: 'image',
       					content: content.imageUrl,
       					imageUrl: content.realUrl
       				})
       			}
       		}
-      	} else {
-      		ddjs.push({
-      			type: 'textarea',
-      			content: ''
-      		})
       	}
-      	this.ddjs = ddjs
+      	this.ddjs = {
+      		content: ddjs.join(''),
+      		images: ddjsImage
+      	}
       },
       // 改变处理状态
       changeStatue (status) {
@@ -178,7 +183,7 @@
       },
       // 点击处理事件
       fn_zggz_xsyjs_dispose () {
-        if (!this.disposeResultData) {
+        if (!this.ddjs) {
           this.$kwz.alert('请填写处理结果')
           return
         }
@@ -186,7 +191,7 @@
           url: 'dd_zgxs/doUpdate/XSYJ',
           type: 'POST',
           data: {
-            CLBG: this.disposeResultData,
+            CLBG: this.getDdjs(),
             CMS_LMTYPE: '1',
             IS_PHONE: '2',     // 标记此内容是来自手机端
             ZGXSID: this.data.ZGXSID,

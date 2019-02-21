@@ -300,7 +300,7 @@
 				this.sxdx.value = sxdxIds.join(',')
 				this.sxdxShow = false
 			},
-			// 获取督导纪实内容
+			// 获取督导纪实内容 将ddjs转成html
 			getDdjs () {
 				let ddjs = [this.ddjs.content]
 				if(this.ddjs.images && this.ddjs.images.length > 0) {
@@ -313,7 +313,7 @@
 				}
 				return ddjs.join('')
 			},
-			// 设置督导纪实内容
+			// 设置督导纪实内容 将html转成ddjs
 			setDdjs (html) {
 				let ddjs = []
 				let ddjsImage = []
@@ -513,7 +513,7 @@
 					})
 				}
 			},
-			// 保存督导评估
+			// 保存督导
 			saveXcdd (sfXq) {
 				let xcddData = {
 					ORG_ID: this.xx.value,
@@ -589,7 +589,6 @@
 						vue: this,
 						then (response) {
 							let datas = response.datas
-							console.log(datas)
 							if (datas && datas.CONTENT_ID) {
 								this.gzjh.value = datas.GZAP_YWID
 								let workPlanName = (datas.JHXXMC ? (datas.JHXXMC + '') : datas.JHXXMC) + (datas.JHYWSJ ? (datas.JHYWSJ + '/') : datas.JHYWSJ) + (datas.JHSD ? (datas.JHSD + '/') : datas.JHSD) + datas.AUTHOR ? (datas.AUTHOR + '/') : datas.AUTHOR
@@ -613,20 +612,16 @@
 								}
 								this.sxdx.name = datas.USERNAME
 								this.sxdx.value = datas.USERID
-								
 								this.dxjyzfHide = datas.DXJY || ''
 								this.dxjyzf = datas.DXJY || ''
-
 								this.czwtHide = datas.CZWT || ''
 								this.czwt = datas.CZWT || ''
-								
 								this.cyzl = datas.CYZL || 0
 								this.lxhy = datas.LXHY || 0
 								this.ztzf = datas.ZTZF || 0
 								this.wjdc = datas.WJDC || 0
 								this.xyxs = datas.XYXS || 0
 								this.pgid = datas.PGID
-								
 								this.setDdjs(datas.DDJS)
 							}
 						}
