@@ -21,13 +21,17 @@
 				</view> -->
       </view>
     </kw-list-cell>
-    <kw-list-cell v-if="pgAuth && ddpgShow">
+    <kw-list-cell v-if="pgAuth && ddpgShow" :isArrow="false">
       <view>
-        <view class="ddjs-head clearfix">
-          <text class="fl">规定任务评价</text>
-          <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
-					<view>
-						<uni-rate value="3" ></uni-rate>
+        <view class="ddjs-head clearfix pg">
+          <view class="clearfix">
+            <text class="fl">规定任务评价</text>
+            <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
+          </view>
+					<view class="clearfix">
+						<!-- <uni-rate value="3" ></uni-rate> -->
+            <text class="fl">标准名称</text>
+            <view class="fr"><uni-rate value="3" ></uni-rate></view>
 					</view>
         </view>
       </view>
@@ -83,7 +87,20 @@
       </view>
     </kw-list-cell>
     <picker :range="hxclyjList" :value="hxclyj.index" range-key="name" @change="changeHxcly">
-      <kw-list-cell title="后续处理意见" :rightNote="hxclyj.name"></kw-list-cell>
+      <kw-list-cell>
+        <view>
+          <view class="ddjs-head clearfix pg">
+            <view class="clearfix">
+              <text class="fl">后续处理意见</text>
+              <text class="fr">{{hxclyj.name}}</text>
+            </view>
+        		<view class="clearfix">
+              <text class="fl">整改协商编号</text>
+              <text class="fr">ddeddddd</text>
+        		</view>
+          </view>
+        </view>
+      </kw-list-cell>
     </picker>
 		<kw-list-cell :show="hxclyjXwt">
 		  <view>
@@ -122,11 +139,11 @@
   import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
   import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniNumberBox } from "@dcloudio/uni-ui"
+  import {uniNumberBox,uniRate } from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox },
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox,uniRate },
 		data() {
 			return {
 				contentId: '',
@@ -746,6 +763,12 @@
       textarea{
         width: 100%;
       }
+  }
+  .pg{
+    height: 110upx;
+    .fr{
+      color:#0580c2;
+    }
   }
   .save{
     width: 710upx;
