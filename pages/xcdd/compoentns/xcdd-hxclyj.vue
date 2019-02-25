@@ -231,7 +231,7 @@
     }
   }
   .xcdd-hxclyj-mask{
-    z-index: auto;
+    z-index: 1000;
     position: fixed;
     // background: rgba(0, 0, 0, 0.5);
     height: calc(100vh - 44px);
@@ -252,6 +252,7 @@
     
   }
   .xcdd-hxclyj-content{
+    position: relative;
     z-index: 1001;
     margin: auto;
     width: 100%;

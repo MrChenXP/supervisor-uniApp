@@ -1,8 +1,13 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号" :rightNote="data.BH" :isArrow="false"></kw-list-cell>
-    <kw-list-cell v-if="!data.ZGXSID" title="学校" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
-    <kw-list-cell v-else title="学校" :rightNote="data.XXMC" :isArrow="false"></kw-list-cell>
+    <kw-list-cell title="编号" v-if="!data.ZGXSID" >
+      <view slot="rightNote">
+        <view class="bh"><input :value="data.BH" /></view>
+      </view>
+    </kw-list-cell>
+    <kw-list-cell v-else title="编号" :rightNote="data.BH" :isArrow="false" ></kw-list-cell>
+    <kw-list-cell v-if="!data.ZGXSID" title="学校/单位" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
+    <kw-list-cell v-else title="学校/单位" :rightNote="data.XXMC" :isArrow="false"></kw-list-cell>
     <picker v-if="!data.ZGXSID" :range="data.YWSJ" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
@@ -21,7 +26,7 @@
             <textarea maxlength="4000" :value="data.XSNR" @input="changeCzwt"></textarea>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-              <input :value="data.CLQX"/>
+              <uni-number-box :value="data.CLQX" @change="changeClqx"></uni-number-box>
               日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
             </view>
           </view>
@@ -45,6 +50,8 @@
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import {uniNumberBox} from "@dcloudio/uni-ui"
+
 	export default {
 		data() {
 			return {
@@ -67,7 +74,7 @@
         czwt:""
 			};
 		},
-    components:{KwListCell,XcddSelectSchool},
+    components:{KwListCell,XcddSelectSchool,uniNumberBox},
     onLoad(query) {
     	this.loginUser = this.$kwz.getLoginUser()
       this.data.ZGXSID = query.id
@@ -227,15 +234,26 @@
             }
           })
         }
+      },
+      changeClqx(val){
+        this.data.CLQX = val
       }
+      
     }
 	}
 </script>
 
 <style lang="scss">
+  .bh{
+    width: 500upx;
+    text-align: right;
+    ._input{
+      color: #999999;
+    }
+  }
   .ddjs-head{
       height: 55upx;
-    }
+  }
   .ddjs-body{
     padding:0 20upx;
     textarea{

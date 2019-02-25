@@ -139,11 +139,11 @@
   import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
   import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniNumberBox,uniRate } from "@dcloudio/uni-ui"
+  import {uniNumberBox} from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox,uniRate },
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox},
 		data() {
 			return {
 				contentId: '',
@@ -453,6 +453,7 @@
       // 后续处理意见点 确认
       confirmHxclyj (e) {
 				this.deleteDisposeIdeaId(e.callback)
+        // this.hxclyjShow = true
       },
 			// 关闭后续处理意见==》恢复打开之前的值
 			closeHxclyj (e) {
