@@ -7,10 +7,10 @@
         <view class="ddjs-body">
           <view>
             <view>经挂牌督导，你单位存在以下问题:</view>
-            <view>{{data.XSNR}}</view>
+            <view class="text-bold">{{data.XSNR}}</view>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-              <text>{{data.CLQX}}</text>
+              <text class="text-bold">{{data.CLQX}}</text>
               日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
             </view>
           </view>

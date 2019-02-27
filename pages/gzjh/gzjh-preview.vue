@@ -157,7 +157,7 @@
       height: 55upx;
     }
   .ddjs-body{
-      border:#D9D9D9 solid 2upx;
+      // border:#D9D9D9 solid 2upx;
       textarea{
         width: 100%;
       }

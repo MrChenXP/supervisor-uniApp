@@ -32,8 +32,8 @@
 			<view class="add fr" @click="$kwz.router({url: 'xsyj-add'})" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="doXsyj(item.ZGXSID)">
           <view class="info">
@@ -235,8 +235,8 @@
 								deleteParam[tmp.ZGXSID] = false
 								tmp.zgxsClass = this.constParam.zgxsClass[tmp.CLZTDM]
 								// datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
-								//                 datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
-								//                 datas[i].SFDX = (this.user.orgid === tmp.ORG_ID)
+								//datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
+								//datas[i].SFDX = (this.user.orgid === tmp.ORG_ID)
 							}
 							for (let i in this.deleteParam) {
 								deleteParam[i] = this.deleteParam[i]
@@ -326,22 +326,19 @@
 		align-items: center;
 		border-top: #dedede solid 2upx;
 
-		.zg,
-		.xs {
+		.zg,.xs {
 			width: 355upx;
 			height: 65upx;
 			text-align: center;
 			line-height: 65upx;
 			font-size: 28upx;
 		}
-
 		.zg {
 			color: white;
 			border-radius: 10upx 0 0 10upx;
 			background-color: #d6f1fb;
 			color: #00bdfd;
 		}
-
 		.xs {
 			background-color: #00bdfd;
 
@@ -352,7 +349,6 @@
 	.gn {
 		height: 86upx;
 		padding: 18upx 0;
-
 		.delete,
 		.add,
 		.check {
@@ -364,12 +360,10 @@
 			justify-content: center;
 			align-items: center;
 		}
-
 		.delete {
 			border: solid 2upx #e64c48;
 			color: #e64c48;
 		}
-
 		.add {
 			margin-right: 25upx;
 			border: solid 2upx #68ae1d;
@@ -381,7 +375,6 @@
 		height: calc(100% - 281upx);
 		padding: 0 20upx;
 		overflow: auto;
-
 		.list {
 			margin-bottom: 20upx;
 			background: white;
@@ -395,7 +388,6 @@
 			.check {
 				width: 50upx;
 			}
-
 			.info {
 				flex-grow: 2;
         width:100%;
@@ -404,34 +396,28 @@
 					color: #999999;
 					font-size: 26upx;
 					margin: 10upx 0;
-
 					view {
 						color: #999999;
 					}
 				}
-
 				.status {
 					margin: 10upx 0 0;
 					font-size: 24upx;
-
 					.xswc .uni-tag {
 						background-color: #dcf0c7;
 						border-color: #dcf0c7;
 						color: #68ae1d;
 					}
-
 					.xsz .uni-tag {
 						background-color: #f7e6c1;
 						border-color: #f7e6c1;
 						color: #f27506;
 					}
-
 					.shys .uni-tag {
 						background-color: #d6f1fb;
 						border-color: #d6f1fb;
 						color: #109dea;
 					}
-
 					.cl .uni-tag {
 						border-color: #00bdfd;
 						color: #00bdfd;

@@ -1,5 +1,5 @@
 <template>
-	<view class="ddjs child-content">
+	<view class="child-content">
     <!-- 搜索 -->
     <kw-search placeholder="请输入学校名称" @confirm="searchList">
       <view slot="content">
@@ -21,8 +21,8 @@
       <view class="add fr" @click="$kwz.router({url: 'tkjl-add'})" v-if="hasXzAuth">新增</view>
     </view>
     <!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index">
           <label>
@@ -125,7 +125,6 @@
       		vue: this,
       		then(data) {
       			let datas = data.datas
-            console.log(datas)
       			let deleteParam = {}
       			if (datas && datas.length > 0) {
       				for (let i = 0; i < datas.length; i++) {

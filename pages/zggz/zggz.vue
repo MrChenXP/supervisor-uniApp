@@ -26,8 +26,8 @@
 			<view class="add fr" @click="toAdd('add')" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
 			<!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="toZgxs(item.ZGXSID)">
           <view class="info">

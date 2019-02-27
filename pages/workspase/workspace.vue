@@ -34,8 +34,7 @@
     <!-- 功能 -->
     <view class="gn" >
     	<kw-list-cell v-for="(item, index) in products" :title="item.PRO_MC" v-bind:key="index" :note="item.PRO_DESC" 
-          :red-dot=redDot[item.PRO_ID]
-    	    :thumb="item.THUMB" :link="item.LINK"></kw-list-cell>
+          :red-dot=redDot[item.PRO_ID] :thumb="item.THUMB" :link="item.LINK" :border="{bottom:index != products.length-1}"></kw-list-cell>
     </view>
     <kw-login v-if="loginShow" @loginSuccess="loginSuccess" @closeLogin="closeLogin" ></kw-login>
 	</view>
@@ -111,13 +110,12 @@
 				this.$kwz.ajax.ajaxUrl({
 					url: 'ddGztx/open/getTxData',
 					data: {
-						TXSET: '{"b892eba5fae9493189ac81a510bbbd73":"DDGZAP","ebc60e699bc642a1871f1e017b979483":"DDJL","3758a16aa4e14b3d87bb1f9c7e2fc509":"DDZGTZ","2bc72d87d12e4386b115f301bc4aeda7":"DDHY","SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1":"SJDDJL","cd5235ad9e2d463a9af919de06dcfb06":"TKJL"}'
+						TXSET: '{"b892eba5fae9493189ac81a510bbbd73":"DDGZAP","ebc60e699bc642a1871f1e017b979483":"DDJL","3758a16aa4e14b3d87bb1f9c7e2fc509":"DDZGTZ","DDHYDDHYDDHYDDHYDDHYDDHYDDHYDDHY":"DDHY","SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1":"SJDDJL","TKJLTKJLTKJLTKJLTKJLTKJLTKJLTKJL":"TKJL"}'
 					},
 					vue: this,
 					success (data) {
 						let datas = data.datas
 						if(datas) {
-              console.log(datas)
               // 将返回的pro_id赋值给redDot 循环中根据pro_id进行判断红点显示隐藏
               this.redDot= datas
               // (我的待办)
@@ -132,8 +130,8 @@
 							this.tips = {
 								wddb,
 								cxcs: datas['SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1'] || 0,
-								tkcs: datas['cd5235ad9e2d463a9af919de06dcfb06'] || 0,
-								yss: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0
+								tkcs: datas['TKJLTKJLTKJLTKJLTKJLTKJLTKJLTKJL'] || 0,
+								yss: datas['DDHYDDHYDDHYDDHYDDHYDDHYDDHYDDHY'] || 0
 							}
 						}
 					}

@@ -8,14 +8,14 @@
           <view>
             <view>
               我室
-              <text>{{data.AUTHOR}}</text>
+              <text class="text-bold">{{data.AUTHOR}}</text>
               责任督学于
-              <text>{{data.RQ}}</text>
+              <text class="text-bold">{{data.RQ}}</text>
               对
-              <text>{{data.XXMC}}</text>
+              <text class="text-bold">{{data.XXMC}}</text>
               进行了教育督导，发现该学校(幼儿园)存在以下问题：
             </view>
-            <view>{{data.XSNR}}</view>
+            <view class="text-bold">{{data.XSNR}}</view>
             <view>
               请贵科室（中心）予以支持、配合、协调解决!
             </view>
