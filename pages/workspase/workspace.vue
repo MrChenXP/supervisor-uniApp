@@ -33,16 +33,11 @@
     </view>
     <!-- 功能 -->
     <view class="gn" >
-    	<kw-list-cell v-for="(item, index) in products" :title="item.PRO_MC" v-bind:key="index" :note="item.PRO_DESC" :redDot="true"
+    	<kw-list-cell v-for="(item, index) in products" :title="item.PRO_MC" v-bind:key="index" :note="item.PRO_DESC" 
+          :red-dot=redDot[item.PRO_ID]
     	    :thumb="item.THUMB" :link="item.LINK"></kw-list-cell>
-      <!-- <kw-list-cell title="现场督导" note="对学校的...现场监督指导"
-          thumb="../../static/images/icons/video.png"></kw-list-cell>
-      <kw-list-cell title="工作计划" note="关于...的工作安排和计划"
-          thumb="../../static/images/icons/jsb.png"></kw-list-cell>
-      <kw-list-cell title="听课记录" :border="{bottom:false}" note="选择学校听课记录" :redDot="true"
-          thumb="../../static/images/icons/edit.png"></kw-list-cell> -->
     </view>
-	<kw-login v-if="loginShow" @loginSuccess="loginSuccess" @closeLogin="closeLogin" ></kw-login>
+    <kw-login v-if="loginShow" @loginSuccess="loginSuccess" @closeLogin="closeLogin" ></kw-login>
 	</view>
 </template>
 <script>
@@ -61,6 +56,7 @@
 			return {
 				msg: "...",
 				loginShow: false,
+        // 统计数据
 				tips: {
 					// 我的代办
 					wddb: 0,
@@ -71,6 +67,8 @@
 					// 验收数
 					yss: 0
 				},
+        // 提示红点显示隐藏
+        redDot:{},
 				products : []
 			};
 		},
@@ -113,23 +111,28 @@
 				this.$kwz.ajax.ajaxUrl({
 					url: 'ddGztx/open/getTxData',
 					data: {
-						TXSET: '{"b892eba5fae9493189ac81a510bbbd73":"DDGZAP","ebc60e699bc642a1871f1e017b979483":"DDJL","3758a16aa4e14b3d87bb1f9c7e2fc509":"DDZGTZ","2bc72d87d12e4386b115f301bc4aeda7":"DDHY"}'
+						TXSET: '{"b892eba5fae9493189ac81a510bbbd73":"DDGZAP","ebc60e699bc642a1871f1e017b979483":"DDJL","3758a16aa4e14b3d87bb1f9c7e2fc509":"DDZGTZ","2bc72d87d12e4386b115f301bc4aeda7":"DDHY","SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1":"SJDDJL","cd5235ad9e2d463a9af919de06dcfb06":"TKJL"}'
 					},
 					vue: this,
 					success (data) {
-						let datas = data.datas;
+						let datas = data.datas
 						if(datas) {
+              console.log(datas)
+              // 将返回的pro_id赋值给redDot 循环中根据pro_id进行判断红点显示隐藏
+              this.redDot= datas
+              // (我的待办)
 							let wddb = 0
+              // 整改工作
+                wddb += datas['3758a16aa4e14b3d87bb1f9c7e2fc509']	|| 0
+              // 督导记录
+                wddb += datas['ebc60e699bc642a1871f1e017b979483']	|| 0
 							// 工作安排
-							wddb += datas['b892eba5fae9493189ac81a510bbbd73'] || 0	
-							// 督导记录
-							wddb += datas['ebc60e699bc642a1871f1e017b979483'] || 0	
-							// 整改工作
-							wddb += datas['3758a16aa4e14b3d87bb1f9c7e2fc509'] || 0	
+                wddb += datas['b892eba5fae9493189ac81a510bbbd73']	|| 0
+              // 提示数据
 							this.tips = {
 								wddb,
-								cxcs: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0,
-								tkcs: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0,
+								cxcs: datas['SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1'] || 0,
+								tkcs: datas['cd5235ad9e2d463a9af919de06dcfb06'] || 0,
 								yss: datas['2bc72d87d12e4386b115f301bc4aeda7'] || 0
 							}
 						}

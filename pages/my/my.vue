@@ -18,7 +18,7 @@
    
     <!-- 功能 -->
     <view class="gn">
-      <kw-login-cell title="个人设置" thumb="../../static/images/icons/set.png" link="/pages/my/user-set" ></kw-login-cell>
+      <kw-login-cell title="个人资料" thumb="../../static/images/icons/set.png" link="/pages/my/user-set" ></kw-login-cell>
       <kw-login-cell title="修改密码" thumb="../../static/images/icons/change.png" link="/pages/my/revise-password" ></kw-login-cell>
       <kw-login-cell title="切换机构" :border="{bottom:false}" thumb="../../static/images/icons/repeat.png" link="/pages/my/revise-institution" ></kw-login-cell>
     </view>
@@ -34,8 +34,10 @@
 <script>
 	import KwLogin from "@kwz/kw-ui/kw-login.vue"
   import KwLoginCell from "@kwz/kw-ui/kw-list-cell.vue"
+
 	export default {
     name: "kw-my",
+		components: {KwLoginCell,KwLogin},
 		data() {
 			return {
 				msg: "...",
@@ -47,7 +49,20 @@
       this.loginShow = !this.$kwz.isLogin()
 			this.loadIndexData();
 		},
-		components: {KwLoginCell,KwLogin,},
+    computed:{
+    	// 个人资料权限  暂时无用。因为需要pro_id
+    	hasXzAuth () {
+    		return this.$kwz.hasAuth('dd_dxgl/toGrzl')
+    	},
+    	// 修改密码权限
+    	hasXgAuth () {
+    		return this.$kwz.hasAuth('ddjl/doEdit')
+    	},
+    	// 切换机构权限
+    	hasScAuth () {
+    		return this.$kwz.hasAuth('ddjl/deleteddjl')
+    	}
+    },
 		methods: {
 			// 加载工作区数据
 			loadIndexData () {

@@ -242,7 +242,7 @@
 				}
 				if (ids.length > 0) {
 					this.$kwz.ajax.ajaxUrl({
-						url: 'dd_zgxs/doDeleteBatch/ZGTZ',
+						url: 'jc_content/doDelete/DDJL',
 						type: 'POST',
 						data: {
 							ids: ids.join(',')

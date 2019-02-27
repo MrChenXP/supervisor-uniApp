@@ -16,7 +16,12 @@
       "link": "/pages/gzjh/gzjh",
 			"icon": "../../static/images/icons/jsb.png",
 			"comments": "工作计划"
-		}]
+		},{
+      "funId": "5f0c4c3eb30b4e8b9bb7d8ebe3dd66b4",
+      "link": "/pages/tkjl/tkjl",
+      "icon": "../../static/images/icons/edit.png",
+      "comments": "听课记录"
+    }]
 	}],
 	"comments": "本文件不能添加//或/**/注释，否则会报错。tkjl funid:5f0c4c3eb30b4e8b9bb7d8ebe3dd66b4 icon:../../static/images/icons/edit.png"
 }

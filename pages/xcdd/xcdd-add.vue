@@ -16,9 +16,6 @@
         <view v-show="ddjsShow" class="ddjs-body">
           <kw-editor :content="ddjs"></kw-editor>
         </view>
-				<!-- <view v-show="ddjsShow" class="ddjs-body">
-				  <kw-editor :content="ddjs"></kw-editor>
-				</view> -->
       </view>
     </kw-list-cell>
     <kw-list-cell v-if="pgAuth && ddpgShow" :isArrow="false">
