@@ -121,7 +121,6 @@
 				// 时段代码
 				this.$kwz.loadVueDms('DM_SD', dms => {
 					this.sdList = dms.DM_SD
-				
 					// 评估标准
 					this.$kwz.ajax.ajaxUrl({
 						url: 'dd_gzap/doSelectPgbz/DDPGBZ',
@@ -266,7 +265,7 @@
 						REMARK: this.remark,
 						BZID: this.pjValue.value,
 						ORG_ID: this.xx.value,
-						AUTHOR: this.user.name
+						AUTHOR: this.loginUser.name
 					},
 					vue: this,
 					then (response) {

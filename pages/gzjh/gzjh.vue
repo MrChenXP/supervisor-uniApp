@@ -208,13 +208,9 @@
       				}
       				this.deleteParam = deleteParam
       				if (type) {
-                console.log(1)
       					this.dataList = datas;
-                console.log(this.dataList)
       				} else {
-                console.log(2)
       					this.dataList.push(...datas)
-                console.log(this.dataList)
       				}
       			}
       		}

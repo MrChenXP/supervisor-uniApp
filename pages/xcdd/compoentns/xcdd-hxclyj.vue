@@ -142,7 +142,7 @@
 							ZGXSMC: this.hxcly.name,
 							XSNR: this.czwt,
 							YWSJ: this.ywsj,
-							YWID: contenId,
+							YWID: contentId,
 							IS_SB: isSb // 是否上报
 						},
 						then (response) {
