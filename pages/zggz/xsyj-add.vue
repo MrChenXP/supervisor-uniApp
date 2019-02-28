@@ -20,8 +20,8 @@
       <view>
         <!-- <view class="ddjs-head clearfix" @click="xsyjShow = !xsyjShow">
           <text class="fl">填写协商意见</text>
-          <view class="fr" v-show="!xsyjShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="xsyjShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!xsyjShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="xsyjShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view> -->
         <view class="ddjs-body">
           <view>

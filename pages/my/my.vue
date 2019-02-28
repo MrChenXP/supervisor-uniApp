@@ -8,7 +8,7 @@
         <image class="info-img" src="../../static/images/DefaultImg.png"></image>
         <view>
           <view class="name-zw">
-            <text class="name">{{user.name}}</text>
+            <text class="name text-bold">{{user.name}}</text>
             <text class="zw">{{user.ddlx}}</text>
           </view>
           <view class="info-jg">机构：{{user.orgMc}}</view>
@@ -124,14 +124,15 @@
        .name-zw{
          display: flex;
          line-height: 80upx;
-         color: white;
          .name{
-           font-size: 34upx;
+           font-size: 36upx;
+           color: white;
          }
          .zw{
+           color: white;
            font-size: 24upx;
            margin-left: 30upx;
-           width: 125upx;
+           width: 140upx;
            height: 44upx;
            line-height: 44upx;
            background: #fdab3b;

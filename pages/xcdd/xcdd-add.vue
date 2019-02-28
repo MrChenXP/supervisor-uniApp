@@ -10,8 +10,8 @@
       <view>
         <view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
           <text class="fl">督导纪实</text>
-          <view class="fr" v-show="!ddjsShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!ddjsShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="ddjsShow" class="ddjs-body">
           <kw-editor :content="ddjs"></kw-editor>
@@ -37,8 +37,8 @@
 		  <view>
 		    <view class="ddjs-head clearfix" @click="zlcjShow = !zlcjShow">
 		      <text class="fl">资料采集</text>
-		      <view class="fr" v-show="!zlcjShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-		      <view class="fr" v-show="zlcjShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+		      <view class="fr" v-show="!zlcjShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+		      <view class="fr" v-show="zlcjShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
 		    </view>
 		    <view v-show="zlcjShow" class="ddjs-body">
 					<view>
@@ -63,8 +63,8 @@
       <view>
         <view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
           <text class="fl">典型经验和做法</text>
-          <view class="fr" v-show="!jyzfShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="jyzfShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!jyzfShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="jyzfShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="jyzfShow" class="ddjs-body">
           <textarea :value="dxjyzfHide" maxlength="4000" @input="blurDxjyzf"></textarea>
@@ -75,8 +75,8 @@
       <view>
         <view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
           <text class="fl">存在问题</text>
-          <view class="fr" v-show="!czwtShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="czwtShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!czwtShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="czwtShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="czwtShow" class="ddjs-body">
           <textarea :value="czwtHide" maxlength="4000" @input="blurCzwt"></textarea>

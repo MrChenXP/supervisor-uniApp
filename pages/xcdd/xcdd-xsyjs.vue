@@ -21,8 +21,8 @@
       <view>
         <view class="cljg-head clearfix" @click="cljgShow = !cljgShow">
           <text class="fl">处理结果</text>
-          <view class="fr" v-show="!cljgShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="cljgShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!cljgShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="cljgShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="cljgShow" class="cljg-body">
           <view class="cljg-text">

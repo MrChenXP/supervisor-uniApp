@@ -11,12 +11,12 @@
     <picker :range="pjList" @change="changePj" range-key="name" :value="pjValue.index" >
       <kw-list-cell title="规定任务评价" :rightNote="pjValue.name"></kw-list-cell>
     </picker>
-    <kw-list-cell :isArrow=false>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
           <text class="fl">督导事项</text>
-          <view class="fr" v-show="!ddsxShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="ddsxShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!ddsxShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="ddsxShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="ddsxShow" class="ddjs-body">
           <kw-editor :content="ddsx"></kw-editor>

@@ -17,8 +17,8 @@
       <view>
         <!-- <view class="ddjs-head clearfix" @click="zggzShow = !zggzShow">
           <text class="fl">填写整改工作</text>
-          <view class="fr" v-show="!zggzShow"><uni-icon type="arrowdown" size="25"></uni-icon></view>
-          <view class="fr" v-show="zggzShow"><uni-icon type="arrowup" size="25"></uni-icon></view>
+          <view class="fr" v-show="!zggzShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+          <view class="fr" v-show="zggzShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view> -->
         <view class="ddjs-body">
           <view>
@@ -84,7 +84,8 @@
       // 发送权限
       hasFsAuth () {
       	return this.$kwz.hasAuth('dd_zgxs/doAddtzyj')
-      },// 审核权限
+      },
+      // 审核权限
       hasShAuth () {
       	return this.$kwz.hasAuth('dd_zgxs/zgtz_sh')
       }

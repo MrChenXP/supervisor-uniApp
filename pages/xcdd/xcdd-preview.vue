@@ -9,10 +9,10 @@
 				<view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
 					<text class="fl">督导事项</text>
 					<view class="fr" v-show="!ddsxShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="ddsxShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="ddsxShow" class="ddjs-body">
@@ -25,10 +25,10 @@
 				<view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
 					<text class="fl">督导纪实</text>
 					<view class="fr" v-show="!ddjsShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="ddjsShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="ddjsShow" class="ddjs-body">
@@ -42,10 +42,10 @@
 				<view class="ddjs-head clearfix" @click="pgjgShow = !pgjgShow">
 					<text class="fl">评估结果</text>
 					<view class="fr" v-show="!pgjgShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="pgjgShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="pgjgShow" class="ddjs-body">
@@ -58,10 +58,10 @@
 				<view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
 					<text class="fl">亮点</text>
 					<view class="fr" v-show="!jyzfShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="jyzfShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="jyzfShow" class="ddjs-body">
@@ -74,10 +74,10 @@
 				<view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
 					<text class="fl">存在问题</text>
 					<view class="fr" v-show="!czwtShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="czwtShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="czwtShow" class="ddjs-body">
@@ -90,10 +90,10 @@
 				<view class="ddjs-head clearfix" @click="zgbgShow = !zgbgShow">
 					<text class="fl">整改报告</text>
 					<view class="fr" v-show="!zgbgShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="zgbgShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="zgbgShow" class="ddjs-body">
@@ -106,10 +106,10 @@
 				<view class="ddjs-head clearfix" @click="hxclyjShow = !hxclyjShow">
 					<text class="fl">后续处理意见</text>
 					<view class="fr" v-show="!hxclyjShow">
-						<uni-icon type="arrowdown" size="25"></uni-icon>
+						<uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 					<view class="fr" v-show="hxclyjShow">
-						<uni-icon type="arrowup" size="25"></uni-icon>
+						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
 				<view v-show="hxclyjShow" class="ddjs-body">
