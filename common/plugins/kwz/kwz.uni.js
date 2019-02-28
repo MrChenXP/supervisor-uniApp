@@ -154,13 +154,15 @@ const kwz = {
 		// 执行ajax处理
 		ajaxUrl(op) {
 			let sc = op.success
+			let then = op.then
+			delete op.then
 			op.success = (data) => {
 				if('200' == data.statusCode) {
 					if(typeof sc == 'function'){
 						sc.apply(op.vue || this, [data])
 					}
-					if (typeof(op.then) === 'function') {
-						op.then.apply(op.vue || this, [data])
+					if (typeof(then) === 'function') {
+						then.apply(op.vue || this, [data])
 					}	
 				}
 			}
