@@ -5,7 +5,7 @@
     <kw-list-cell title="小组成员" :rightNote="SXDXMC"></kw-list-cell>
     <kw-list-cell title="确认参加成员" :rightNote="QRSXDXMC"></kw-list-cell>
 		<kw-list-cell :show="pgmcShow" title="规定任务评价" :rightNote="PGMC"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
           <text class="fl">督导事项</text>
@@ -157,7 +157,7 @@
       height: 55upx;
     }
   .ddjs-body{
-      border:#D9D9D9 solid 2upx;
+      // border:#D9D9D9 solid 2upx;
       textarea{
         width: 100%;
       }

@@ -6,7 +6,7 @@
     <picker :range="ywsj" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="ywsj"></kw-list-cell>
     </picker>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
           <text class="fl">督导纪实</text>
@@ -16,23 +16,24 @@
         <view v-show="ddjsShow" class="ddjs-body">
           <kw-editor :content="ddjs"></kw-editor>
         </view>
-				<!-- <view v-show="ddjsShow" class="ddjs-body">
-				  <kw-editor :content="ddjs"></kw-editor>
-				</view> -->
       </view>
     </kw-list-cell>
-    <kw-list-cell v-if="pgAuth && ddpgShow">
+    <kw-list-cell v-if="pgAuth && ddpgShow" :isArrow="false">
       <view>
-        <view class="ddjs-head clearfix">
-          <text class="fl">规定任务评价</text>
-          <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
-					<view>
-						<uni-rate value="3" ></uni-rate>
+        <view class="ddjs-head clearfix pg">
+          <view class="clearfix">
+            <text class="fl">规定任务评价</text>
+            <view class="fr"><button size="mini" type="warn" @click="toDdpg">去评估</button></view>
+          </view>
+					<view class="clearfix">
+						<!-- <uni-rate value="3" ></uni-rate> -->
+            <text class="fl">标准名称</text>
+            <view class="fr"><uni-rate value="3" ></uni-rate></view>
 					</view>
         </view>
       </view>
     </kw-list-cell>
-		<kw-list-cell>
+		<kw-list-cell :isArrow="false">
 		  <view>
 		    <view class="ddjs-head clearfix" @click="zlcjShow = !zlcjShow">
 		      <text class="fl">资料采集</text>
@@ -58,7 +59,7 @@
 		    </view>
 		  </view>
 		</kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
           <text class="fl">典型经验和做法</text>
@@ -70,7 +71,7 @@
         </view>
       </view>
     </kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
           <text class="fl">存在问题</text>
@@ -83,7 +84,20 @@
       </view>
     </kw-list-cell>
     <picker :range="hxclyjList" :value="hxclyj.index" range-key="name" @change="changeHxcly">
-      <kw-list-cell title="后续处理意见" :rightNote="hxclyj.name"></kw-list-cell>
+      <kw-list-cell>
+        <view>
+          <view class="ddjs-head clearfix pg">
+            <view class="clearfix">
+              <text class="fl">后续处理意见</text>
+              <text class="fr">{{hxclyj.name}}</text>
+            </view>
+        		<view class="clearfix">
+              <text class="fl">整改协商编号</text>
+              <text class="fr">ddeddddd</text>
+        		</view>
+          </view>
+        </view>
+      </kw-list-cell>
     </picker>
 		<kw-list-cell :show="hxclyjXwt">
 		  <view>
@@ -118,15 +132,15 @@
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectGzjh from "./compoentns/xcdd-select-gzjh.vue"
-  import XcddSelectSchool from "./compoentns/xcdd-select-school.vue"
-  import XcddSelectSxdx from "./compoentns/xcdd-select-sxdx.vue"
+  import XcddSelectGzjh from "@kwz/kw-ui/xcdd-select-gzjh.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniIcon, uniRate,uniNumberBox } from "@dcloudio/uni-ui"
+  import {uniNumberBox} from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,uniIcon,KwEditor,uniRate,uniNumberBox },
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox},
 		data() {
 			return {
 				contentId: '',
@@ -268,18 +282,13 @@
 				let gzjh = e.data
 				if(gzjh) {
 					this.gzjh.value = gzjh.value
-					
 					this.xx.name = gzjh.data.XXMC
 					this.xx.value = gzjh.data.ORG_ID_TARGET
-					
 					this.sxdx.name = gzjh.data.CJID_MC
 					this.sxdx.value = gzjh.data.CJID
-					
 					this.ywsj = gzjh.data.YWSJ && gzjh.data.YWSJ.length > 10 ? gzjh.data.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
-					
 					let gzjhMc = `${this.xx.name}/${this.sxdx.name}/${this.ywsj}`
 					this.gzjh.name = gzjhMc.length > 20 ? (gzjhMc.substr(0, 19) + '...') : gzjhMc
-					
 					// this.setDdjs(gzjh.data.TXT)
 					if (gzjh.data.BZID) {
 						this.ddpgShow = true
@@ -348,7 +357,7 @@
 				this.sxdx.value = sxdxIds.join(',')
 				this.sxdxShow = false
 			},
-			// 获取督导纪实内容
+			// 获取督导纪实内容 将ddjs转成html
 			getDdjs () {
 				let ddjs = [this.ddjs.content]
 				if(this.ddjs.images && this.ddjs.images.length > 0) {
@@ -361,7 +370,7 @@
 				}
 				return ddjs.join('')
 			},
-			// 设置督导纪实内容
+			// 设置督导纪实内容 将html转成ddjs
 			setDdjs (html) {
 				let ddjs = []
 				let ddjsImage = []
@@ -397,7 +406,6 @@
 						this.hxclyj.index = index
 						this.hxclyj.name = this.hxclyjList[index].name
 						this.hxclyj.value = this.hxclyjList[index].value
-						
 						this.hxclyjShow = true
 					}
 					this.hxclyjXwt = false
@@ -442,6 +450,7 @@
       // 后续处理意见点 确认
       confirmHxclyj (e) {
 				this.deleteDisposeIdeaId(e.callback)
+        // this.hxclyjShow = true
       },
 			// 关闭后续处理意见==》恢复打开之前的值
 			closeHxclyj (e) {
@@ -562,7 +571,7 @@
 					})
 				}
 			},
-			// 保存督导评估
+			// 保存督导
 			saveXcdd (sfXq) {
 				let xcddData = {
 					ORG_ID: this.xx.value,
@@ -661,20 +670,16 @@
 								}
 								this.sxdx.name = datas.USERNAME
 								this.sxdx.value = datas.USERID
-								
 								this.dxjyzfHide = datas.DXJY || ''
 								this.dxjyzf = datas.DXJY || ''
-
 								this.czwtHide = datas.CZWT || ''
 								this.czwt = datas.CZWT || ''
-								
 								this.cyzl = datas.CYZL || 0
 								this.lxhy = datas.LXHY || 0
 								this.ztzf = datas.ZTZF || 0
 								this.wjdc = datas.WJDC || 0
 								this.xyxs = datas.XYXS || 0
 								this.pgid = datas.PGID
-								
 								this.setDdjs(datas.DDJS)
 							}
 						}
@@ -756,6 +761,12 @@
       textarea{
         width: 100%;
       }
+  }
+  .pg{
+    height: 110upx;
+    .fr{
+      color:#0580c2;
+    }
   }
   .save{
     width: 710upx;

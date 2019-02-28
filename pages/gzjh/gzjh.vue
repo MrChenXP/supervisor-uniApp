@@ -21,16 +21,10 @@
       <view class="add fr" @click="$kwz.router({url: 'gzjh-add'})">新增</view>
     </view>
     <!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="toPreview(item.CONTENT_ID)">
-          <!-- <label>
-            <view class="check" v-if="!deleteShow">
-              <checkbox :checked="deleteParam[item.CONTENT_ID]" 
-                @tap.stop="checkAction(item.CONTENT_ID)" />
-            </view>
-          </label> -->
           <view class="info">
             <view>
               <label v-if="!deleteShow">
@@ -46,14 +40,12 @@
               <view class="fr">{{item.DDSD}}</view>
             </view>
             <view class="clearfix time">
-              <text>{{item.TXT}}</text>
+              <text class="color-999">{{item.TXT}}</text>
             </view>
             <view class="clearfix status">
               <view v-if="!!item.BZMC" class="fl clyj">
                 <uni-tag :text="item.BZMC" size="small" type="primary"></uni-tag>
               </view>
-              <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
-              <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
               <view v-if="item.STATUS == '1'" class="fr bj">
                 <uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
               </view>
@@ -244,7 +236,7 @@
       	}
       	if (ids.length > 0) {
       		this.$kwz.ajax.ajaxUrl({
-      			url: 'dd_zgxs/doDeleteBatch/ZGTZ',
+      			url: 'dd_gzap/doDelete',
       			type: 'POST',
       			data: {
       				ids: ids.join(',')
@@ -361,16 +353,6 @@
             border-color: #dcf0c7;
             color: #68ae1d;
           }
-//           .zgz .uni-tag{
-//             background-color: #f7e6c1;
-//    别删         border-color: #f7e6c1;
-//             color: #f27506;
-//           }
-//           .yys .uni-tag{
-//             background-color: #d6f1fb;
-//             border-color: #d6f1fb;
-//             color: #109dea;
-//           }
           .bj .uni-tag{
             border-color: #00bdfd;
             color: #00bdfd;

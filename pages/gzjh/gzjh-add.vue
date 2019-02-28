@@ -11,7 +11,7 @@
     <picker :range="pjList" @change="changePj" range-key="name" :value="pjValue.index" >
       <kw-list-cell title="规定任务评价" :rightNote="pjValue.name"></kw-list-cell>
     </picker>
-    <kw-list-cell>
+    <kw-list-cell :isArrow=false>
       <view>
         <view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
           <text class="fl">督导事项</text>
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
   import XcddSelectSxdx from "../xcdd/compoentns/xcdd-select-sxdx.vue"
@@ -114,7 +113,7 @@
 				})
 			}
 		},
-    components:{uniBadge,uniTag,uniIcon,KwListCell,XcddSelectSchool,XcddSelectSxdx,KwEditor},
+    components:{KwListCell,XcddSelectSchool,XcddSelectSxdx,KwEditor},
     methods:{
 			// 加载规定任务评价列表
 			init () {

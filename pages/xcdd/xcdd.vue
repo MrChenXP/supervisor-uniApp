@@ -21,8 +21,8 @@
 			<view class="add fr" @click="$kwz.router({url: 'xcdd-add'})" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
 			<!-- 单项列表 -->
 			<view class="list" v-for="(item, index) in dataList" :key="index"  @click="toPreview(item.CONTENT_ID)">
 				<view class="info">
@@ -42,18 +42,6 @@
 						<view v-if="true" class="fl clyj" @click.stop="toZgxs(item.STATUS,item.IDS)">
 							<uni-tag :text="item.STATUS_MC" size="small" type="primary"></uni-tag>
 						</view>
-						<!-- <view v-if="false" class="fl zgz">
-							<uni-tag text="整改中" size="small" type="primary"></uni-tag>
-						</view>
-						<view v-if="false" class="fl yys">
-							<uni-tag text="已验收" size="small" type="primary"></uni-tag>
-						</view> -->
-						<!-- <view v-if="item.STATUS == '2' || item.STATUS === '5' " class="fr bj">
-							<uni-tag text="发送整改通知" size="small" circle="true" inverted="true" type="primary" @click="toZgtz(item.IDS)"></uni-tag>
-						</view>
-						<view v-if="item.STATUS == '3' " class="fr bj">
-							<uni-tag text="发送协商意见" size="small" circle="true" inverted="true" type="primary" @click="toXsyj(item.IDS)"></uni-tag>
-						</view> -->
 						<view v-if="hasXgAuth" class="fr bj" @click.stop="toDetail(item.CONTENT_ID)">
 							<uni-tag text="编辑" size="small" circle="true" inverted="true" type="primary"></uni-tag>
 						</view>
@@ -355,17 +343,6 @@
 						border-color: #dcf0c7;
 						color: #68ae1d;
 					}
-
-					//           .zgz .uni-tag{
-					//             background-color: #f7e6c1;
-					//    别删         border-color: #f7e6c1;
-					//             color: #f27506;
-					//           }
-					//           .yys .uni-tag{
-					//             background-color: #d6f1fb;
-					//             border-color: #d6f1fb;
-					//             color: #109dea;
-					//           }
 					.bj .uni-tag {
 						border-color: #00bdfd;
 						color: #00bdfd;

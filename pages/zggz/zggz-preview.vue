@@ -2,15 +2,15 @@
 	<view class="child-content">
     <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
     <kw-list-cell title="单位" :rightNote="data.XXMC"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-body">
           <view>
             <view>经挂牌督导，你单位存在以下问题:</view>
-            <view>{{data.XSNR}}</view>
+            <view class="text-bold">{{data.XSNR}}</view>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-              <text>{{data.CLQX}}</text>
+              <text class="text-bold">{{data.CLQX}}</text>
               日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
             </view>
           </view>
@@ -20,7 +20,7 @@
     <kw-list-cell title="日期" :rightNote="data.RQ"></kw-list-cell>
     <kw-list-cell title="处理状态" :rightNote="data.CLZTMC"></kw-list-cell>
     <!-- 处理结果 -->
-    <kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <view class="ddjs-head clearfix" @click="cljgShow = !cljgShow">
           <text class="fl">处理结果</text>
@@ -32,28 +32,28 @@
            <kw-editor :content="ddjs"></kw-editor>
           </view>
           <view v-if="detailShow">
-           <rich-text :nodes="data.CLBG"></rich-text>
+           <kw-editor-preview :content="ddjs"></kw-editor-preview>
           </view>
         </view>
       </view>
     </kw-list-cell>
     <!-- 处理和确认整改完成 -->
     <view class="save" v-if="SF != undefined">
-      <button @click="fn_zggz_zgtzs_dispose" v-if="resultShow" 
+      <button @click="fn_zggz_zgtzs_dispose" v-if="resultShow && hasClAuth" 
         >处理</button>
-      <button @click="changeStatue('6')" v-if="data.CLZTDM < '6'"
+      <button @click="changeStatue('6')" v-if="data.CLZTDM < '6' && hasYsAuth"
         v-show="SF === 'dx'">确认整改完成</button>
     </view>
 	</view>
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
+  import KwEditorPreview from "@kwz/kw-ui/kw-editor-preview.vue"
 
 	export default {
-    components:{uniBadge,uniTag,uniIcon,KwListCell,KwEditor},
+    components:{KwListCell,KwEditor,KwEditorPreview},
 		data() {
 			return {
         // 表单数据
@@ -64,11 +64,10 @@
           CLQX:"",
           RQ:"",
           CLZTMC:"",
+          CLBG:[]
         },
         // 处理结果显示隐藏
         cljgShow:false,
-        // 学校填写处理的值
-        disposeResultData: '',
         // 已处理的详情页显示隐藏
         detailShow: false,
         // 编辑页显示隐藏
@@ -83,6 +82,16 @@
       this.SF = query.SF
       this.loadData()
 		},
+    computed:{
+      // 处理权限
+      hasClAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doUpdate/XSYJ')
+      },
+      // 确认整改(验收)权限
+      hasYsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_done')
+      }
+    },
     methods:{
       // 获取功能权限
       getPermission (url) {
@@ -101,15 +110,11 @@
             let datas = response.datas
             if (datas && datas.ZGXSID) {
               this.data = datas
-              // 整改工作的处理结果
-              if (datas.CLBG !== null) {
-                this.disposeResultData = datas.CLBG
-              }
+              this.setDdjs(this.data.CLBG)
               // 是学校且状态不是整改完成
               if (this.SF === 'xx' && datas.CLZTDM < '6') {
                 // 处理结果按钮
                 this.resultShow = true
-                this.setDdjs(this.data.CLBG)
               }
               // 是督学且状态是整改完成
               if (this.SF === 'dx' || datas.CLZTDM === '6') {
@@ -131,35 +136,43 @@
           }
         })
       },
+      // 获取督导纪实内容 将ddjs转成html
+      getDdjs () {
+      	let ddjs = [this.ddjs.content]
+      	if(this.ddjs.images && this.ddjs.images.length > 0) {
+      		let images = this.ddjs.images
+      		for(let i = 0;i < images.length; i++) {
+      			ddjs.push('<p><img src="')
+      			ddjs.push(images[i].imageUrl)
+      			ddjs.push('" ></p>')
+      		}
+      	}
+      	return ddjs.join('')
+      },
+      // 设置督导纪实内容 将html转成ddjs
       setDdjs (html) {
-        // console.log(html)
       	let ddjs = []
+      	let ddjsImage = []
       	let ddjsSplit = this.$kwz.splitHtml(html)
-        // console.log(ddjsSplit)
       	if (ddjsSplit && ddjsSplit.length > 0) {
       		for (let i in ddjsSplit) {
       			let content = ddjsSplit[i]
       			if (content.content) {
-      				ddjs.push({
-      					type: 'textarea',
-      					content: content.content
-      				})
+      				ddjs.push(content.content)
       			}
       			if (content.imageUrl) {
-      				ddjs.push({
+      				ddjsImage.push({
       					type: 'image',
       					content: content.imageUrl,
       					imageUrl: content.realUrl
       				})
       			}
       		}
-      	} else {
-      		ddjs.push({
-      			type: 'textarea',
-      			content: ''
-      		})
       	}
-      	this.ddjs = ddjs
+      	this.ddjs = {
+      		content: ddjs.join(''),
+      		images: ddjsImage
+      	}
       },
       // 改变处理状态
       changeStatue (status) {
@@ -181,7 +194,7 @@
       },
       // 点击处理事件(学校才有)
       fn_zggz_zgtzs_dispose () {
-        if (!this.data.disposeResultData) {
+        if (!this.ddjs) {
           this.$kwz.alert('请填写处理结果')
           return
         }
@@ -189,7 +202,7 @@
           url: 'dd_zgxs/doUpdate/ZGTZ',
           type: 'POST',
           data: {
-            CLBG: this.data.disposeResultData,
+            CLBG: this.getDdjs(),
             CMS_LMTYPE: '2',
             IS_PHONE: '2',     // 标记此内容是来自手机端
             ZGXSID: this.data.ZGXSID,

@@ -17,17 +17,17 @@
 			<view class="xs" @click="$kwz.redirect({url: 'xsyj'})">协商</view>
 		</view>
 		<!-- 功能(新增删除) -->
-		<view class="gn">
-			<view class="check fl" v-if="!deleteShow">
+		<view class="gn" v-if="hasScAuth || hasXzAuth">
+			<view class="check fl" v-if="!deleteShow && hasScAuth">
 				<radio :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</radio>
 			</view>
-			<view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
-			<view class="delete fl" v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-			<view class="add fr" @click="toAdd('add')">新增</view>
+			<view class="delete fl" v-if="deleteShow && hasScAuth" @click="deleteAction">删除</view>
+			<view class="delete fl" v-if="!deleteShow && hasScAuth" @click="confirmDeleteAction">确认删除</view>
+			<view class="add fr" @click="toAdd('add')" v-if="hasXzAuth">新增</view>
 		</view>
 		<!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
 			<!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="toZgxs(item.ZGXSID)">
           <view class="info">
@@ -59,7 +59,7 @@
               </view>
               -->
               <view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
-                <uni-tag text="审核" size="small" circle="true" 
+                <uni-tag text="审核" size="small" circle="true" v-if="hasShAuth"
                   inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
                 <!-- <uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
                     inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag> -->
@@ -68,10 +68,10 @@
                 <uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
               </view>
               <view class="fr ys" v-else>
-                <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
-                  v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1')" @click="toZgxs(item.ZGXSID, 'xx')"></uni-tag>
+                <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary"  @click="toZgxs(item.ZGXSID, 'xx')"
+                  v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1') && hasClAuth"></uni-tag>
                 <uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"
-                  v-if="item.CLZTDM < 6" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
+                  v-if="item.CLZTDM < 6 && hasYsAuth" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
               </view>
             </view>
           </view>
@@ -125,7 +125,27 @@
 		computed: {
 			user () {
 				return this.$kwz.getLoginUser()
-			}
+			},
+      // 新增权限
+      hasXzAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/toZgtz/ZGTZ')
+      },
+      // 删除权限
+      hasScAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doDeleteBatch/ZGTZ')
+      },
+      // 审核权限
+      hasShAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_sh')
+      },
+      // 处理权限
+      hasClAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_deal')
+      },
+      // 验收权限
+      hasYsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_done')
+      }
 		},
 		components: {
 			KwSearch,

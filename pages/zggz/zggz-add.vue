@@ -1,14 +1,19 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="编号" :rightNote="data.BH"></kw-list-cell>
-    <kw-list-cell v-if="!data.ZGXSID" title="学校" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
-    <kw-list-cell v-else title="学校" :rightNote="data.XXMC"></kw-list-cell>
+    <kw-list-cell title="编号" v-if="!data.ZGXSID" >
+      <view slot="rightNote">
+        <view class="bh"><input :value="data.BH" /></view>
+      </view>
+    </kw-list-cell>
+    <kw-list-cell v-else title="编号" :rightNote="data.BH" :isArrow="false" ></kw-list-cell>
+    <kw-list-cell v-if="!data.ZGXSID" title="学校/单位" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
+    <kw-list-cell v-else title="学校/单位" :rightNote="data.XXMC" :isArrow="false"></kw-list-cell>
     <picker v-if="!data.ZGXSID" :range="data.YWSJ" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
-    <kw-list-cell v-else title="时间" :rightNote="data.YWSJ"></kw-list-cell>
-    <kw-list-cell title="督学" :rightNote="loginUser.name"></kw-list-cell>
-    <kw-list-cell>
+    <kw-list-cell v-else title="时间" :rightNote="data.YWSJ" :isArrow="false"></kw-list-cell>
+    <kw-list-cell title="督学" :rightNote="loginUser.name" :isArrow="false"></kw-list-cell>
+    <kw-list-cell :isArrow="false">
       <view>
         <!-- <view class="ddjs-head clearfix" @click="zggzShow = !zggzShow">
           <text class="fl">填写整改工作</text>
@@ -18,10 +23,10 @@
         <view class="ddjs-body">
           <view>
             <view>经挂牌督导，你单位存在以下问题:</view>
-            <textarea maxlength="4000" :value="data.XSNR"></textarea>
+            <textarea maxlength="4000" :value="data.XSNR" @input="changeCzwt"></textarea>
             <view>
               对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-              <input :value="data.CLQX"/>
+              <uni-number-box :value="data.CLQX" @change="changeClqx"></uni-number-box>
               日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
             </view>
           </view>
@@ -30,8 +35,8 @@
     </kw-list-cell>
     <view class="save">
       <button @click="fn_ddjs_send">
-        <text v-if="data.ZGXSID">审核</text>
-        <text v-else>发送</text>
+        <text v-if="data.ZGXSID && hasShAuth">审核</text>
+        <text v-if="!data.ZGXSID && hasFsAuth">发送</text>
       </button>
     </view>
     
@@ -43,12 +48,17 @@
 </template>
 
 <script>
-  import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import {uniNumberBox} from "@dcloudio/uni-ui"
+
 	export default {
 		data() {
 			return {
+         // 学校显示隐藏
+        schoolShow:false,
+        // 整改详情显示隐藏
+        zggzShow:false,
         // 表单数据
         data: {
           BH: '',
@@ -57,21 +67,27 @@
           YWSJ: '', // 业务时间
           XSNR: '', // 协商内容
           CLQX: 3, // 处理期限
-          
           zgValue: [],
           ZGXSID: ''
         },
-        // 学校显示隐藏
-        schoolShow:false,
-        // 整改详情显示隐藏
-        zggzShow:false
+        // 存在问题值
+        czwt:""
 			};
 		},
-    components:{uniBadge,uniTag,uniIcon,KwListCell,XcddSelectSchool},
+    components:{KwListCell,XcddSelectSchool,uniNumberBox},
     onLoad(query) {
     	this.loginUser = this.$kwz.getLoginUser()
       this.data.ZGXSID = query.id
       this.initPage()
+    },
+    computed:{
+      // 发送权限
+      hasFsAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/doAddtzyj')
+      },// 审核权限
+      hasShAuth () {
+      	return this.$kwz.hasAuth('dd_zgxs/zgtz_sh')
+      }
     },
     methods:{
       // 判断来源(是否是审核) 获取id并预先加载数据
@@ -93,6 +109,12 @@
       changeYwsj (e) {
       	this.ywsj = e.detail.value
       },
+      // 学校确定
+      confirmSchool(e){
+      	this.data.XXMC = e.data.name;
+      	this.data.ORG_ID_TARGET = e.data.value;
+      	this.schoolShow = false
+      },
       // 获取日期限制
       getdateImpose () {
         // let startEnd = this.$kwz.dateImpose('3758a16aa4e14b3d87bb1f9c7e2fc509', this)
@@ -107,9 +129,9 @@
 //           this.data.maxDate = startEnd.maxDate
 //         }
       },
-      // 获取功能权限
-      getPermission (url) {
-        return this.$kwz.hasAuth(url, this)
+      // 改变存在问题变量值
+      changeCzwt (e) {
+      	this.data.XSNR = e.detail.value
       },
       // 预先加载数据
       loadData () {
@@ -212,15 +234,26 @@
             }
           })
         }
+      },
+      changeClqx(val){
+        this.data.CLQX = val
       }
+      
     }
 	}
 </script>
 
 <style lang="scss">
+  .bh{
+    width: 500upx;
+    text-align: right;
+    ._input{
+      color: #999999;
+    }
+  }
   .ddjs-head{
       height: 55upx;
-    }
+  }
   .ddjs-body{
     padding:0 20upx;
     textarea{

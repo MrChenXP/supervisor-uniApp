@@ -1,5 +1,5 @@
 <template>
-	<view class="ddjs child-content">
+	<view class="child-content">
     <!-- 搜索 -->
     <kw-search placeholder="请输入学校名称" @confirm="searchList">
       <view slot="content">
@@ -16,13 +16,13 @@
       <view class="check fl" v-if="!deleteShow">
         <radio :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</radio>
       </view>
-      <view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
+      <view class="delete fl" v-if="hasScAuth && deleteShow" @click="deleteAction">删除</view>
       <view class="delete fl"  v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-      <view class="add fr">新增</view>
+      <view class="add fr" @click="$kwz.router({url: 'tkjl-add'})" v-if="hasXzAuth">新增</view>
     </view>
     <!-- 列表组 -->
-    <checkbox-group>
-      <view class="lists">
+    <checkbox-group class="lists">
+      <view>
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index">
           <label>
@@ -38,13 +38,9 @@
               <view class="fr">督导时间：{{item.DDSJ}}</view>
             </view>
             <view class="clearfix status">
-              <view v-if="true" class="fl clyj">
-                <uni-tag text="这里放处理意见" size="small" type="primary"></uni-tag>
-              </view>
-              <!--别删 <view v-if="false" class="fl zgz"><uni-tag text="整改中" size="small" type="primary"></uni-tag></view> -->
-              <!--别删 <view v-if="false" class="fl yys"><uni-tag text="已验收" size="small" type="primary"></uni-tag></view> -->
               <view v-if="item.SELF =='1'" class="fr bj">
-                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toAdd(item.MXID,item.ISNEW)"></uni-tag>
+                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" 
+                  v-if="hasXgAuth" @click="toAdd(item.MXID,item.ISNEW)"></uni-tag>
               </view>
             </view>
           </view>
@@ -59,6 +55,7 @@
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
 	import {uniBadge, uniTag, uniIcon} from '@dcloudio/uni-ui'
 	export default {
+    components:{KwSearch,KwListCell},
 		data() {
 			return {
 				// 删除显示隐藏
@@ -90,13 +87,20 @@
 		onShow() {
 			this.initData()
 		},
-    components:{
-			KwSearch,
-			KwListCell,
-			uniBadge,
-			uniTag,
-			uniIcon
-		},
+    computed:{
+    	// 新增权限
+    	hasXzAuth () {
+    		return this.$kwz.hasAuth('jc_pgbzmx/toAdd')
+    	},
+    	// 修改权限
+    	hasXgAuth () {
+    		return this.$kwz.hasAuth('jc_pgbz/toUpdate')
+    	},
+    	// 删除权限
+    	hasScAuth () {
+    		return this.$kwz.hasAuth('jc_pgbzmx/doDelete/TKJL')
+    	}
+    },
     methods:{
       // 加载数据
       initData() {
@@ -168,7 +172,7 @@
       	}
       	if (ids.length > 0) {
       		this.$kwz.ajax.ajaxUrl({
-      			url: 'dd_zgxs/doDeleteBatch/ZGTZ',
+      			url: 'jc_pgbzmx/doDelete/TKJL',
       			type: 'POST',
       			data: {
       				ids: ids.join(',')
@@ -181,6 +185,10 @@
       		})
       	}
       	this.deleteShow = true
+      },
+      // 删除
+      deleteAction() {
+      	this.deleteShow = false
       },
 			toAdd (mxid, isNew) {
 			}
