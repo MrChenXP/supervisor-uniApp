@@ -395,7 +395,7 @@ const kwz = {
 			}
 		}
 	},
-	// 弹窗提示
+	// 弹窗提示 参数：提示文字,callback
 	alert(msg='',cb = () => {}){
 		kwz.msg({
 			title: msg,
@@ -404,7 +404,7 @@ const kwz = {
 			success: cb
 		})
 	},
-	// 确认框
+	// 确认弹框
 	confirm(msg='', sb = () => {}, eb= () => {}, op = {}){
 		op.title = op.title || '提示';
 		op.content = msg;
@@ -418,6 +418,7 @@ const kwz = {
 		// op.fail = eb;
 		uni.showModal(op)
 	},
+  // 显示消息提示框
 	msg(op) {
 		uni.showToast(op)
 	},
@@ -756,6 +757,7 @@ const kwz = {
 	router (op = {}) {
 		uni.navigateTo(op)
 	},
+  // 返回上一页面栈 参数: 延迟时间(ms)
 	back (miils = 0) {
 		if(!miils || miils <= 0) {
 			uni.navigateBack({
@@ -790,6 +792,43 @@ const kwz = {
       }
     }
     return fmt
+  },
+  // 返回当天为基准的指定日期 参数：{y,M,d},日期格式
+  getLimdat (impose, format) {
+    if(typeof impose !=="object"){
+      impose = JSON.parse(impose)
+    }
+    let _y = parseInt(impose.y)
+    let _m = parseInt(impose.M)
+    let _d = parseInt(impose.d)
+    let date = new Date(Date.parse(new Date((new Date().getFullYear() + _y), (new Date().getMonth()) + _m, new Date().getDate())) + (86400000 * _d))
+    date = kwz.formatDate(format, date)
+    return date
+  },
+  // 返回功能限制的日期参数 功能id
+  dateImpose(url){
+    let data = JSON.parse(uni.getStorageSync('_commonMenus'));
+    if(!data){
+      kwz.loadMenus(kwz.dateImpose,Vue)
+    }else{
+      for (let arrs of data._menus_.children) { // arrs代表每个应用
+        for (let arr of arrs.children) { // arr代表应用中的每个功能
+          if (arr.PRO_ID === url) {
+            if (typeof arr.PRO_ATTRS === 'object') { // 没配限制日期返回null,给他前后1年
+              arr.PRO_ATTRS = {
+                minDate: '{"y":"-1","M":"0","d":"0"}',
+                maxDate: '{"y":"1","M":"0","d":"0"}'
+              }
+              return arr.PRO_ATTRS
+            }
+            let proAttrs = JSON.parse(arr.PRO_ATTRS)
+            proAttrs.minDate = typeof proAttrs.minDate === 'undefined' ? '{"y":"-1","M":"0","d":"0"}' : proAttrs.minDate
+            proAttrs.maxDate = typeof proAttrs.maxDate === 'undefined' ? '{"y":"1","M":"0","d":"0"}' : proAttrs.maxDate
+            return proAttrs
+          }
+        }
+      }
+    }
   },
 	// 下载文件
 	downloadAttach (url, cb=()=>{}, vue) {
