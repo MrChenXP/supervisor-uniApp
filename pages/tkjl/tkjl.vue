@@ -24,7 +24,7 @@
     <checkbox-group class="lists">
       <view>
         <!-- 单项列表 -->
-        <view class="list" v-for="(item, index) in dataList" :key="index">
+        <view class="list" v-for="(item, index) in dataList" :key="index" @click="toDetail(item.MXID,item.ISNEW)">
           <label>
             <view class="check" v-if="!deleteShow">
               <checkbox :checked="deleteParam[item.MXID]" 
@@ -38,9 +38,9 @@
               <view class="fr">督导时间：{{item.DDSJ}}</view>
             </view>
             <view class="clearfix status">
-              <view v-if="item.SELF =='1'" class="fr bj">
+              <view v-if="item.SELF =='1'" class="fr bj" @click.stop="toAdd(item.MXID,item.ISNEW)">
                 <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" 
-                  v-if="hasXgAuth" @click="toAdd(item.MXID,item.ISNEW)"></uni-tag>
+                  v-if="hasXgAuth" ></uni-tag>
               </view>
             </view>
           </view>
@@ -190,8 +190,22 @@
       deleteAction() {
       	this.deleteShow = false
       },
-			toAdd (mxid, isNew) {
-			}
+      // 去修改
+			toAdd (id, isNew) {
+        if(isNew == "1"){
+          this.$kwz.router({
+          	url: 'tkjl-add?id=' + id
+          })
+        }else{
+          console.log('oldchange')
+        }
+			},
+      // 列表卡点击事件
+      toDetail(id, isNew){
+        this.$kwz.router({
+        	url: 'tkjl-preview?id=' + id + "&isNew=" + isNew
+        })
+      }
     }
 	}
 </script>

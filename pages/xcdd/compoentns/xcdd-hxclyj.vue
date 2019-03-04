@@ -19,7 +19,6 @@
           <textarea v-model="czwt" maxlength="4000"></textarea>
           <view>对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
 						<uni-number-box :min="0" :max="30" :value="ybwtZgqx"></uni-number-box>
-            <!-- <input :value="ybwtZgqx" /> -->
             日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
           </view>
         </view>

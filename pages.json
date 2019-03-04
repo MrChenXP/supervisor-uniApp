@@ -141,6 +141,12 @@
       "style": {
         "navigationBarTitleText": "听课记录"
       }
+    },
+    {
+      "path": "pages/tkjl/tkjl-preview",
+      "style": {
+        "navigationBarTitleText": "听课记录"
+      }
     }
   ],
   "globalStyle": {

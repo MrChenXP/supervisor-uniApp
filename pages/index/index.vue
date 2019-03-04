@@ -48,7 +48,7 @@
 			};
 		},
 		onLoad () {
-			this.loadIndexData();
+			this.loadIndexData()
 		},
     methods: {
 			// 加载首页数据

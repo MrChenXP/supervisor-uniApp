@@ -1,7 +1,9 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true"></kw-list-cell>
-    <picker :range="data.YWSJ" mode="date" @change="changeYwsj">
+    <kw-list-cell title="学校(校园)" :rightNote="data.MB_ORG_MC" v-if="data.MXID" :isArrow="false"></kw-list-cell>
+    <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true" v-else></kw-list-cell>
+    <kw-list-cell title="听课日期" :rightNote="data.YWSJ" v-if="data.MXID" :isArrow="false"></kw-list-cell>
+    <picker :range="data.YWSJ" mode="date" @change="changeYwsj" :start="startDate" :end="endDate" v-else>
       <kw-list-cell title="听课日期" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
     <kw-list-cell title="听课班级">
@@ -103,7 +105,9 @@
           'ZHPJ': '', // 综合评价
           'MB_ORG_MC': '', // 学校名称
           'MXID': '' // 此条记录的ID
-        }
+        },
+        startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量
+        endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
       };
 		},
     computed:{
@@ -112,7 +116,36 @@
       	return this.$kwz.hasAuth('jc_pgbzmx/doAddTkjl/TKJL')
       },
     },
+    onLoad(param) {
+      this.data.MXID = param.id
+      this.initPage()
+    },
     methods:{
+      // 初始化页面
+      initPage(){
+        // 有id就是修改，就事先获取数据
+        if(this.data.MXID) {
+          this.$kwz.ajax.ajaxUrl({
+            url: 'jc_pgbzmx/doSelectByPrimary/TKJL',
+            type: 'POST',
+            data: {
+              MXID: this.data.MXID
+            },
+            vue: this,
+            then (response) {
+              let datas = response.datas
+              this.data = datas
+              this.xx.value = this.data.MB_ORG_ID
+              this.xx.name = this.data.MB_ORG_MC
+              this.data.YWSJ = (datas.YWSJ.substr(0, 10))
+              this.setDdjs(this.data.GCJL)
+            }
+          })
+        }else{
+          this.data.YWSJ = this.$kwz.formatDate()
+        }
+        this.getdateImpose()
+      },
       // 点击保存按钮
       save(){
         this.data.GCJL= this.getDdjs()
@@ -124,20 +157,19 @@
           return false
         }
         if (this.data.MXID) {
-          // this.doUpdate()
+          this.doUpdate()
         } else {
           this.doAdd()
         }
       },
-       // 保存ajax
+      // 保存ajax
       doAdd () {
-        console.log(this.data)
         this.$kwz.ajax.ajaxUrl({
           url: 'jc_pgbzmx/doAddTkjl/TKJL',
           type: 'POST',
           vue: this,
           data: {
-            'XXMC': this.xx.name, // 字段名是学校名称 传的其实是学校id(后端取错
+            'XXMC': this.xx.value, // 字段名是学校名称 传的其实是学校id(后端取错
             'YWSJ': this.data.YWSJ, // 业务时间
             'JSMC': this.data.JSMC, // 教师名称
             'BJ': this.data.BJ, // 班级
@@ -145,14 +177,54 @@
             'GCJL': this.data.GCJL, // 过程记录
             'FZ': String(this.data.FZ), // 分值 定性评价 12345字符串数值 0就是没填，不能提交
             'ZHPJ': this.data.ZHPJ, // 综合评价
-            minDate: 'this.formData.minDate',
-            maxDate: 'this.formData.maxDate'
+            minDate: this.data.minDate,
+            maxDate: this.data.maxDate
           },
           then (response) {
             this.$kwz.alert('保存成功')
             this.$kwz.back(1500)
           }
         })
+      },
+      // 修改
+      doUpdate () {
+        console.log(this.data)
+        this.$kwz.ajax.ajaxUrl({
+          url: 'jc_pgbzmx/doUpdateTkjl/TKJL',
+          type: 'POST',
+          vue: this,
+          data: {
+            'XXMC': this.xx.value, // 字段名是学校名称 传的其实是学校id(后端取错名
+            'YWSJ': this.data.YWSJ, // 业务时间
+            'JSMC': this.data.JSMC, // 教师名称
+            'BJ': this.data.BJ, // 班级
+            'XK': this.data.XK, // 学科
+            'GCJL': this.data.GCJL, // 过程记录
+            'FZ': String(this.data.FZ), // 分值 定性评价 12345字符串数值 0就是没填，不能提交
+            'ZHPJ': this.data.ZHPJ, // 综合评价
+            'MXID': this.data.MXID,
+            minDate: this.data.minDate,
+            maxDate: this.data.maxDate
+          },
+          then (response) {
+            this.$kwz.alert('保存成功')
+            this.$kwz.back(1500)
+          }
+        })
+      },
+      // 获取日期限制
+      getdateImpose () {
+        let startEnd = this.$kwz.dateImpose('cd5235ad9e2d463a9af919de06dcfb06')
+        if (!startEnd) {
+          setTimeout(() => {
+            this.getdateImpose()
+          }, 500)
+        } else {
+          this.startDate = this.$kwz.getLimdat(startEnd.minDate)
+          this.endDate = this.$kwz.getLimdat(startEnd.maxDate)
+          this.data.minDate = startEnd.minDate
+          this.data.maxDate = startEnd.maxDate
+        }
       },
       // 修改业务时间
       changeYwsj (e) {

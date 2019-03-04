@@ -28,7 +28,7 @@
 					<view class="clearfix">
 						<!-- <uni-rate value="3" ></uni-rate> -->
             <text class="fl">标准名称</text>
-            <view class="fr"><uni-rate value="3" ></uni-rate></view>
+            <view class="fr"><uni-rate value="0" ></uni-rate></view>
 					</view>
         </view>
       </view>
@@ -136,11 +136,11 @@
   import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
   import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
   import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
-  import {uniNumberBox} from "@dcloudio/uni-ui"
+  import {uniNumberBox,uniRate} from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
 	export default {
-    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox},
+    components:{KwListCell,XcddSelectGzjh,XcddSelectSchool,XcddSelectSxdx,XcddHxclyj,KwEditor,uniNumberBox,uniRate},
 		data() {
 			return {
 				contentId: '',

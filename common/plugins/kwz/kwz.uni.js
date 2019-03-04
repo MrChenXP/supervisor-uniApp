@@ -793,11 +793,12 @@ const kwz = {
     }
     return fmt
   },
-  // 返回当天为基准的指定日期 参数：{y,M,d},日期格式
+  // 返回当天为基准的指定日期 参数：{y,M,d},日期格式 M大写是因为后台传来的是大写M
   getLimdat (impose, format) {
     if(typeof impose !=="object"){
       impose = JSON.parse(impose)
     }
+    
     let _y = parseInt(impose.y)
     let _m = parseInt(impose.M)
     let _d = parseInt(impose.d)

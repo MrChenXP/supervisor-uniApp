@@ -2,7 +2,7 @@
 	<view class="child-content">
     <kw-list-cell  v-if="!formData.ZGXSID" title="编号">
       <view slot="rightNote">
-        <view class="bh"><input :value="formData.BH" /></view>
+        <view class="bh"><input v-model="formData.BH" /></view>
       </view>
     </kw-list-cell>
     <kw-list-cell  v-else title="编号" :rightNote="formData.BH" :isArrow="false"></kw-list-cell>
