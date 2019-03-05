@@ -41,7 +41,7 @@
             </view>
             <view class="clearfix time">
               <view class="fl">整改天数：{{item.CLQX}}天</view>
-              <view class="fr">发出时间：{{item.YWSJ}}</view>
+              <view class="fr">发出时间：<text :class="{'color_red': item.ISCS}">{{item.YWSJ}}</text></view>
             </view>
             <view class="clearfix status">
               <view :class="item.ztClass" class="fl">
@@ -455,4 +455,7 @@
 			}
 		}
 	}
+  .color_red{
+    color: red !important;
+  }
 </style>

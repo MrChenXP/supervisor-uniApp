@@ -192,13 +192,9 @@
       },
       // 去修改
 			toAdd (id, isNew) {
-        if(isNew == "1"){
-          this.$kwz.router({
-          	url: 'tkjl-add?id=' + id
-          })
-        }else{
-          console.log('oldchange')
-        }
+        this.$kwz.router({
+          url: 'tkjl-add?id=' + id + "&isNew=" + isNew
+        })
 			},
       // 列表卡点击事件
       toDetail(id, isNew){

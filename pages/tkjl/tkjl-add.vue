@@ -1,69 +1,76 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="学校(校园)" :rightNote="data.MB_ORG_MC" v-if="data.MXID" :isArrow="false"></kw-list-cell>
-    <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true" v-else></kw-list-cell>
-    <kw-list-cell title="听课日期" :rightNote="data.YWSJ" v-if="data.MXID" :isArrow="false"></kw-list-cell>
-    <picker :range="data.YWSJ" mode="date" @change="changeYwsj" :start="startDate" :end="endDate" v-else>
-      <kw-list-cell title="听课日期" :rightNote="data.YWSJ"></kw-list-cell>
-    </picker>
-    <kw-list-cell title="听课班级">
-      <view slot="rightNote">
-        <view class="bh"><input v-model="data.BJ" placeholder="请填写班级"/></view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell title="听课学科">
-      <view slot="rightNote">
-        <view class="bh"><input v-model="data.XK" placeholder="请填写学科"/></view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell title="听课教师">
-      <view slot="rightNote">
-        <view class="bh"><input v-model="data.JSMC" placeholder="请填写教师名称"/></view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell :isArrow="false">
-      <view>
-        <view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
-          <text class="fl">过程记录</text>
-          <view class="fr" v-show="!ddjsShow"><uni-icon type="arrowdown" size="20" color="#c7c7c7"></uni-icon></view>
-          <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" size="20" color="#c7c7c7"></uni-icon></view>
+    {{is}}
+    <view v-if="isNew === '1'">
+      <kw-list-cell title="学校(校园)" :rightNote="data.MB_ORG_MC" v-if="data.MXID" :isArrow="false"></kw-list-cell>
+      <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true" v-else></kw-list-cell>
+      <kw-list-cell title="听课日期" :rightNote="data.YWSJ" v-if="data.MXID" :isArrow="false"></kw-list-cell>
+      <picker :range="data.YWSJ" mode="date" @change="changeYwsj" :start="startDate" :end="endDate" v-else>
+        <kw-list-cell title="听课日期" :rightNote="data.YWSJ"></kw-list-cell>
+      </picker>
+      <kw-list-cell title="听课班级">
+        <view slot="rightNote">
+          <view class="bh"><input v-model="data.BJ" placeholder="请填写班级"/></view>
         </view>
-        <view v-show="ddjsShow" class="ddjs-body">
-          <kw-editor :content="ddjs"></kw-editor>
+      </kw-list-cell>
+      <kw-list-cell title="听课学科">
+        <view slot="rightNote">
+          <view class="bh"><input v-model="data.XK" placeholder="请填写学科"/></view>
         </view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell :isArrow="false">
-      <view>
-        <view class="ddjs-head clearfix">
-          <view class="clearfix">
-            <text class="fl">定性评价</text>
-            <view class="fr"><uni-rate :value="data.FZ" @change="changeFz"></uni-rate></view>
+      </kw-list-cell>
+      <kw-list-cell title="听课教师">
+        <view slot="rightNote">
+          <view class="bh"><input v-model="data.JSMC" placeholder="请填写教师名称"/></view>
+        </view>
+      </kw-list-cell>
+      <kw-list-cell :isArrow="false">
+        <view>
+          <view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
+            <text class="fl">过程记录</text>
+            <view class="fr" v-show="!ddjsShow"><uni-icon type="arrowdown" size="20" color="#c7c7c7"></uni-icon></view>
+            <view class="fr" v-show="ddjsShow"><uni-icon type="arrowup" size="20" color="#c7c7c7"></uni-icon></view>
+          </view>
+          <view v-show="ddjsShow" class="ddjs-body">
+            <kw-editor :content="ddjs"></kw-editor>
           </view>
         </view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell :isArrow="false">
-      <view>
-        <view class="ddjs-head clearfix" @click="zhpjShow = !zhpjShow">
-          <text class="fl">综合评价</text>
-          <view class="fr" v-show="!zhpjShow"><uni-icon type="arrowdown" size="20" color="#c7c7c7"></uni-icon></view>
-          <view class="fr" v-show="zhpjShow"><uni-icon type="arrowup" size="20" color="#c7c7c7"></uni-icon></view>
+      </kw-list-cell>
+      <kw-list-cell :isArrow="false">
+        <view>
+          <view class="ddjs-head clearfix">
+            <view class="clearfix">
+              <text class="fl">定性评价</text>
+              <view class="fr"><uni-rate :value="data.FZ" @change="changeFz"></uni-rate></view>
+            </view>
+          </view>
         </view>
-        <view v-show="zhpjShow" class="ddjs-body">
-          <textarea :value="data.ZHPJ" maxlength="4000" @input="inputZhpj"></textarea>
+      </kw-list-cell>
+      <kw-list-cell :isArrow="false">
+        <view>
+          <view class="ddjs-head clearfix" @click="zhpjShow = !zhpjShow">
+            <text class="fl">综合评价</text>
+            <view class="fr" v-show="!zhpjShow"><uni-icon type="arrowdown" size="20" color="#c7c7c7"></uni-icon></view>
+            <view class="fr" v-show="zhpjShow"><uni-icon type="arrowup" size="20" color="#c7c7c7"></uni-icon></view>
+          </view>
+          <view v-show="zhpjShow" class="ddjs-body">
+            <textarea :value="data.ZHPJ" maxlength="4000" @input="inputZhpj"></textarea>
+          </view>
         </view>
+      </kw-list-cell>
+      <view class="save" v-if="hasBcAuth">
+        <button @click="save">保存</button>
       </view>
-    </kw-list-cell>
-    <view class="save" v-if="hasBcAuth">
-      <button @click="save">保存</button>
+      
+      
+      <!-- 学校(请把学校搜索ajax写在该组件里) -->
+      <view v-show="schoolShow">
+        <xcdd-select-school @close="schoolShow=false" @confirm="confirmSchool"></xcdd-select-school>
+      </view>
+    </view>
+    <view v-else class="text-bold">
+      {{tbmbglData.MBNR}}
     </view>
     
-    
-    <!-- 学校(请把学校搜索ajax写在该组件里) -->
-    <view v-show="schoolShow">
-      <xcdd-select-school @close="schoolShow=false" @confirm="confirmSchool"></xcdd-select-school>
-    </view>
 	</view>
 </template>
 
@@ -108,6 +115,8 @@
         },
         startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量
         endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
+        tbmbglData: {}, // 老记录模板数据
+        isNew:"1"
       };
 		},
     computed:{
@@ -118,7 +127,12 @@
     },
     onLoad(param) {
       this.data.MXID = param.id
-      this.initPage()
+      this.isNew = param.isNew
+      if (this.isNew !== "1") {
+        this.tbmbglData.MBNR="因系统升级，此记录请于电脑端修改"
+      }else{
+        this.initPage()
+      }
     },
     methods:{
       // 初始化页面
@@ -188,7 +202,6 @@
       },
       // 修改
       doUpdate () {
-        console.log(this.data)
         this.$kwz.ajax.ajaxUrl({
           url: 'jc_pgbzmx/doUpdateTkjl/TKJL',
           type: 'POST',

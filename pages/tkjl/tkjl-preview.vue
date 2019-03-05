@@ -1,44 +1,50 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell title="学校" :right-note="data.MB_ORG_MC" :isArrow="false"></kw-list-cell>
-    <kw-list-cell title="听课日期" :right-note="data.YWSJ" :isArrow="false"></kw-list-cell>
-    <kw-list-cell title="授课教师" :right-note="data.JSMC" :isArrow="false"></kw-list-cell>
-    <kw-list-cell title="听课班级" :right-note="data.BJ" :isArrow="false"></kw-list-cell>
-    <kw-list-cell title="听课学科" :right-note="data.XK" :isArrow="false"></kw-list-cell>
-    <kw-list-cell :isArrow="false">
-      <view>
-        <view class="ddjs-head clearfix" @click="gcjlShow = !gcjlShow">
-          <text class="fl">过程记录</text>
-          <view class="fr" v-show="!gcjlShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
-          <view class="fr" v-show="gcjlShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
-        </view>
-        <view class="ddjs-body" v-show="gcjlShow">
-          <view>
-           <kw-editor-preview :content="ddjs"></kw-editor-preview>
+    <view v-if="isNew === '1'">
+      <kw-list-cell title="学校" :right-note="data.MB_ORG_MC" :isArrow="false"></kw-list-cell>
+      <kw-list-cell title="听课日期" :right-note="data.YWSJ" :isArrow="false"></kw-list-cell>
+      <kw-list-cell title="授课教师" :right-note="data.JSMC" :isArrow="false"></kw-list-cell>
+      <kw-list-cell title="听课班级" :right-note="data.BJ" :isArrow="false"></kw-list-cell>
+      <kw-list-cell title="听课学科" :right-note="data.XK" :isArrow="false"></kw-list-cell>
+      <kw-list-cell :isArrow="false">
+        <view>
+          <view class="ddjs-head clearfix" @click="gcjlShow = !gcjlShow">
+            <text class="fl">过程记录</text>
+            <view class="fr" v-show="!gcjlShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+            <view class="fr" v-show="gcjlShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
+          </view>
+          <view class="ddjs-body" v-show="gcjlShow">
+            <view>
+             <kw-editor-preview :content="ddjs"></kw-editor-preview>
+            </view>
           </view>
         </view>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell title="定性评价" :isArrow="false">
-      <view slot="rightNote">
-        <uni-rate :value="data.ZHPJ" ></uni-rate>
-      </view>
-    </kw-list-cell>
-    <kw-list-cell :isArrow="false">
-      <view>
-        <view class="ddjs-head clearfix" @click="zhpjShow = !zhpjShow">
-          <text class="fl">综合评价</text>
-          <view class="fr" v-show="!zhpjShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
-          <view class="fr" v-show="zhpjShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
+      </kw-list-cell>
+      <kw-list-cell title="定性评价" :isArrow="false">
+        <view slot="rightNote">
+          <uni-rate :value="data.FZ" disabled="true"></uni-rate>
         </view>
-        <view class="ddjs-body" v-show="zhpjShow">
-          <view>
-           {{data.ZHPJ}}
+      </kw-list-cell>
+      <kw-list-cell :isArrow="false">
+        <view>
+          <view class="ddjs-head clearfix" @click="zhpjShow = !zhpjShow">
+            <text class="fl">综合评价</text>
+            <view class="fr" v-show="!zhpjShow"><uni-icon type="arrowdown" color="#c7c7c7" size="20"></uni-icon></view>
+            <view class="fr" v-show="zhpjShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
+          </view>
+          <view class="ddjs-body" v-show="zhpjShow">
+            <view>
+             {{data.ZHPJ}}
+            </view>
           </view>
         </view>
-      </view>
-    </kw-list-cell>
-	</view>
+      </kw-list-cell>
+    </view>
+    <view v-else class="text-bold">
+      <!-- {{tbmbglData.MBNR}} -->
+      <rich-text :nodes="tbmbglData.MBNR"></rich-text>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -65,7 +71,13 @@
     onLoad(param) {
       this.data.MXID = param.id
       this.isNew = param.isNew
-      this.initPage()
+      // if (this.isNew !== "1") {
+        // this.tbmbglData.MBNR="因系统升级，此记录请于电脑端查看"
+        this.initPage()
+
+      // }else{
+        // this.initPage()
+      // }
     },
     methods:{
       // 初始化页面
@@ -82,15 +94,27 @@
               this.data = response.datas
               let date = new Date(this.data.YWSJ.replace(/-/g, '/'))
               this.data.YWSJ = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日 '
-              if (this.isNew !== "1") {
-                console.log('old preview')
-                // this.getTemplate()
-              }
               this.data.SJ = JSON.parse(this.data.SJ)
               this.setDdjs(this.data.GCJL)
+              this.getTemplate()
+
             }
           })
         }
+      },
+      // 获取老记录模板
+      getTemplate () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'jc_pgbz/selectTbmbglByKey',
+          type: 'POST',
+          data: {
+            BZID: this.data.BZID
+          },
+          vue: this,
+          then (response) {
+            this.tbmbglData = response.datas.tbmbglData
+          }
+        })
       },
       // 设置督导纪实内容 将html转成ddjs
       setDdjs (html) {
