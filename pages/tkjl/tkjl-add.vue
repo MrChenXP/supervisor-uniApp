@@ -94,8 +94,11 @@
         	name: '',
         	value: ''
         },
-        // 督导纪实
-        ddjs: [],
+        // 督导纪实 一定要加content 和 images 否则添加不了图片。原因不明
+        ddjs: {
+					content: '',
+					images: []
+				},
         // 听课记录表单数据
         data: {
           'MB_ORG_ID': '', // 学校id
