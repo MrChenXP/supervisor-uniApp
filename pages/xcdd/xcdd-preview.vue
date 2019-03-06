@@ -215,7 +215,6 @@
 						vue: this,
 						then(response) {
 							let datas = response.datas
-							console.log(datas)
 							if (datas && datas.CONTENT_ID) {
 								this.XXMC = datas.XXMC
 								this.YWSJ = datas.YWSJ

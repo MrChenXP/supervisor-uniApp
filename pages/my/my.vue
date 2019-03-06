@@ -8,11 +8,15 @@
         <image class="info-img" src="../../static/images/DefaultImg.png"></image>
         <view>
           <view class="name-zw">
-            <text class="name text-bold">{{user.name}}</text>
-            <text class="zw">{{user.ddlx}}</text>
+            <text class="name text-bold" v-if="user.name">{{user.name}}</text>
+            <text class="zw" v-if="user.ddlx">{{user.ddlx}}</text>
+            <view v-else class="text-bold name">
+              请您先登录
+            </view>
           </view>
-          <view class="info-jg">机构：{{user.orgMc}}</view>
+          <view class="info-jg" v-if="user.orgMc">机构：{{user.orgMc}}</view>
         </view>
+        
       </view>
     </view>
    
@@ -50,18 +54,18 @@
 			this.loadIndexData();
 		},
     computed:{
-    	// 个人资料权限  暂时无用。因为需要pro_id
-    	hasXzAuth () {
-    		return this.$kwz.hasAuth('dd_dxgl/toGrzl')
-    	},
-    	// 修改密码权限
-    	hasXgAuth () {
-    		return this.$kwz.hasAuth('ddjl/doEdit')
-    	},
-    	// 切换机构权限
-    	hasScAuth () {
-    		return this.$kwz.hasAuth('ddjl/deleteddjl')
-    	}
+    	// 个人资料权限  暂时无用。因为需要pro_id this.$kwz.hasAuth需要先登录才能用，不然报错
+//     	hasXzAuth () {
+//     		return this.$kwz.hasAuth('dd_dxgl/toGrzl')
+//     	},
+//     	// 修改密码权限
+//     	hasXgAuth () {
+//     		return this.$kwz.hasAuth('ddjl/doEdit')
+//     	},
+//     	// 切换机构权限
+//     	hasScAuth () {
+//     		return this.$kwz.hasAuth('ddjl/deleteddjl')
+//     	}
     },
 		methods: {
 			// 加载工作区数据
@@ -90,6 +94,8 @@
 			// 退出
 			logout () {
 				this.$kwz.logout(false)
+        this.user = {}
+        this.$kwz.alert("已成功退出",this.loginShow = true)
 			}
 		}
 	}

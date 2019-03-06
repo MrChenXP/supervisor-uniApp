@@ -239,7 +239,6 @@
       changeClqx(val){
         this.data.CLQX = val
       }
-      
     }
 	}
 </script>

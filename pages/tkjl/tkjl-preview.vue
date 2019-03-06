@@ -71,13 +71,12 @@
     onLoad(param) {
       this.data.MXID = param.id
       this.isNew = param.isNew
-      // if (this.isNew !== "1") {
-        // this.tbmbglData.MBNR="因系统升级，此记录请于电脑端查看"
-        this.initPage()
-
-      // }else{
+      if (this.isNew !== "1") {
         // this.initPage()
-      // }
+        this.tbmbglData.MBNR="因系统升级，此记录请于电脑端查看"
+      }else{
+        this.initPage()
+      }
     },
     methods:{
       // 初始化页面
@@ -96,8 +95,7 @@
               this.data.YWSJ = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日 '
               this.data.SJ = JSON.parse(this.data.SJ)
               this.setDdjs(this.data.GCJL)
-              this.getTemplate()
-
+              // this.getTemplate()
             }
           })
         }
