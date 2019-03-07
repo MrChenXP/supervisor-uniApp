@@ -72,7 +72,7 @@
 					data,
 					vue: this,
 					success (data) {
-						console.log(data)
+						console.info(data)
 					}
 				})
       }

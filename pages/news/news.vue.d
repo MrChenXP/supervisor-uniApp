@@ -1,5 +1,6 @@
 <template>
 	<view>
+  <!-- 这是备份-->
 		<kw-editor></kw-editor>
 	</view>
 </template>

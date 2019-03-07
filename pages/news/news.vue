@@ -14,10 +14,12 @@
     </view>
     <!-- 正文 -->
     <view class="main-text">
-      <view v-for="(item,key) in newsContent" :key="key">
+      <rich-text :nodes="news.TXT"></rich-text>
+      <!-- 老显示html方法 -->
+      <!-- <view v-for="(item,key) in newsContent" :key="key">
         <view>{{item.content}}</view>
         <image v-if="item.image" :src="item.imageUrl" mode="aspectFit" ></image>
-      </view>
+      </view> -->
     </view>
 	</view>
 </template>
@@ -57,8 +59,9 @@
              then (data) {
                this.news = data.datas
                this.news.LY = this.news.LY || '本站原创'
+               // 老显示html方法
                // this.news.TXT = this.$kwz.splitHtml(this.news.TXT)
-               this.newsContent.push(...this.$kwz.splitHtml(this.news.TXT))
+               // this.newsContent.push(...this.$kwz.splitHtml(this.news.TXT))
              }
          })
        }

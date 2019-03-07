@@ -85,7 +85,6 @@ export default {
           then(response) {
             let datas = response.datas
             if (datas && datas.ZGXSID) {
-              console.log(datas)
               this.BH = datas.BH
               this.XXMC = datas.XXMC
               this.XSNR = datas.XSNR

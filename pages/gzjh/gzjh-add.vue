@@ -55,6 +55,21 @@
         	name: '',
         	value: ''
         },
+        // 表单数据
+        formData: {
+          xxName: '',
+          xxId: '',
+          YWSJ: '',
+          sdValue: [],
+          sxdxName: '',
+          sxdxId: '',
+          ddsxTxt: '',
+          pgbzValue: [],
+          remark: '',
+          xqid: ''
+        },
+        startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量
+        endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
         // 业务时间
         ywsj:"",
         // 时段列表
@@ -112,6 +127,7 @@
 					}
 				})
 			}
+      this.getdateImpose()
 		},
     components:{KwListCell,XcddSelectSchool,XcddSelectSxdx,KwEditor},
     methods:{
@@ -155,6 +171,21 @@
 				
 				this.loginUser = this.$kwz.getLoginUser()
 			},
+      // 获取日期限制
+      getdateImpose () {
+        let startEnd = this.$kwz.dateImpose('b892eba5fae9493189ac81a510bbbd73')
+        if (!startEnd) {
+          setTimeout(() => {
+            this.getdateImpose()
+          }, 500)
+        } else {
+          this.startDate = this.$kwz.getLimdat(startEnd.minDate)
+          this.endDate = this.$kwz.getLimdat(startEnd.maxDate)
+          this.formData.minDate = startEnd.minDate
+          this.formData.maxDate = startEnd.maxDate
+          console.log(startEnd)
+        }
+      },
 			// 学校确定
 			confirmSchool(e){
 				this.xx.name = e.data.name;
