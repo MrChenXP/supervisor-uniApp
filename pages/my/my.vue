@@ -90,6 +90,7 @@
 			// 退出
 			logout () {
 				this.$kwz.logout(false)
+				this.loginShow = true
 			}
 		}
 	}

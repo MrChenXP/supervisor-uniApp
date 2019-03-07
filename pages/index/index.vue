@@ -79,12 +79,12 @@
 				})
 			},
       toNews (newsId) {
-				this.$kwz.autoLogin()
-//         if(newsId) {
-// 				 this.$kwz.router({
-//          	url: '/pages/news/news?CONTENT_ID=' + newsId
-//          })
-//         }
+				// this.$kwz.autoLogin()
+        if(newsId) {
+				 this.$kwz.router({
+         	url: '/pages/news/news?CONTENT_ID=' + newsId
+         })
+        }
       }
     }
 	}

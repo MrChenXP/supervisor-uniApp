@@ -11,7 +11,6 @@ const hasFunc = (comonProductsTree = [], userReadPro = []) => {
 		if(typeof userReadPro == 'string') {
 			userReadPro = userReadPro.split(',')
 		}
-		
 		for(let i = 0; i< comonProductsTree.length ;i++){
 			for(let j = 0; j< workspace.length;j++){
 				if(comonProductsTree[i].PRO_ID == workspace[j].proId) {
@@ -440,15 +439,17 @@ const kwz = {
 	// 判断是否有权限
 	hasAuth (url = '') {
 		if (url) {
-			url = url.trim()
 			let commonMenus = kwz.getCommonMenus();
-			if(!commonMenus.writePathList) {
-				commonMenus.writePathList = commonMenus.writePath.split(',')
-			}
-			let length = commonMenus.writePathList.length
-			for(let i = 0; i < length; i++) {
-				if(commonMenus.writePathList[i] == url || (commonMenus.writePathList[i] && commonMenus.writePathList[i].trim() == url)) {
-					return true
+			if(commonMenus) {
+				if(!commonMenus.writePathList) {
+					commonMenus.writePathList = commonMenus.writePath.split(',')
+				}
+				let length = commonMenus.writePathList.length
+				url = url.trim()
+				for(let i = 0; i < length; i++) {
+					if(commonMenus.writePathList[i] == url || (commonMenus.writePathList[i] && commonMenus.writePathList[i].trim() == url)) {
+						return true
+					}
 				}
 			}
 		}
@@ -586,8 +587,8 @@ const kwz = {
     
     //#ifdef H5
     kwz.alert('登陆已经过期，请重新登陆')
-		kwz.redirect({
-			url: '/my/my.vue'
+		kwz.reLaunch({
+			url: '/pages/my/my.vue'
 		})
     //#endif
     //#ifndef H5
@@ -618,9 +619,7 @@ const kwz = {
   autoLogin (cb = () => {}, vue) {
     let loginToken = kwz.getLoginToken();
     // let _loginToken = uni.getStorageSync('_lk')
-    let data = {
-      loginToken
-    }
+    let data = { loginToken }
     kwz.ajax.ajaxUrl({
     	url: 'login/open/loginToken',
       header: {
@@ -629,7 +628,7 @@ const kwz = {
       data,
     	type: 'POST',
     	then (data) {
-          if (data.statusCode == '200'){
+          if (data.statusCode == '200' && data.datas.state == 200){
             let _loginToken = data.datas._token;
 						if(_loginToken) {
 							kwz.setLoginToken(_loginToken)
@@ -639,7 +638,14 @@ const kwz = {
 								cb.apply(vue || this, [data])
 							})
 						})
-          }
+          } else {
+						if(data.datas.msg) {
+							kwz.alert(data.datas.msg, () => {
+								uni.switchTab({url: '/pages/my/my'})
+								// kwz.router({url: '/pages/my/my'})
+							})
+						}
+					}
     	}
     })
   },
@@ -752,6 +758,10 @@ const kwz = {
 	// 关闭当前页面栈,跳转
 	redirect (op = {}) {
 		uni.redirectTo(op)
+	},
+	// 关闭所有页面栈，打开页面
+	reLaunch (op = {}) {
+		uni.reLaunch(op)
 	},
 	// 不关闭当前页面栈,跳转
 	router (op = {}) {
