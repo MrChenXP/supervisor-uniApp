@@ -74,7 +74,10 @@
         resultShow: false,
         // 身份存储 督学||学校
         SF: '',
-        ddjs:[]
+        ddjs: {
+        	content: '',
+        	images: []
+        },
 			};
 		},
     onLoad(query) {

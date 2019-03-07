@@ -198,7 +198,9 @@
 							} else {
 								this.dataList.push(...datas)
 							}
-						}
+						} else{
+              this.dataList = []
+            }
 					}
 				})
 			},

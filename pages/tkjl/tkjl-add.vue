@@ -1,7 +1,6 @@
 <template>
 	<view class="child-content">
-    {{is}}
-    <view v-if="isNew === '1'">
+    <view v-if="isNew === '1' || !data.MXID">
       <kw-list-cell title="学校(校园)" :rightNote="data.MB_ORG_MC" v-if="data.MXID" :isArrow="false"></kw-list-cell>
       <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true" v-else></kw-list-cell>
       <kw-list-cell title="听课日期" :rightNote="data.YWSJ" v-if="data.MXID" :isArrow="false"></kw-list-cell>
@@ -95,11 +94,11 @@
         	name: '',
         	value: ''
         },
-        // 督导纪实
+        // 督导纪实 一定要加content 和 images 否则添加不了图片。原因不明
         ddjs: {
-        	content: '',
-        	images: []
-        },
+					content: '',
+					images: []
+				},
         // 听课记录表单数据
         data: {
           'MB_ORG_ID': '', // 学校id
@@ -117,7 +116,7 @@
         endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
         tbmbglData: {}, // 老记录模板数据
         isNew:"1"
-      };
+      }
 		},
     computed:{
       // 保存权限
@@ -128,7 +127,7 @@
     onLoad(param) {
       this.data.MXID = param.id
       this.isNew = param.isNew
-      if (this.isNew !== "1") {
+      if (this.isNew !== "1" && this.data.MXID) {
         this.tbmbglData.MBNR="因系统升级，此记录请于电脑端修改"
       }else{
         this.initPage()

@@ -3,11 +3,11 @@
     <!-- 搜索 -->
     <kw-search placeholder="请输入学校名称" @confirm="searchList">
       <view slot="content">
-        <picker :range="startTime" mode="date">
-          <kw-list-cell title="开始时间"></kw-list-cell>
+        <picker :range="pageParam.startTime" mode="date" @change="changeStart">
+          <kw-list-cell title="开始时间" :rightNote="pageParam.startTime"></kw-list-cell>
         </picker>
-        <picker :range="endTime" mode="date">
-          <kw-list-cell title="结束时间"></kw-list-cell>
+        <picker :range="pageParam.endTime" mode="date" @change="changeEnd">
+          <kw-list-cell title="结束时间" :rightNote="pageParam.endTime"></kw-list-cell>
         </picker>
       </view>
     </kw-search>
@@ -121,11 +121,14 @@
       			XXMC: this.pageParam.keyword,
 						// 后端不知道是什么 先传''
 						MB_ORG_ID: '',
+            ASC: '',
+            ORDERBY: '',
       		},
       		vue: this,
       		then(data) {
       			let datas = data.datas
       			let deleteParam = {}
+            console.log(datas && datas.length > 0)
       			if (datas && datas.length > 0) {
       				for (let i = 0; i < datas.length; i++) {
       					let tmp = datas[i]
@@ -140,9 +143,19 @@
       				} else {
       					this.dataList.push(...datas)
       				}
-      			}
+      			} else{
+              this.dataList = []
+            }
       		}
       	})
+      },
+      // 修改开始时间
+      changeStart (e) {
+      	this.pageParam.startTime = e.detail.value
+      },
+      // 修改结束时间
+      changeEnd (e) {
+      	this.pageParam.endTime = e.detail.value
       },
       // 搜素列表
       searchList(e) {
