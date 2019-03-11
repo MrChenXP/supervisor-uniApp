@@ -825,7 +825,7 @@ const kwz = {
       for (let arrs of data._menus_.children) { // arrs代表每个应用
         for (let arr of arrs.children) { // arr代表应用中的每个功能
           if (arr.PRO_ID === url) {
-            if (typeof arr.PRO_ATTRS === 'object') { // 没配限制日期返回null,给他前后1年
+            if (typeof arr.PRO_ATTRS === 'object') { // 没配限制日期返回null,给他加默认前后1年
               arr.PRO_ATTRS = {
                 minDate: '{"y":"-1","M":"0","d":"0"}',
                 maxDate: '{"y":"1","M":"0","d":"0"}'

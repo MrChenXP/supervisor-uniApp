@@ -4,7 +4,7 @@
     <kw-search placeholder="请输入学校名称" @confirm="searchList">
       <view slot="content">
         <picker :range="searchCondition.DM_XD" range-key="DMMX_MC" @change="changeXd">
-          <kw-list-cell :right-note="pageParam.xdMc"></kw-list-cell>
+          <kw-list-cell title="学段" :right-note="pageParam.xdMc"></kw-list-cell>
         </picker>
         <picker :range="searchCondition.DM_XQ" range-key="name" @change="changeXq">
           <kw-list-cell title="学期" :right-note="pageParam.xqMc"></kw-list-cell>
@@ -63,16 +63,27 @@
         </view>
       </view>
     </checkbox-group>
+    <!-- 加载更多 一页默认20条 -->
+    <uni-load-more v-if="dataList.length>=20" :status="loadingType" :contentText="contentText"></uni-load-more>
+    <uni-load-more v-else status="noMore"></uni-load-more>
 	 </view>
 </template>
 
 <script>
   import KwSearch from "@kwz/kw-ui/kw-search.vue"
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-	import {uniBadge, uniTag, uniIcon} from '@dcloudio/uni-ui'
+	import {uniLoadMore} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
+        // 加载更多状态
+        loadingType: "more",
+        // 加载更多状态对应文字 键名不能改
+        contentText: {
+        	contentdown: "上拉显示更多",
+        	contentrefresh: "正在加载...",
+        	contentnomore: "没有更多数据了"
+        },
 				// 删除显示隐藏
 				deleteShow: true,
 				// 搜索以及分页参数
@@ -99,20 +110,17 @@
 				deleteParam: {
 					'_CHECK_ALL_': false
 				},
-				constParam: {
-				}
+				constParam: {}
 			};
 		},
-    components:{
-			KwSearch,
-			KwListCell,
-			uniBadge,
-			uniTag,
-			uniIcon
-		},
+    components:{KwSearch,KwListCell,uniLoadMore},
 		onShow() {
 			this.initData()
 		},
+    onReachBottom() {
+      this.pageList()
+      this.loadingType = "loading"
+    },
     methods:{
       // 加载数据
       initData() {
@@ -203,9 +211,14 @@
       					this.dataList = datas;
       				} else {
       					this.dataList.push(...datas)
+                this.pageParam.page++
+                this.loadingType = "more"
       				}
       			} else{
-              this.dataList = []
+              this.loadingType = "noMore"
+              if(type){
+                this.dataList = []
+              }
             }
       		}
       	})
@@ -298,6 +311,9 @@
   .gn{
     height: 86upx;
     padding: 18upx 0;
+    position:sticky;
+    top:100upx;
+    background:#f5f5f5;
     .delete,.add,.check{
       width: 125upx;
       height: 50upx;
@@ -318,9 +334,11 @@
     }
   }
   .lists{
-    height: calc(100% - 186upx);
+    background:#f5f5f5;
+
+    // height: calc(100% - 186upx);
     padding : 0 20upx;
-    overflow: auto;
+    // overflow: auto;
     .list{
       margin-bottom: 20upx;
       background: white;

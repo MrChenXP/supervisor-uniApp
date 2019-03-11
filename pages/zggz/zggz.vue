@@ -78,13 +78,16 @@
         </view>
       </view>
     </checkbox-group>
+    <!-- 加载更多 一页默认20条 -->
+    <uni-load-more v-if="dataList.length>=20" :status="loadingType" :contentText="contentText"></uni-load-more>
+    <uni-load-more v-else status="noMore"></uni-load-more>
 	</view>
 </template>
 
 <script>
 	import KwSearch from "@kwz/kw-ui/kw-search.vue"
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-	import { uniBadge,uniTag,uniIcon} from '@dcloudio/uni-ui'
+	import {uniLoadMore} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -147,16 +150,14 @@
       	return this.$kwz.hasAuth('dd_zgxs/zgtz_done')
       }
 		},
-		components: {
-			KwSearch,
-			KwListCell,
-			uniBadge,
-			uniTag,
-			uniIcon
-		},
+		components: {KwSearch,KwListCell,uniLoadMore},
 		onShow() {
 			this.initData()
 		},
+    onReachBottom() {
+      this.pageList()
+      this.loadingType = "loading"
+    },
 		methods: {
 			// 加载数据
 			initData() {
@@ -219,11 +220,15 @@
 								this.dataList = datas;
 							} else {
 								this.dataList.push(...datas)
+                this.pageParam.page++
+                this.loadingType = "more"
 							}
 						} else{
-              this.dataList = []
+              this.loadingType = "noMore"
+              if(type){
+                this.dataList = []
+              }
             }
-
 					}
 				})
 			},
@@ -341,7 +346,9 @@
 		justify-content: center;
 		align-items: center;
 		border-top: #dedede solid 2upx;
-
+    position:sticky;
+    top:100upx;
+    background:#f5f5f5;
 		.zg,
 		.xs {
 			width: 355upx;
@@ -367,7 +374,9 @@
 	.gn {
 		height: 86upx;
 		padding: 18upx 0;
-
+    position:sticky;
+    top:195upx;
+    background:#f5f5f5;
 		.delete,
 		.add,
 		.check {
