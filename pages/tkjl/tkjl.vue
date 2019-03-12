@@ -238,7 +238,10 @@
     height: 86upx;
     padding: 18upx 0;
     position:sticky;
+    top:calc(44px + 100upx);
+    /* #ifdef MP-WEIXIN */
     top:100upx;
+    /* #endif */
     background:#f5f5f5;
     .delete,.add,.check{
       width: 125upx;

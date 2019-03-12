@@ -19,6 +19,7 @@
           <view class="fr" v-show="ddsxShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="ddsxShow" class="ddjs-body">
+          <!-- 以前手机端用的是文本域 -->
           <kw-editor :content="ddsx"></kw-editor>
         </view>
       </view>
@@ -40,8 +41,8 @@
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
-  import XcddSelectSxdx from "../xcdd/compoentns/xcdd-select-sxdx.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
 	import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	export default {
 		data() {

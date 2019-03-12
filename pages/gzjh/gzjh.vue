@@ -46,14 +46,14 @@
               <view v-if="!!item.BZMC" class="fl clyj">
                 <uni-tag :text="item.BZMC" size="small" type="primary"></uni-tag>
               </view>
-              <view v-if="item.STATUS == '1'" class="fr bj">
-                <uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary" @click="doDispose(item.CONTENT_ID)"></uni-tag>
+              <view v-if="item.STATUS == '1'" class="fr bj" @click.stop="doDispose(item.CONTENT_ID)">
+                <uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
-              <view v-if="item.STATUS == '1'" class="fr bj">
-                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary" @click="toUpdate(item.CONTENT_ID)"></uni-tag>
+              <view v-if="item.STATUS == '1'" class="fr bj" @click="toUpdate(item.CONTENT_ID)">
+                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
-              <view v-if="item.STATUS == '1'" class="fr bj">
-                <uni-tag text="督导" size="small" circle="true" inverted="true" type="primary" @click="toDD(item.CONTENT_ID)"></uni-tag>
+              <view v-if="item.STATUS == '1'" class="fr bj" @click="toDD(item.CONTENT_ID)">
+                <uni-tag text="督导" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
               <view v-if="item.ISQS" class="fr bj">
                 <uni-tag text="签收" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
@@ -312,7 +312,10 @@
     height: 86upx;
     padding: 18upx 0;
     position:sticky;
+    top:calc(44px + 100upx);
+    /* #ifdef MP-WEIXIN */
     top:100upx;
+    /* #endif */
     background:#f5f5f5;
     .delete,.add,.check{
       width: 125upx;

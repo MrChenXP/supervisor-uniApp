@@ -240,11 +240,11 @@
 				ddpgShow: false,
 				// 督导评估id ==>BZID
 				pgbzID: '',
-				// 不知道是啥id
+				// 评估id
 				pgid: '',
-				// 同上
+				// 未知id
 				bid: '',
-				// 同上
+				// 明细id
 				mxid: '',
 				// 登陆用户
 				loginUser: {},
@@ -313,6 +313,7 @@
 										},
 										vue: this,
 										then(response) {
+                      console.log(response)
 											let datas1 = response.datas
 											let sj = {}
 											if (datas1 && datas1.SJ) {
@@ -463,6 +464,7 @@
 			// 去评估
 			toDdpg () {
 				if (this.pgbzID) {
+          // 如果没有评估id就去获取(评估需要一点进去就有pgid)
 					if (this.pgid) {
             this.ddGetMxid()
           }else {
@@ -478,7 +480,7 @@
                 let datas = response.datas
                 this.BID = datas.BID
                 if (datas && this.BID) {
-                  // 查找评估记录是否已存在
+                  // 根据批次id和目标机构id查找以该学校为评估目标的评估记录是否已存在
                   this.$kwz.ajax.ajaxUrl({
                     url: 'jc_pgbzmx/getMbMx/DDPGBZ',
                     type: 'POST',
@@ -489,7 +491,7 @@
                     vue: this,
                     then (response) {
                       let datas1 = response.datas
-                      // 未填报督学
+                      // 未填报督学 判断哪个督学未填报，给他发起一个评估
                       let wtbDx = []
                       let sxdx = this.sxdx.value ? this.sxdx.value.split(',') : []
                       if (sxdx.length > 0) {
@@ -541,6 +543,7 @@
           this.$kwz.alert('工作计划数据有误')
         }
 			},
+      // 获取明细id
 			ddGetMxid () {
 				this.$kwz.ajax.ajaxUrl({
 					url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',

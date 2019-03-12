@@ -347,10 +347,12 @@
 		align-items: center;
 		border-top: #dedede solid 2upx;
     position:sticky;
+    top:calc(44px + 100upx);
+    /* #ifdef MP-WEIXIN */
     top:100upx;
+    /* #endif */
     background:#f5f5f5;
-		.zg,
-		.xs {
+		.zg,.xs {
 			width: 355upx;
 			height: 65upx;
 			text-align: center;
@@ -375,7 +377,10 @@
 		height: 86upx;
 		padding: 18upx 0;
     position:sticky;
+    top:calc(44px + 195upx);
+    /* #ifdef MP-WEIXIN */
     top:195upx;
+    /* #endif */
     background:#f5f5f5;
 		.delete,
 		.add,
