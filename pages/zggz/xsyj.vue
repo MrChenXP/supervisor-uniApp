@@ -77,12 +77,16 @@
         </view>
       </view>
     </checkbox-group>
+    <!-- 加载更多 一页默认20条 -->
+    <uni-load-more v-if="dataList.length>=20" :status="loadingType" :contentText="contentText"></uni-load-more>
+    <uni-load-more v-else status="noMore"></uni-load-more>
 	</view>
 </template>
 
 <script>
 	import KwSearch from "@kwz/kw-ui/kw-search.vue"
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
+  import {uniLoadMore} from '@dcloudio/uni-ui'
 	export default {
 		data() {
 			return {
@@ -129,13 +133,14 @@
 				}
 			};
 		},
-		components: {
-			KwSearch,
-			KwListCell,
-		},
+		components: {KwSearch,KwListCell,uniLoadMore},
 		onShow() {
 			this.initData()
 		},
+    onReachBottom() {
+      this.pageList()
+      this.loadingType = "loading"
+    },
     computed: {
       // 新增权限
       hasXzAuth () {
@@ -246,9 +251,14 @@
 								this.dataList = datas;
 							} else {
 								this.dataList.push(...datas)
+                this.pageParam.page++
+                this.loadingType = "more"
 							}
 						} else{
-              this.dataList = []
+              this.loadingType = "noMore"
+              if(type){
+                this.dataList = []
+              }
             }
 					}
 				})
@@ -326,7 +336,12 @@
 		justify-content: center;
 		align-items: center;
 		border-top: #dedede solid 2upx;
-
+    position:sticky;
+    top:calc(44px + 100upx);
+    /* #ifdef MP-WEIXIN */
+    top:100upx;
+    /* #endif */
+    background:#f5f5f5;
 		.zg,.xs {
 			width: 355upx;
 			height: 65upx;
@@ -346,13 +361,16 @@
 			border-radius: 0 10upx 10upx 0;
 		}
 	}
-
 	.gn {
 		height: 86upx;
 		padding: 18upx 0;
-		.delete,
-		.add,
-		.check {
+    position:sticky;
+    top:calc(44px + 195upx);
+    /* #ifdef MP-WEIXIN */
+    top:195upx;
+    /* #endif */
+    background:#f5f5f5;
+		.delete,.add,.check {
 			width: 125upx;
 			height: 50upx;
 			border-radius: 25upx;

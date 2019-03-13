@@ -19,6 +19,7 @@
           <view class="fr" v-show="ddsxShow"><uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon></view>
         </view>
         <view v-show="ddsxShow" class="ddjs-body">
+          <!-- 以前手机端用的是文本域 -->
           <kw-editor :content="ddsx"></kw-editor>
         </view>
       </view>
@@ -40,8 +41,8 @@
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-  import XcddSelectSchool from "../xcdd/compoentns/xcdd-select-school.vue"
-  import XcddSelectSxdx from "../xcdd/compoentns/xcdd-select-sxdx.vue"
+  import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
+  import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
 	import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	export default {
 		data() {
@@ -55,6 +56,21 @@
         	name: '',
         	value: ''
         },
+        // 表单数据
+        formData: {
+          xxName: '',
+          xxId: '',
+          YWSJ: '',
+          sdValue: [],
+          sxdxName: '',
+          sxdxId: '',
+          ddsxTxt: '',
+          pgbzValue: [],
+          remark: '',
+          xqid: ''
+        },
+        startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量
+        endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
         // 业务时间
         ywsj:"",
         // 时段列表
@@ -118,6 +134,7 @@
 					}
 				})
 			}
+      this.getdateImpose()
 		},
     components:{KwListCell,XcddSelectSchool,XcddSelectSxdx,KwEditor},
     methods:{
@@ -161,6 +178,20 @@
 				
 				this.loginUser = this.$kwz.getLoginUser()
 			},
+      // 获取日期限制
+      getdateImpose () {
+        let startEnd = this.$kwz.dateImpose('b892eba5fae9493189ac81a510bbbd73')
+        if (!startEnd) {
+          setTimeout(() => {
+            this.getdateImpose()
+          }, 500)
+        } else {
+          this.startDate = this.$kwz.getLimdat(startEnd.minDate)
+          this.endDate = this.$kwz.getLimdat(startEnd.maxDate)
+          this.formData.minDate = startEnd.minDate
+          this.formData.maxDate = startEnd.maxDate
+        }
+      },
 			// 学校确定
 			confirmSchool(e){
 				this.xx.name = e.data.name;
@@ -321,17 +352,14 @@
 							this.xx.value = map.ORG_ID_TARGET
 							this.ywsj = (map.YWSJ && map.YWSJ.length > 10 ? map.YWSJ.substr(0, 10) : '')
 							this.sdValue.value = map.SD
-							
 							for(let i = 0; i < this.sdList.length; i++) {
 								if(this.sdList[i].DMMX_CODE == map.SD) {
 									this.sdValue.name = this.sdList[i].DMMX_MC
 									this.sdValue.index = i
 								}
 							}
-							
 							this.sxdx.name = map.JGID_MC
 							this.sxdx.value = map.JGID
-							
 							this.pjValue.value = map.BZID
 							for(let i = 0; i < this.pjList.length; i++) {
 								if(this.pjList[i].value == map.BZID) {
@@ -339,9 +367,7 @@
 									this.pjValue.index = i
 								}
 							}
-							
 							this.setDdsx(map.TXT)
-							
 							this.xqid = map.XQID
             }
           }

@@ -47,17 +47,29 @@
         </view>
       </view>
     </checkbox-group>
-	 </view>
+    <!-- 加载更多 一页默认20条 -->
+    <uni-load-more v-if="dataList.length>=20" :status="loadingType" :contentText="contentText"></uni-load-more>
+    <uni-load-more v-else status="noMore"></uni-load-more>
+   </view>
 </template>
 
 <script>
   import KwSearch from "@kwz/kw-ui/kw-search.vue"
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
-	import {uniBadge, uniTag, uniIcon} from '@dcloudio/uni-ui'
+	import {uniLoadMore} from '@dcloudio/uni-ui'
 	export default {
-    components:{KwSearch,KwListCell},
+    components:{KwSearch,KwListCell,uniLoadMore},
 		data() {
 			return {
+        loadMoreShow:true,
+        // 加载更多状态
+        loadingType: "more",
+        // 加载更多状态对应文字 键名不能改
+        contentText: {
+        	contentdown: "上拉显示更多",
+        	contentrefresh: "正在加载...",
+        	contentnomore: "没有更多数据了"
+        },
 				// 删除显示隐藏
 				deleteShow: true,
 				// 搜索以及分页参数
@@ -69,14 +81,8 @@
 					keyword: '',
 					page: 1
 				},
+        // 列表数据
 				dataList: [],
-				// 搜索参数
-// 				searchCondition: {
-// 					// 学段选择列表
-// 					DM_XD: [],
-// 					// 整改类型选择列表
-// 					DM_XQ: []
-// 				},
 				deleteParam: {
 					'_CHECK_ALL_': false
 				},
@@ -84,6 +90,10 @@
 				}
 			};
 		},
+    onReachBottom() {
+      this.pageList()
+      this.loadingType = "loading"
+    },
 		onShow() {
 			this.initData()
 		},
@@ -128,7 +138,6 @@
       		then(data) {
       			let datas = data.datas
       			let deleteParam = {}
-            console.log(datas && datas.length > 0)
       			if (datas && datas.length > 0) {
       				for (let i = 0; i < datas.length; i++) {
       					let tmp = datas[i]
@@ -142,9 +151,14 @@
       					this.dataList = datas;
       				} else {
       					this.dataList.push(...datas)
+                this.pageParam.page++
+                this.loadingType = "more"
       				}
       			} else{
-              this.dataList = []
+              this.loadingType = "noMore"
+              if(type){
+                this.dataList = []
+              }
             }
       		}
       	})
@@ -223,6 +237,12 @@
   .gn{
     height: 86upx;
     padding: 18upx 0;
+    position:sticky;
+    top:calc(44px + 100upx);
+    /* #ifdef MP-WEIXIN */
+    top:100upx;
+    /* #endif */
+    background:#f5f5f5;
     .delete,.add,.check{
       width: 125upx;
       height: 50upx;
