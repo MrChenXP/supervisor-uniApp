@@ -118,10 +118,13 @@
 							YWID: contentId
 						},
 						then (response) {
-							this.zgxsid = response.ZGXSID
+							this.zgxsid = response.datas.ZGXSID
 							this.$kwz.alert('发送成功')
 							if (typeof cb == 'function') {
-								cb.apply(this, [response])
+								cb.apply(this, [{
+									ZGXSID: response.datas.ZGXSID,
+									ZGBH: this.ybwtBh
+								}])
 							}
 						}
 					})
@@ -145,10 +148,13 @@
 							IS_SB: isSb // 是否上报
 						},
 						then (response) {
-							this.disposeIdea.ZGXSID = response.data.datas.ZGXSID
+							this.zgxsid = response.datas.ZGXSID
 							this.$kwz.alert('发送成功')
 							if (typeof cb == 'function') {
-								cb.apply(this, [response])
+								cb.apply(this, [{
+									ZGXSID: response.datas.ZGXSID,
+									ZGBH: this.ybwtBh
+								}])
 							}
 						}
 					})

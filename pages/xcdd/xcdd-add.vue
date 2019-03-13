@@ -27,8 +27,8 @@
           </view>
 					<view class="clearfix">
 						<!-- <uni-rate value="3" ></uni-rate> -->
-            <text class="fl">标准名称</text>
-            <view class="fr"><uni-rate value="0" ></uni-rate></view>
+            <text class="fl">评估标准:{{pgbzMc}}</text>
+            <view class="fr" v-if="ddpgPfShow"><uni-rate :value="ddpgFz" ></uni-rate></view>
 					</view>
         </view>
       </view>
@@ -91,9 +91,9 @@
               <text class="fl">后续处理意见</text>
               <text class="fr">{{hxclyj.name}}</text>
             </view>
-        		<view class="clearfix">
-              <text class="fl">整改协商编号</text>
-              <text class="fr">ddeddddd</text>
+        		<view class="clearfix" v-if="zgxsbhShow" >
+              <text class="fl">整改协商编号：</text>
+              <text class="fr">{{zgxsBh}}</text>
         		</view>
           </view>
         </view>
@@ -238,8 +238,14 @@
 				},
 				// 是否显示去评估
 				ddpgShow: false,
+				// 是否显示评估结果星星
+				ddpgPfShow: false,
 				// 督导评估id ==>BZID
 				pgbzID: '',
+				// 督导评估名称 ==》 界面显示
+				pgbzMc: '',
+				// 督导评估分值
+				ddpgFz: 0,
 				// 不知道是啥id
 				pgid: '',
 				// 同上
@@ -249,7 +255,10 @@
 				// 登陆用户
 				loginUser: {},
 				minDate: '',
-				maxDate: ''
+				maxDate: '',
+				// 是否显示整改协商编号信息
+				zgxsbhShow: false,
+				zgxsBh: ''
 			}
 		},
 		computed: {
@@ -293,12 +302,13 @@
 					if (gzjh.data.BZID) {
 						this.ddpgShow = true
 						this.pgbzID = gzjh.data.BZID
+						this.pgbzMc = gzjh.data.BZMC
 						
 						this.$kwz.ajax.ajaxUrl({
 							url: 'jc_pgbz/selectTbmbglByKey',
 							type: 'POST',
 							data: {
-								BZID: this.pgbzId
+								BZID: this.pgbzID
 							},
 							vue: this,
 							then(response) {
@@ -321,6 +331,10 @@
 												} catch (e) {
 													console.error(e)
 												}
+												
+												this.ddpgFz = sj.FZ || 0
+												this.ddpgPfShow = true
+												
 											}
 										}
 									})
@@ -398,6 +412,10 @@
       changeHxcly (e) {
 				let index = e.detail.value
 
+				// 备份存储以前的老值
+				this.hxclyjOld = this.hxclyj.index
+
+				// 一般问题/严重问题/复杂问题
 				if (index != '0' && index != '1') {
 					if (!this.xx.value) {
 						this.$kwz.alert('请先选择学校或工作计划');
@@ -409,6 +427,10 @@
 					}
 					this.hxclyjXwt = false
 				} else {
+					
+					this.zgxsbhShow = false
+					this.zgxsBh = ''
+					
 					if(index == '1') {
 						this.hxclyjXwt = true
 					}else{
@@ -417,24 +439,31 @@
 					this.hxclyj.index = index
 					this.hxclyj.name = this.hxclyjList[index].name
 					this.hxclyj.value = this.hxclyjList[index].value
+					
+					// 无问题或小问题
 					this.deleteDisposeIdeaId()
 				}
       },
 			// 删除后续处理意见id
 			deleteDisposeIdeaId (cb) {
+				let vm = this;
 				let zgxsSaveCb = (data) => {
-					console.log(data)
+					vm.hxclyjShow = false
+					vm.zgxsbhShow = true
+					vm.zgxsBh = data.ZGBH
 				}
-				if (this.ZGXSID) {
+				if (this.zgxsid) {
 					this.$kwz.ajax.ajaxUrl({
 						url: 'dd_zgxs/doDelete',
 							type: 'POST',
 							vue: this,
 							data: {
-								ZGXSID: this.ZGXSID
+								ZGXSID: this.zgxsid
 							},
 							success (data) {
-								this.ZGXSID = ''
+								this.zgxsid = ''
+								this.zgxsbhShow = false
+								this.zgxsBh = ''
 								if (typeof cb == 'function') {
 									cb.apply(this, [zgxsSaveCb])
 								}
@@ -463,6 +492,7 @@
 			// 去评估
 			toDdpg () {
 				if (this.pgbzID) {
+					// 修改
 					if (this.pgid) {
             this.ddGetMxid()
           }else {
@@ -548,7 +578,7 @@
 					data: {
 						BID: this.pgid ? '' : this.BID,
 						PGID: this.pgid ? this.pgid : '',
-						tbr: this.loginUser.unicode,
+						tbr: this.loginUser.uid,
 						MB_ORG_ID: this.xx.value
 					},
 					vue: this,
@@ -594,7 +624,7 @@
 					ZGXSID: this.zgxsid,
 					PGMC: '',
 					// BZID: this.pgbzID,
-					PGID: this.pgid || '',
+					PGID: this.pgid,
 					minDate: this.minDate, // 最小时间限制
 					maxDate: this.maxDate // 最大时间限制
 				}
@@ -647,9 +677,6 @@
 						then (response) {
 							let datas = response.datas
 							if (datas && datas.CONTENT_ID) {
-								this.gzjh.value = datas.GZAP_YWID
-								let workPlanName = (datas.JHXXMC ? (datas.JHXXMC + '') : datas.JHXXMC) + (datas.JHYWSJ ? (datas.JHYWSJ + '/') : datas.JHYWSJ) + (datas.JHSD ? (datas.JHSD + '/') : datas.JHSD) + datas.AUTHOR ? (datas.AUTHOR + '/') : datas.AUTHOR
-								this.gzjh.name = workPlanName && workPlanName.length > 12 ? workPlanName.substr(0, 12) : workPlanName
 								this.xx.value = datas.ORG_ID
 								this.xx.name = datas.XXMC
 								this.ywsj = datas.YWSJ
@@ -661,6 +688,25 @@
 									this.zgxsyj = datas.ZGJY || ''
 									this.zgxsyjHide = datas.ZGJY || ''
 									this.hxclyjXwt = true
+								} else if (status == '2' || status == '3' || status == '5') {
+									this.$kwz.ajax.ajaxUrl({
+										url: 'dd_zgxs/selectZgxsList',
+										type: 'POST',
+										data: {
+											CONTENT_ID: this.contentId
+										},
+										vue: this,
+										then (response) {
+											let zgdatas = response.datas
+											if (zgdatas && zgdatas.length > 0) {
+												let zgxsData = zgdatas[0]
+												this.zgxsbhShow = true
+												
+												this.zgxsBh = zgxsData.BH
+												this.zgxsid = zgxsData.ZGXSID
+											}
+										}
+									})
 								}
 								for(let i = 0; i < this.hxclyjList.length; i++) {
 									if(this.hxclyjList[i].value == status) {
@@ -680,6 +726,75 @@
 								this.xyxs = datas.XYXS || 0
 								this.pgid = datas.PGID
 								this.setDdjs(datas.DDJS)
+								
+								// 工作安排
+								if (datas.GZAP_YWID) {
+									this.gzjh.value = datas.GZAP_YWID
+									this.$kwz.ajax.ajaxUrl({
+										url: 'dd_gzap/doSelectByPrimary/DDGZAP',
+										type: 'POST',
+										data: {
+											CONTENT_ID: datas.GZAP_YWID
+										},
+										vue: this,
+										then (response) {
+											let datas = response.datas.map
+											let workPlanName = (datas.ORG_ID_TARGET_MC ? (datas.ORG_ID_TARGET_MC + '') : datas.ORG_ID_TARGET_MC) 
+											+ (datas.YWSJ ? (datas.YWSJ + '/') : datas.YWSJ) + (datas.SD ? (datas.SD + '/') : datas.SD) 
+											+ datas.AUTHOR ? (datas.AUTHOR + '/') : datas.AUTHOR
+											this.gzjh.name = workPlanName
+											if (datas.BZID) {
+												this.ddpgShow = true
+												this.pgbzID = datas.BZID
+												this.pgbzMc = datas.BZMC
+											}
+										}
+									})
+									
+									if (this.pgid) {
+										this.$kwz.ajax.ajaxUrl({
+											url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
+											type: 'POST',
+											data: {
+												BID: '',
+												PGID: this.pgid,
+												tbr: this.loginUser.uid,
+												MB_ORG_ID: this.xx.value
+											},
+											vue: this,
+											then (response) {
+												let datas = response.datas
+												if (datas && datas.MXID) {
+													// this.pgid = datas.PGID
+													this.mxid = datas.MXID
+													
+													this.$kwz.ajax.ajaxUrl({
+														url: 'jc_pgbzmx/doSelectByPrimary/DDJL',
+														type: 'POST',
+														data: {
+															MXID: datas.MXID
+														},
+														vue: this,
+														then(response) {
+															let datas1 = response.datas
+															let sj = {}
+															if (datas1 && datas1.SJ) {
+																try {
+																	sj = JSON.parse(datas1.SJ)
+																} catch (e) {
+																	console.error(e)
+																}
+																
+																this.ddpgFz = sj.FZ || 0
+																this.ddpgPfShow = true
+															}
+														}
+													})
+												}
+											}
+										})
+									}
+								}
 							}
 						}
 					})
