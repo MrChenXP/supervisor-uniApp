@@ -1,16 +1,16 @@
 <script>
 	export default {
-		onLaunch: function() {
-		},
-		onShow: function() {
-		},
-		onHide: function() {
-		}
+// 		onLaunch: function() {
+// 		},
+// 		onShow: function() {
+// 		},
+// 		onHide: function() {
+// 		}
 	}
 </script>
 
-<style>
+<style lang="scss">
 	/* uni.css - 通用组件、模板样式库，可以当作一套ui库应用 */
 	@import './common/uni.css';
-	@import './common/common.css';
+	@import './common/common.scss';
 </style>

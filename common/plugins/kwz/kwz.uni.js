@@ -841,6 +841,18 @@ const kwz = {
       }
     }
   },
+  // 数组对象去重 参数：传入一个数组
+  uniq(arr){
+    var result = [];
+    var obj = {};
+    for(var i =0; i<arr.length; i++){
+       if(!obj[arr[i].XQ_XN]){
+          result.push(arr[i]);
+          obj[arr[i].XQ_XN] = true;
+       }
+   }
+   return result
+  },
 	// 下载文件
 	downloadAttach (url, cb=()=>{}, vue) {
 		uni.downloadFile({

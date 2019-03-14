@@ -208,11 +208,11 @@
 								deleteParam[i] = this.deleteParam[i]
 							}
 							this.deleteParam = deleteParam
+              this.pageParam.page++
 							if (type) {
 								this.dataList = datas
 							} else {
 								this.dataList.push(...datas)
-                this.pageParam.page++
                 this.loadingType = "more"
 							}
 						} else{
