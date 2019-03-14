@@ -819,9 +819,9 @@ const kwz = {
   // 返回功能限制的日期参数 功能id
   dateImpose(url){
     let data = JSON.parse(uni.getStorageSync('_commonMenus'));
-    if(!data){
-      kwz.loadMenus(kwz.dateImpose,Vue)
-    }else{
+    if(data){
+//       kwz.loadMenus(kwz.dateImpose,Vue)
+//     }else{
       for (let arrs of data._menus_.children) { // arrs代表每个应用
         for (let arr of arrs.children) { // arr代表应用中的每个功能
           if (arr.PRO_ID === url) {
@@ -840,6 +840,7 @@ const kwz = {
         }
       }
     }
+		return '';
   },
   // 数组对象去重 参数：传入一个数组
   uniq(arr){

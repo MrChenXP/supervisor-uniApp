@@ -104,10 +104,16 @@
 				remark: '',
 				// 登陆用户
 				loginUser: {},
-				minDate: '',
-				maxDate: '',
 				// 工作计划id
 				contentId: ''
+			}
+		},
+		computed:{
+			minDate() {
+				return this.$kwz.dateImpose('b892eba5fae9493189ac81a510bbbd73').minDate
+			},
+			maxDate() {
+				return this.$kwz.dateImpose('b892eba5fae9493189ac81a510bbbd73').maxDate
 			}
 		},
 		onLoad(param) {
