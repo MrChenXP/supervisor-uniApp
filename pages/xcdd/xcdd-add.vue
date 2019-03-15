@@ -135,7 +135,7 @@
   import XcddSelectGzjh from "@kwz/kw-ui/xcdd-select-gzjh.vue"
   import XcddSelectSchool from "@kwz/kw-ui/xcdd-select-school.vue"
   import XcddSelectSxdx from "@kwz/kw-ui/xcdd-select-sxdx.vue"
-  import XcddHxclyj from "./compoentns/xcdd-hxclyj.vue"
+  import XcddHxclyj from "./components/xcdd-hxclyj.vue"
   import {uniNumberBox,uniRate} from "@dcloudio/uni-ui"
   import KwEditor from "@kwz/kw-ui/kw-editor.vue"
 	
@@ -599,7 +599,7 @@
 			updateDdpg () {
 				if (this.mxid && this.pgbzID) {
 					this.$kwz.router({
-						url: 'compoentns/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID + '&ywsj=' + this.ywsj
+						url: 'components/xcdd-pg?mxid=' + this.mxid + '&bzid=' + this.pgbzID + '&ywsj=' + this.ywsj
 					})
 				}
 			},

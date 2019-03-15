@@ -25,6 +25,7 @@
       <view>
         <!-- 单项列表 -->
         <view class="list" v-for="(item, index) in dataList" :key="index" @click="toDetail(item.MXID,item.ISNEW)">
+          <!-- 此处是左右结构 要换成跟xsyj一样的整体结构-->
           <label>
             <view class="check" v-if="!deleteShow">
               <checkbox :checked="deleteParam[item.MXID]" 
@@ -61,7 +62,6 @@
     components:{KwSearch,KwListCell,uniLoadMore},
 		data() {
 			return {
-        loadMoreShow:true,
         // 加载更多状态
         loadingType: "more",
         // 加载更多状态对应文字 键名不能改
@@ -147,11 +147,11 @@
       					deleteParam[i] = this.deleteParam[i]
       				}
       				this.deleteParam = deleteParam
+              this.pageParam.page++
       				if (type) {
       					this.dataList = datas;
       				} else {
       					this.dataList.push(...datas)
-                this.pageParam.page++
                 this.loadingType = "more"
       				}
       			} else{
@@ -296,16 +296,6 @@
             border-color: #dcf0c7;
             color: #68ae1d;
           }
-//           .zgz .uni-tag{
-//             background-color: #f7e6c1;
-//    别删         border-color: #f7e6c1;
-//             color: #f27506;
-//           }
-//           .yys .uni-tag{
-//             background-color: #d6f1fb;
-//             border-color: #d6f1fb;
-//             color: #109dea;
-//           }
           .bj .uni-tag{
             border-color: #00bdfd;
             color: #00bdfd;

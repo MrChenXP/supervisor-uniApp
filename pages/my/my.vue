@@ -21,14 +21,14 @@
     </view>
    
     <!-- 功能 -->
-    <view class="gn">
+    <view class="my-gn">
       <kw-login-cell title="个人资料" thumb="../../static/images/icons/set.png" link="/pages/my/user-set" ></kw-login-cell>
       <kw-login-cell title="修改密码" thumb="../../static/images/icons/change.png" link="/pages/my/revise-password" ></kw-login-cell>
       <kw-login-cell title="切换机构" :border="{bottom:false}" thumb="../../static/images/icons/repeat.png" link="/pages/my/revise-institution" ></kw-login-cell>
     </view>
     
     <!-- 退出登录 -->
-    <view class="gn close-login">
+    <view class="my-gn close-login">
       <kw-login-cell title="退出" :border="{bottom:false}" thumb="../../static/images/icons/close.png" @click="logout"></kw-login-cell>
     </view>
 		<kw-login v-if="loginShow" @loginSuccess="loginSuccess" @closeLogin="closeLogin" ></kw-login>
@@ -154,7 +154,7 @@
       }
      }
    }
-  .gn{
+  .my-gn{
     background: white;
   }
   .close-login{

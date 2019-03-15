@@ -32,7 +32,7 @@
       </view>
     </view>
     <!-- 功能 -->
-    <view class="gn" >
+    <view class="workspace-gn" >
     	<kw-list-cell v-for="(item, index) in products" :title="item.PRO_MC" v-bind:key="index" :note="item.PRO_DESC" 
           :red-dot=redDot[item.PRO_ID] :thumb="item.THUMB" :link="item.LINK" :border="{bottom:index != products.length-1}"></kw-list-cell>
     </view>
@@ -55,7 +55,7 @@
 			return {
 				msg: "...",
 				loginShow: false,
-        // 统计数据
+        // 统计数据 上面的看板数据
 				tips: {
 					// 我的代办
 					wddb: 0,
@@ -102,7 +102,6 @@
 				this.initProducts();
 			},
 			initProducts () {
-				// let products = this.$kwz.getProducts();
 				this.products = this.$kwz.getProducts();
 			},
 			// 初始化桌面的提示信息
@@ -116,8 +115,8 @@
 					success (data) {
 						let datas = data.datas
 						if(datas) {
-              // 将返回的pro_id赋值给redDot 循环中根据pro_id进行判断红点显示隐藏
-              this.redDot= datas
+              // 将返回的pro_id赋值给redDot 页面循环中根据pro_id进行判断红点显示隐藏
+              this.redDot = datas
               // (我的待办)
 							let wddb = 0
               // 整改工作
@@ -126,7 +125,7 @@
                 wddb += datas['ebc60e699bc642a1871f1e017b979483']	|| 0
 							// 工作安排
                 wddb += datas['b892eba5fae9493189ac81a510bbbd73']	|| 0
-              // 提示数据
+              // 上面的看板数据
 							this.tips = {
 								wddb,
 								cxcs: datas['SJDDJLSJDDJLSJDDJLSJDDJLSJDDJLa1'] || 0,
@@ -142,15 +141,32 @@
 </script>
 
 <style lang="scss">
-  .banner,.banner image{
+  .banner{
+    z-index: 10;
     width: 100%;
     height: 254upx;
+    position: sticky;
+    top:44px;
+    /* #ifdef MP-WEIXIN */
+    top:0;
+    /* #endif */
+    image{
+      width: 100%;
+      height: 254upx;
+    }
   }
+  
   .statistics{
+    z-index: 10;
     height: 200upx;
     background: white;
     padding: 30upx 75upx;
     display: flex;
+    position: sticky;
+    top:calc(44px + 254upx);
+    /* #ifdef MP-WEIXIN */
+    top:254upx;
+    /* #endif */
     .s-body{
       width: 150upx;
       height: 140upx;
@@ -176,7 +192,7 @@
       }
     }
   }
-  .gn{
+  .workspace-gn{
     margin-top: 20upx;
   }
 </style>

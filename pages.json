@@ -71,7 +71,7 @@
       }
     },
     {
-      "path": "pages/xcdd/compoentns/xcdd-pg",
+      "path": "pages/xcdd/components/xcdd-pg",
       "style": {
         "navigationBarTitleText": "督导评估"
       }
@@ -146,6 +146,30 @@
       "path": "pages/tkjl/tkjl-preview",
       "style": {
         "navigationBarTitleText": "听课记录"
+      }
+    },
+    {
+      "path": "pages/xxglddb/xxglddb",
+      "style": {
+        "navigationBarTitleText": "学校管理督导版"
+      }
+    },
+    {
+      "path": "pages/xxglddb/xxglddb-preview",
+      "style": {
+        "navigationBarTitleText": "学校管理督导版"
+      }
+    },
+    {
+      "path": "pages/dxgl/dxgl",
+      "style": {
+        "navigationBarTitleText": "督学管理"
+      }
+    },
+    {
+      "path": "pages/dxgl/dxgl-preview",
+      "style": {
+        "navigationBarTitleText": "督学管理"
       }
     }
   ],

@@ -13,7 +13,7 @@
 		</kw-search>
 		<!-- 分页 -->
 		<view class="pager">
-			<view class="zg">整改</view>
+			<view class="zg active">整改</view>
 			<view class="xs" @click="$kwz.redirect({url: 'xsyj'})">协商</view>
 		</view>
 		<!-- 功能(新增删除) -->
@@ -216,11 +216,11 @@
 								deleteParam[i] = this.deleteParam[i]
 							}
 							this.deleteParam = deleteParam
+              this.pageParam.page++
 							if (type) {
 								this.dataList = datas;
 							} else {
 								this.dataList.push(...datas)
-                this.pageParam.page++
                 this.loadingType = "more"
 							}
 						} else{
@@ -339,40 +339,40 @@
 </script>
 
 <style lang="scss">
-	.pager {
-		height: 95upx;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		border-top: #dedede solid 2upx;
-    position:sticky;
-    top:calc(44px + 100upx);
-    /* #ifdef MP-WEIXIN */
-    top:100upx;
-    /* #endif */
-    background:#f5f5f5;
-		.zg,.xs {
-			width: 355upx;
-			height: 65upx;
-			text-align: center;
-			line-height: 65upx;
-			font-size: 28upx;
-		}
-
-		.zg {
-			color: white;
-			background-color: #00bdfd;
-			border-radius: 10upx 0 0 10upx;
-		}
-
-		.xs {
-			background-color: #d6f1fb;
-			color: #00bdfd;
-			border-radius: 0 10upx 10upx 0;
-		}
-	}
-
+// 	.pager {
+// 		height: 95upx;
+// 		display: flex;
+// 		flex-direction: row;
+// 		justify-content: center;
+// 		align-items: center;
+// 		border-top: #dedede solid 2upx;
+//     position:sticky;
+//     top:calc(44px + 100upx);
+//     /* #ifdef MP-WEIXIN */
+//     top:100upx;
+//     /* #endif */
+//     background:#f5f5f5;
+// 		.zg,.xs {
+// 			width: 355upx;
+// 			height: 65upx;
+// 			text-align: center;
+// 			line-height: 65upx;
+// 			font-size: 28upx;
+// 		}
+// 
+// 		.zg {
+// 			color: white;
+// 			background-color: #00bdfd;
+// 			border-radius: 10upx 0 0 10upx;
+// 		}
+// 
+// 		.xs {
+// 			background-color: #d6f1fb;
+// 			color: #00bdfd;
+// 			border-radius: 0 10upx 10upx 0;
+// 		}
+// 	}
+// 
 	.gn {
 		height: 86upx;
 		padding: 18upx 0;
