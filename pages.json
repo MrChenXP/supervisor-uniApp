@@ -159,6 +159,18 @@
       "style": {
         "navigationBarTitleText": "学校管理督导版"
       }
+    },
+    {
+      "path": "pages/dxgl/dxgl",
+      "style": {
+        "navigationBarTitleText": "督学管理"
+      }
+    },
+    {
+      "path": "pages/dxgl/dxgl-preview",
+      "style": {
+        "navigationBarTitleText": "督学管理"
+      }
     }
   ],
   "globalStyle": {
