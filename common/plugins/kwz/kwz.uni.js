@@ -859,7 +859,6 @@ const kwz = {
 							if(typeof cb == 'function') {
 								cb.apply(vue || this, savedFilePath)
 							}
-							console.log(savedFilePath)
 						}
 					})
 				} else {
@@ -870,9 +869,35 @@ const kwz = {
 				kwz.alert('加载文件失败')
 			}
 		})
+	},
+	loginWxMiniProgram () {
+		//#ifndef H5
+		uni.login({
+			provider: 'weixin',
+			success: function (res) {
+				console.log('login')
+				console.log(res);
+			}
+		});
+		uni.checkSession({
+			success: function (res) {
+				console.log('check session')
+				console.log(res);
+			}
+		})
+// 		uni.getUserInfo({
+// 			provider:"weixin",
+// 			success (res) {
+// 				console.log('get user info')
+// 				console.log(res)
+// 			}
+// 		})
+		//#endif
 	}
 }
 
 kwz.initVisit()
+
+// kwz.loginWxMiniProgram()
 
 export default kwz;
