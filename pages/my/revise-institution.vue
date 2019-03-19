@@ -51,7 +51,9 @@
 							loginUser.orgid = this.userOrg
 							loginUser.orgMc = this.userOrgName
 							this.$kwz.setLoginUser(loginUser)
-							this.$kwz.back()
+							this.$kwz.loadProducts(()=>{
+								this.$kwz.back()
+							}, this);
 						}
 					})
 				}
