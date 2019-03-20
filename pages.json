@@ -23,6 +23,12 @@
       }
     },
     {
+      "path": "pages/news/zzjgt",
+      "style": {
+        "navigationBarTitleText": "组织架构图"
+      }
+    },
+    {
       "path": "pages/my/user-set",
       "style": {
         "navigationBarTitleText": "个人设置"

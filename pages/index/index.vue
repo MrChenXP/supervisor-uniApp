@@ -74,16 +74,27 @@
 									this.newsBtList.push(ykinfo[i].CONTENT)
 								}
 							}
+              // 因组织架构图并不能从后端配出来，顾前端手动添加
+              this.btList.push("组织架构图")
+              this.newsBtList.push([{
+                TITLE:"组织架构图",
+                CONTENT_ID:"组织架构图"
+              }])
 						}
 					}
 				})
 			},
       toNews (newsId) {
-				// this.$kwz.autoLogin()
         if(newsId) {
-				 this.$kwz.router({
-         	url: '/pages/news/news?CONTENT_ID=' + newsId
-         })
+          if(newsId = "组织架构图"){
+            this.$kwz.router({
+            	url: '/pages/news/zzjgt'
+            })
+          } else{
+            this.$kwz.router({
+            	url: '/pages/news/news?CONTENT_ID=' + newsId
+            })
+          }
         }
       }
     }
