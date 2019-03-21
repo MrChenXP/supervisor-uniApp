@@ -16,9 +16,9 @@
       <view class="check fl" v-if="!deleteShow">
         <radio :checked="deleteParam._CHECK_ALL_" @tap="checkAll">全选</radio>
       </view>
-      <view class="delete fl" v-if="deleteShow" @click="deleteAction">删除</view>
+      <view class="delete fl" v-if="hasScAuth && deleteShow" @click="deleteAction">删除</view>
       <view class="delete fl"  v-if="!deleteShow" @click="confirmDeleteAction">确认删除</view>
-      <view class="add fr" @click="$kwz.router({url: 'gzjh-add'})">新增</view>
+      <view class="add fr" @click="$kwz.router({url: 'gzjh-add'})" v-if="hasXzAuth">新增</view>
     </view>
     <!-- 列表组 -->
     <checkbox-group class="lists">
@@ -47,16 +47,17 @@
                 <uni-tag :text="item.BZMC" size="small" type="primary"></uni-tag>
               </view>
               <view v-if="item.STATUS == '1'" class="fr bj" @click.stop="doDispose(item.CONTENT_ID)">
-                <uni-tag text="处理"  size="small" circle="true" inverted="true" type="primary"></uni-tag>
+                <uni-tag text="处理" v-if="hasClAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
               <view v-if="item.STATUS == '1'" class="fr bj" @click="toUpdate(item.CONTENT_ID)">
-                <uni-tag text="修改"  size="small" circle="true" inverted="true" type="primary"></uni-tag>
+                <uni-tag text="修改" v-if="hasXgAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
               <view v-if="item.STATUS == '1'" class="fr bj" @click="toDD(item.CONTENT_ID)">
-                <uni-tag text="督导" size="small" circle="true" inverted="true" type="primary"></uni-tag>
+                <uni-tag text="督导" v-if="hasDdAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
-              <view v-if="item.ISQS" class="fr bj">
-                <uni-tag text="签收" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
+              <view v-if="item.ISQS && item.STATUS == '1'" class="fr bj" @click.stop="doBcj(item.CONTENT_ID)">
+                <!-- 以前的签收改为不参加 -->
+                <uni-tag text="不参加" v-if="hasBcjAuth" size="small" circle="true" inverted="true" type="primary" ></uni-tag>
               </view>
             </view>
           </view>
@@ -120,6 +121,32 @@
     onReachBottom() {
       this.pageList()
       this.loadingType = "loading"
+    },
+    computed:{
+    	// 新增权限
+    	hasXzAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/toAdd')
+    	},
+    	// 修改权限
+    	hasXgAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/toUpdate')
+    	},
+    	// 删除权限
+    	hasScAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/doDelete')
+    	},
+    	// 处理权限
+    	hasClAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/doDeal')
+    	},
+    	// 督导权限
+    	hasDdAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/doSelectDdjlByGzapid')
+    	},
+    	// 不参加（签收）权限
+    	hasBcjAuth () {
+    		return this.$kwz.hasAuth('dd_gzap/toQs')
+    	}
     },
     methods:{
       // 加载数据
@@ -197,8 +224,9 @@
       				for (let i = 0; i < datas.length; i++) {
       					let tmp = datas[i]
       					deleteParam[tmp.ZGXSID] = false
-								tmp.ISQS = tmp.ISCYR === '1' && tmp.QDZT === '0'
-								tmp.DDSD = tmp.YWSJ ? (tmp.YWSJ.substr(0, 10) + (tmp.SD === '1' ? ' 上午' : ' 下午')) : tmp.YWSJ
+								tmp.ISQS = tmp.ISCYR === 1 && tmp.QDZT === '1'
+                // 不知道为什么，tmp改变了，datas也跟着改变了，导致后面赋值this.dataList生效了
+								// tmp.DDSD = tmp.YWSJ ? (tmp.YWSJ.substr(0, 10) + (tmp.SD === '1' ? ' 上午' : ' 下午')) : tmp.YWSJ
 								// 截取内容
 								let text = datas[i].TXT
 								text = text && text.length > 35 ? text.substr(0, 35) + '...' : text
@@ -286,12 +314,31 @@
 					})
 				}
 			},
+      // 不参加
+      doBcj (contentId) {
+      	if (contentId) {
+      		this.$kwz.ajax.ajaxUrl({
+      			url: 'dd_gzap/doQs',
+      			type: 'POST',
+      			data: {
+      				CONTENT_ID: contentId,
+              QSZT:'3'
+      			},
+      			vue: this,
+      			then (response) {
+      				this.$kwz.alert('操作成功')
+      				this.pageList(true)
+      			}
+      		})
+      	}
+      },
 			// 修改
 			toUpdate (contentId) {
 				this.$kwz.router({
 					url: `gzjh-add?contentId=${contentId}`
 				})
 			},
+      // 去预览
 			toPreview (contentId) {
 				this.$kwz.router({
 					url: `gzjh-preview?contentId=${contentId}`,

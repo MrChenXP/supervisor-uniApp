@@ -80,13 +80,14 @@
                 TITLE:"组织架构图",
                 CONTENT_ID:"组织架构图"
               }])
+              console.log(this.newsBtList)
 						}
 					}
 				})
 			},
       toNews (newsId) {
         if(newsId) {
-          if(newsId = "组织架构图"){
+          if(newsId == "组织架构图"){
             this.$kwz.router({
             	url: '/pages/news/zzjgt'
             })

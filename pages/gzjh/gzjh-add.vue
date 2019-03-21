@@ -1,7 +1,7 @@
 <template>
 	<view class="child-content">
     <kw-list-cell title="学校" :rightNote="xx.name" @click="schoolShow=true"></kw-list-cell>
-    <picker :range="ywsj" mode="date" @change="changeYwsj">
+    <picker :range="ywsj" mode="date" @change="changeYwsj" :start="startDate" :end="endDate">
       <kw-list-cell title="计划时间" :rightNote="ywsj"></kw-list-cell>
     </picker>
     <picker :range="sdList" :value="sdValue.index" range-key="DMMX_MC" @change="changeSd" >

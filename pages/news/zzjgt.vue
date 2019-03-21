@@ -70,8 +70,6 @@
 		data() {
 			return {
         data:[],
-        // 一级责任区显示隐藏
-        yjzrqShow:{},
         // 查看督学显示隐藏
         ckdxShow:false,
         // 查看督学/学校数据
@@ -80,9 +78,6 @@
 		},
     onShow() {
     	this.initData()
-    },
-    onReady() {
-    	// this.getNodeInfo()
     },
     methods:{
       moveHandle(){},
@@ -155,6 +150,4 @@
       border-radius: 10upx;
     }
   }
-  
-
 </style>
