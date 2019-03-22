@@ -80,7 +80,6 @@
                 TITLE:"组织架构图",
                 CONTENT_ID:"组织架构图"
               }])
-              console.log(this.newsBtList)
 						}
 					}
 				})

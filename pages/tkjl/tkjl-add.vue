@@ -195,7 +195,7 @@
           },
           then (response) {
             this.$kwz.alert('保存成功')
-            this.$kwz.back(1500)
+            this.$kwz.redirect({url: 'tkjl'})
           }
         })
       },
