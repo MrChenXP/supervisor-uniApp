@@ -39,8 +39,8 @@
 						<view class="fr">督导时间：{{item.YWSJ}}</view>
 					</view>
 					<view class="clearfix status">
-						<view v-if="true" class="fl clyj" @click.stop="toZgxs(item.STATUS,item.IDS)">
-							<uni-tag :text="item.STATUS_MC" size="small" type="primary"></uni-tag>
+						<view v-if="true" :class="item.ztClass" class="fl clyj" @click.stop="toZgxs(item.STATUS,item.IDS)">
+							<uni-tag :text="item.STATUS_MC || '未填写'" size="small" type="primary"></uni-tag>
 						</view>
 						<view v-if="hasXgAuth" class="fr bj" @click.stop="toDetail(item.CONTENT_ID)">
 							<uni-tag text="编辑" size="small" circle="true" inverted="true" type="primary"></uni-tag>
@@ -95,10 +95,19 @@
 					// 整改类型选择列表
 					DM_XQ: []
 				},
+        // 删除参数
 				deleteParam: {
 					'_CHECK_ALL_': false
 				},
+				// 徽标样式
 				constParam: {
+					ztClass: {
+				    '1': 'wwt',
+						'2': 'qs',
+						'3': 'zgz',
+						'4': 'zgwc',
+				    '5': 'fs',
+					}
 				}
 			}
 		},
@@ -201,6 +210,7 @@
 							// 将数据集中的id放入删除集中的id
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
+                tmp.ztClass = this.constParam.ztClass[tmp.STATUS]
 								deleteParam[tmp.CONTENT_ID] = false
 							}
 							// 复制老的删除集至新的删除集
@@ -361,16 +371,30 @@
 				.status {
 					margin: 10upx 0 0;
 					font-size: 24upx;
-
-					.clyj .uni-tag {
-						background-color: #dcf0c7;
-						border-color: #dcf0c7;
-						color: #68ae1d;
+          .wwt .uni-tag {
+            background: none;
+            border: none;
+            color: #999999;
+          }
+          .fs .uni-tag {
+						background-color: #f8dad9;
+						border-color: #f8dad9;
+						color: #e64c48;
 					}
-					.bj .uni-tag {
-						border-color: #00bdfd;
-						color: #00bdfd;
-						font-size: 24upx;
+					.zgz .uni-tag {
+						background-color: #f7e6c1;
+						border-color: #f7e6c1;
+						color: #f27506;
+					}
+          .qs .uni-tag {
+            background-color: #dcf0c7;
+            border-color: #dcf0c7;
+            color: #68ae1d;
+					}
+					.zgwc .uni-tag {
+            background-color: #d6f1fb;
+            border-color: #d6f1fb;
+            color: #109dea;
 					}
 				}
 			}

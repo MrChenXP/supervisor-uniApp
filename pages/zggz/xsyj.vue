@@ -47,7 +47,7 @@
               {{item.XXMC}}
             </view>
             <view class="clearfix time">
-              <view class="fl">{{item.ORG_MC}}</view>
+              <view class="fl">{{item.ORG_MC || "未填写"}}</view>
               <view class="fr">发出时间：{{item.YWSJ}}</view>
             </view>
             <view class="clearfix time">{{item.ZGXSLYMC}}</view>
@@ -55,12 +55,6 @@
               <view v-if="true" :class="item.zgxsClass" class="fl">
                 <uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
               </view>
-              <!-- <view v-if="true" :class="fl xswc">
-                <uni-tag text="状态=='协商处理完成'用这个样式" size="small" type="primary"></uni-tag>
-              </view>
-              <view v-if="false" class="fl xsz">
-                <uni-tag text="其他状态用这个样式" size="small" type="primary"></uni-tag>
-              </view> -->
               <view v-if="item.CLZTDM < '22' && hasShAuth" class="fr cl">
                 <uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" 
                   @click="toAdd(item.ZGXSID)" ></uni-tag>
@@ -126,9 +120,12 @@
 				},
 				constParam: {
 					zgxsClass: {
-						'26': 'xswc',
-						'21': 'xsz',
-						'22': 'xsz'
+						'21': 'fs',
+						'22': 'fs',
+						'23': 'zgz',
+						'24': 'qs',
+						'25': 'qs',
+						'26': 'zgwc',
 					}
 				},
         // 加载更多状态
@@ -246,6 +243,7 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
+                console.log(tmp.CLZTDM)
 								tmp.zgxsClass = this.constParam.zgxsClass[tmp.CLZTDM]
 								// datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
 								//datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
@@ -398,25 +396,25 @@
 				.status {
 					margin: 10upx 0 0;
 					font-size: 24upx;
-					.xswc .uni-tag {
-						background-color: #dcf0c7;
-						border-color: #dcf0c7;
-						color: #68ae1d;
+					.fs .uni-tag {
+						background-color: #f8dad9;
+						border-color: #f8dad9;
+						color: #e64c48;
 					}
-					.xsz .uni-tag {
+					.zgz .uni-tag {
 						background-color: #f7e6c1;
 						border-color: #f7e6c1;
 						color: #f27506;
 					}
-					.shys .uni-tag {
-						background-color: #d6f1fb;
-						border-color: #d6f1fb;
-						color: #109dea;
+					.qs .uni-tag {
+					  background-color: #dcf0c7;
+					  border-color: #dcf0c7;
+					  color: #68ae1d;
 					}
-					.cl .uni-tag {
-						border-color: #00bdfd;
-						color: #00bdfd;
-						font-size: 24upx;
+					.zgwc .uni-tag {
+					  background-color: #d6f1fb;
+					  border-color: #d6f1fb;
+					  color: #109dea;
 					}
 				}
 			}

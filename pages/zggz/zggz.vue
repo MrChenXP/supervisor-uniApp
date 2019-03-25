@@ -47,25 +47,9 @@
               <view :class="item.ztClass" class="fl">
                 <uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
               </view>
-              <!-- 
-              <view class="fl zgwc">
-                <uni-tag text="整改完成" size="small" type="primary"></uni-tag>
-              </view>
-              <view class="fl zgz">
-                <uni-tag text="整改中" size="small" type="primary"></uni-tag>
-              </view>
-              <view class="fl yys">
-                <uni-tag text="已验收" size="small" type="primary"></uni-tag>
-              </view>
-              -->
               <view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
                 <uni-tag text="审核" size="small" circle="true" v-if="hasShAuth"
                   inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
-                <!-- <uni-tag text="审核" v-if="item.CLZTDM == '1' && item.SFZGXX" size="small" circle="true" 
-                    inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag> -->
-                <!-- <uni-tag text="上传报告" v-if="item.CLZTDM != '5' && item.SFZGXX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '3')"></uni-tag>
-                <uni-tag text="督学签收" v-if="item.CLZTDM == '3' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '4')"></uni-tag>
-                <uni-tag text="关闭整改" v-if="item.CLZTDM == '4' && item.SFDX" size="small" circle="true" inverted="true" type="primary" @click="doZgxs(item.ZGXSID, '5')"></uni-tag> -->
               </view>
               <view class="fr ys" v-else>
                 <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary"  @click="toZgxs(item.ZGXSID, 'xx')"
@@ -115,12 +99,19 @@
 					// 整改类型选择列表
 					DM_DD_ZGXSLY: []
 				},
-				deleteParam: {
+				// 删除参数
+        deleteParam: {
 					'_CHECK_ALL_': false
 				},
-				constParam: {
+				// 徽标样式
+        constParam: {
 					ztClass: {
-						'1': 'zgz'
+            '1': 'fs',
+						'2': 'fs',
+						'3': 'zgz',
+						'4': 'qs',
+            '5': 'qs',
+            '6': 'zgwc',
 					}
 				}
 			}
@@ -200,17 +191,16 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
-								
 								// 徽标的样式
+                // 把状态(123456)对应的类名(zgz zgwc yys...)赋值给ztclass.然后页面上用
 								tmp.ztClass = this.constParam.ztClass[tmp.CLZTDM]
-								tmp.ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
+								tmp.ISCS = this.countCs(tmp.YWSJ, tmp.CLQX) && tmp.CLZTDM < "4"
 // 								// 确认是否是学校 暂时失效
 //                 tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
 // 								// 确认是否时督学 暂时失效
 //                 tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
 // 								// 判断是否有审核功能
 //                 tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
-								
 							}
 							for (let i in this.deleteParam) {
 								deleteParam[i] = this.deleteParam[i]
@@ -316,6 +306,7 @@
 			// 显示详情
 			toDetail(zgxsid) {
 			},
+      // 超时设置
 			countCs(fcsj, cs) {
 				try {
 					// 获取 发出时间 将其变为毫秒
@@ -339,40 +330,6 @@
 </script>
 
 <style lang="scss">
-// 	.pager {
-// 		height: 95upx;
-// 		display: flex;
-// 		flex-direction: row;
-// 		justify-content: center;
-// 		align-items: center;
-// 		border-top: #dedede solid 2upx;
-//     position:sticky;
-//     top:calc(44px + 100upx);
-//     /* #ifdef MP-WEIXIN */
-//     top:100upx;
-//     /* #endif */
-//     background:#f5f5f5;
-// 		.zg,.xs {
-// 			width: 355upx;
-// 			height: 65upx;
-// 			text-align: center;
-// 			line-height: 65upx;
-// 			font-size: 28upx;
-// 		}
-// 
-// 		.zg {
-// 			color: white;
-// 			background-color: #00bdfd;
-// 			border-radius: 10upx 0 0 10upx;
-// 		}
-// 
-// 		.xs {
-// 			background-color: #d6f1fb;
-// 			color: #00bdfd;
-// 			border-radius: 0 10upx 10upx 0;
-// 		}
-// 	}
-// 
 	.gn {
 		height: 86upx;
 		padding: 18upx 0;
@@ -439,33 +396,28 @@
 						color: #999999;
 					}
 				}
-
 				.status {
 					margin: 10upx 0 0;
 					font-size: 24upx;
-
-					.zgwc .uni-tag {
-						background-color: #dcf0c7;
-						border-color: #dcf0c7;
-						color: #68ae1d;
+					.fs .uni-tag {
+						background-color: #f8dad9;
+						border-color: #f8dad9;
+						color: #e64c48;
 					}
-
 					.zgz .uni-tag {
 						background-color: #f7e6c1;
 						border-color: #f7e6c1;
 						color: #f27506;
 					}
-
-					.yys .uni-tag {
-						background-color: #d6f1fb;
-						border-color: #d6f1fb;
-						color: #109dea;
+          .qs .uni-tag {
+            background-color: #dcf0c7;
+            border-color: #dcf0c7;
+            color: #68ae1d;
 					}
-
-					.ys .uni-tag {
-						border-color: #00bdfd;
-						color: #00bdfd;
-						font-size: 24upx;
+					.zgwc .uni-tag {
+            background-color: #d6f1fb;
+            border-color: #d6f1fb;
+            color: #109dea;
 					}
 				}
 			}

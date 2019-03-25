@@ -129,7 +129,7 @@
             if (this.SF) {
               if (this.data.CLZTDM <= '23' && this.SF === 'xx') {
                 this.changeStatue('23')
-              } else if (this.data.CLZTDM === '4' && this.SF === 'dx') {
+              } else if (this.data.CLZTDM === '24' && this.SF === 'dx') {
                 this.changeStatue('25')
               }
             } else {

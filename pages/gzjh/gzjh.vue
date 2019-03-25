@@ -40,7 +40,7 @@
               <view class="fr">{{item.DDSD}}</view>
             </view>
             <view class="clearfix time">
-              <text class="color-999">{{item.TXT}}</text>
+              <text class="color-999">{{item.TXT || "未填写"}}</text>
             </view>
             <view class="clearfix status">
               <view v-if="!!item.BZMC" class="fl clyj">
@@ -111,7 +111,17 @@
 				deleteParam: {
 					'_CHECK_ALL_': false
 				},
-				constParam: {}
+				// 徽标样式
+				constParam: {
+					ztClass: {
+				    '1': 'fs',
+						'2': 'fs',
+						'3': 'zgz',
+						'4': 'qs',
+				    '5': 'qs',
+				    '6': 'zgwc',
+					}
+				}
 			};
 		},
     components:{KwSearch,KwListCell,uniLoadMore},
@@ -225,8 +235,7 @@
       					let tmp = datas[i]
       					deleteParam[tmp.ZGXSID] = false
 								tmp.ISQS = tmp.ISCYR === 1 && tmp.QDZT === '1'
-                // 不知道为什么，tmp改变了，datas也跟着改变了，导致后面赋值this.dataList生效了
-								// tmp.DDSD = tmp.YWSJ ? (tmp.YWSJ.substr(0, 10) + (tmp.SD === '1' ? ' 上午' : ' 下午')) : tmp.YWSJ
+								tmp.DDSD = tmp.YWSJ ? (tmp.YWSJ.substr(0, 10) + (tmp.SD === '1' ? ' 上午' : ' 下午')) : tmp.YWSJ
 								// 截取内容
 								let text = datas[i].TXT
 								text = text && text.length > 35 ? text.substr(0, 35) + '...' : text
