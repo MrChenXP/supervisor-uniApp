@@ -84,7 +84,7 @@
       </view>
     </kw-list-cell>
     <picker :range="hxclyjList" :value="hxclyj.index" range-key="name" @change="changeHxcly">
-      <kw-list-cell>
+      <kw-list-cell :border="{bottom:false}">
         <view>
           <view class="ddjs-head clearfix pg">
             <view class="clearfix">
@@ -220,8 +220,8 @@
 				hxclyjOld: 0,
 				// 后续处理意见
 				hxclyj: {
-					name: '',
-					value: '',
+					name: '无意见',
+					value: '1',
 					index: ''
 				},
 				// 后续处理意见小问题框输入
@@ -258,7 +258,10 @@
 				maxDate: '',
 				// 是否显示整改协商编号信息
 				zgxsbhShow: false,
-				zgxsBh: ''
+        // 整改协商编号
+				zgxsBh: '',
+        // 页面初始整改协商id,在用户返回的时,进行新旧id判断,若用户再发了整改后不保存直接返回,则要删除整改
+        zgxsidOld:'',
 			}
 		},
 		computed: {
@@ -281,6 +284,12 @@
 			}
 			this.loginUser = this.$kwz.getLoginUser()
 		},
+    onUnload(){
+      // 进行新旧id判断,若用户再发了整改后不保存直接返回,则要删除整改
+      if(this.zgxsid != this.zgxsidOld && this.zgxsidOld != ""){
+        this.deleteDisposeIdeaId()
+      }
+    },
     methods:{
 			// 显示工作计划选择框
 			loadGzjh (e) {
@@ -412,10 +421,8 @@
       // 后续处理意见改变 按下选择器的确定 0没问题不用弹框
       changeHxcly (e) {
 				let index = e.detail.value
-
 				// 备份存储以前的老值
 				this.hxclyjOld = this.hxclyj.index
-
 				// 一般问题/严重问题/复杂问题
 				if (index != '0' && index != '1') {
 					if (!this.xx.value) {
@@ -428,20 +435,14 @@
 					}
 					this.hxclyjXwt = false
 				} else {
-					
+          // 无意见、小问题
 					this.zgxsbhShow = false
 					this.zgxsBh = ''
-					
-					if(index == '1') {
-						this.hxclyjXwt = true
-					}else{
-						this.hxclyjXwt = false
-					}
+          // 如果是小问题就显示输入框
+          this.hxclyjXwt = index == '1' ? true : false
 					this.hxclyj.index = index
 					this.hxclyj.name = this.hxclyjList[index].name
 					this.hxclyj.value = this.hxclyjList[index].value
-					
-					// 无问题或小问题
 					this.deleteDisposeIdeaId()
 				}
       },
@@ -452,6 +453,7 @@
 					vm.hxclyjShow = false
 					vm.zgxsbhShow = true
 					vm.zgxsBh = data.ZGBH
+          vm.zgxsid = data.ZGXSID
 				}
 				if (this.zgxsid) {
 					this.$kwz.ajax.ajaxUrl({
@@ -606,42 +608,69 @@
 			// 保存督导
 			saveXcdd (sfXq) {
 				let xcddData = {
-					ORG_ID: this.xx.value,
-					XXMC: this.xx.name,
-					YWSJ: this.ywsj,
-					USERID: this.sxdx.value,
-					USERID_MC: this.sxdx.name,
-					DDJS: this.getDdjs(),
-					CYZL: this.cyzl,
-					LXHY: this.lxhy,
-					ZTZF: this.ztzf,
-					WJDC: this.wjdc,
-					XYXS: this.xyxs,
-					DXJY: this.dxjyzf,
-					CZWT: this.czwt,
-					GZAP_YWID: this.gzjh.value,
-					// XQID: this.data.xqValue,
-					STATUS: this.hxclyj.value,
-					STATUS_MC: this.hxclyj.name,
-					ZGJY: this.zgxsyj,
-					ZGXSID: this.zgxsid,
-					PGMC: '',
-					// BZID: this.pgbzID,
-					PGID: this.pgid,
-					minDate: this.minDate, // 最小时间限制
-					maxDate: this.maxDate // 最大时间限制
+          // 不要用这样的对象当请求体，请求会出错，原因未知
+// 					ORG_ID: this.xx.value,
+// 					XXMC: this.xx.name,
+// 					YWSJ: this.ywsj,
+// 					USERID: this.sxdx.value,
+// 					USERID_MC: this.sxdx.name,
+// 					DDJS: this.getDdjs(),
+// 					CYZL: this.cyzl,
+// 					LXHY: this.lxhy,
+// 					ZTZF: this.ztzf,
+// 					WJDC: this.wjdc,
+// 					XYXS: this.xyxs,
+// 					DXJY: this.dxjyzf,
+// 					CZWT: this.czwt,
+// 					GZAP_YWID: this.gzjh.value,
+// 					// XQID: this.data.xqValue,
+// 					STATUS: this.hxclyj.value,
+// 					STATUS_MC: this.hxclyj.name,
+// 					ZGJY: this.zgxsyj,
+// 					ZGXSID: this.zgxsid,
+// 					PGMC: '',
+// 					// BZID: this.pgbzID,
+// 					PGID: this.pgid,
+// 					minDate: this.minDate, // 最小时间限制
+// 					maxDate: this.maxDate // 最大时间限制
 				}
 				let saveData = () => {
-					xcddData.XQID = this.xqid
-					if(this.contentId) {
-						// 传了就代表是修改
-						xcddData.CONTENT_ID = this.contentId
-					}
+// 					xcddData.XQID = this.xqid
+// 					if(this.contentId) {
+// 						// 传了就代表是修改
+// 						xcddData.CONTENT_ID = this.contentId
+// 					}
 					this.$kwz.ajax.ajaxUrl({
 						url: 'ddjl/doEdit',
 						type: 'POST',
 						vue: this,
-						data: xcddData,
+						data: {
+              CONTENT_ID: this.contentId || "",
+              ORG_ID: this.xx.value,
+              XXMC: this.xx.name,
+              YWSJ: this.ywsj,
+              USERID: this.sxdx.value,
+              USERID_MC: this.sxdx.name,
+              DDJS: this.getDdjs(),
+              CYZL: this.cyzl,
+              LXHY: this.lxhy,
+              ZTZF: this.ztzf,
+              WJDC: this.wjdc,
+              XYXS: this.xyxs,
+              DXJY: this.dxjyzf,
+              CZWT: this.czwt,
+              GZAP_YWID: this.gzjh.value,
+              XQID: this.xqid,
+              STATUS: this.hxclyj.value,
+              STATUS_MC: this.hxclyj.name,
+              ZGJY: this.zgxsyj,
+              ZGXSID: this.zgxsid,
+              PGMC: '',
+              // BZID: this.pgbzID,
+              PGID: this.pgid,
+              minDate: this.minDate, // 最小时间限制
+              maxDate: this.maxDate // 最大时间限制
+            },
 						vue: this,
 						then (response) {
 							this.$kwz.alert('保存成功')
@@ -684,7 +713,6 @@
 								this.xx.name = datas.XXMC
 								this.ywsj = datas.YWSJ
 								this.hxclyj.value = datas.STATUS
-								// this.disposeIdeaInit = datas.STATUS // 现存好进来时的状态值，等返回的时候来判断有没有修改
 								// this.disposeIdea.STATUS = datas.STATUS
 								let status = datas.STATUS
 								if(status == '4') {
@@ -692,6 +720,7 @@
 									this.zgxsyjHide = datas.ZGJY || ''
 									this.hxclyjXwt = true
 								} else if (status == '2' || status == '3' || status == '5') {
+                  // 如果是小问题-复杂-严重就加载整改协商
 									this.$kwz.ajax.ajaxUrl({
 										url: 'dd_zgxs/selectZgxsList',
 										type: 'POST',
@@ -704,9 +733,9 @@
 											if (zgdatas && zgdatas.length > 0) {
 												let zgxsData = zgdatas[0]
 												this.zgxsbhShow = true
-												
 												this.zgxsBh = zgxsData.BH
 												this.zgxsid = zgxsData.ZGXSID
+                        this.zgxsidOld = zgxsData.ZGXSID // 先存好进来时的id，等返回的时候来判断有没有修改
 											}
 										}
 									})
@@ -803,30 +832,6 @@
 					})
 				}
 			},
-			blurDxjyzf (e) {
-				this.dxjyzf = e.detail.value
-			},
-			blurCzwt (e) {
-				this.czwt = e.detail.value
-			},
-			blurZgxsyj (e) {
-				this.zgxsyj = e.detail.value
-			},
-			changeCyzl (val) {
-				this.cyzl = val
-			},
-			changeLxhy (val) {
-				this.lxhy = val
-			},
-			changeZtzf (val) {
-				this.ztzf = val
-			},
-			changeWjdc (val) {
-				this.wjdc = val
-			},
-			changeXyxs (val) {
-				this.xyxs = val
-			},
 			// 加载工作计划数据=>从工作计划列表点击去督导,传过来工作计划id,然后加载工作计划内容填充至督导纪实
 			loadDdGzjh () {
 				this.$kwz.ajax.ajaxUrl({
@@ -860,50 +865,41 @@
 						}
 					}
 				})
-			}
+			},
+      blurDxjyzf (e) {
+      	this.dxjyzf = e.detail.value
+      },
+      blurCzwt (e) {
+      	this.czwt = e.detail.value
+      },
+      blurZgxsyj (e) {
+      	this.zgxsyj = e.detail.value
+      },
+      changeCyzl (val) {
+      	this.cyzl = val
+      },
+      changeLxhy (val) {
+      	this.lxhy = val
+      },
+      changeZtzf (val) {
+      	this.ztzf = val
+      },
+      changeWjdc (val) {
+      	this.wjdc = val
+      },
+      changeXyxs (val) {
+      	this.xyxs = val
+      },
     }
 	}
 </script>
 
 <style lang="scss">
-  .ddjs-head{
-      height: 55upx;
-      .fr,button{
-        height: 55upx;
-        line-height:55rpx;
-      }
-    }
-  .ddjs-body{
-      // border:#D9D9D9 solid 2upx;
-      textarea{
-        width: 100%;
-      }
-  }
   .pg{
-    height: 110upx;
+    // height: 110upx;
     .fr{
       color:#0580c2;
     }
   }
-  .save{
-    width: 710upx;
-    height: 85upx;
-    border-radius: 42.5upx;
-    border: solid 1upx #e1e1e1;
-    margin: 25upx auto;
-    display: flex;
-    background: white;
-    button{
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      border-radius: 42.5upx;
-      background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
-      color: white;
-      line-height: 83upx;
-    }
-    button:after{
-      border: none;
-    }
-  }
+
 </style>

@@ -195,12 +195,12 @@
                 // 把状态(123456)对应的类名(zgz zgwc yys...)赋值给ztclass.然后页面上用
 								tmp.ztClass = this.constParam.ztClass[tmp.CLZTDM]
 								tmp.ISCS = this.countCs(tmp.YWSJ, tmp.CLQX) && tmp.CLZTDM < "4"
-// 								// 确认是否是学校 暂时失效
-//                 tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
-// 								// 确认是否时督学 暂时失效
-//                 tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
-// 								// 判断是否有审核功能
-//                 tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
+								 // 确认是否是学校 暂时失效
+                // tmp.SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)
+								 // 确认是否时督学 暂时失效
+                // tmp.SFDX = (this.user.orgid === tmp.ORG_ID)
+								 // 判断是否有审核功能
+                // tmp.SFSH = tmp.CLZTDM === '1' && tmp.IS_SB === '1'
 							}
 							for (let i in this.deleteParam) {
 								deleteParam[i] = this.deleteParam[i]

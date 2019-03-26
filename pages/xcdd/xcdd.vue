@@ -294,7 +294,8 @@
         	url: 'xcdd-add?CONTENT_ID=' + ids
         })
 			},
-			toPreview (id) {
+			// 去预览
+      toPreview (id) {
 				if(id) {
 					this.$kwz.router({url: 'xcdd-preview?contentId=' + id})
 				}
