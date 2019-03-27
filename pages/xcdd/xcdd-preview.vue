@@ -1,9 +1,9 @@
 <template>
 	<view class="child-content">
 		<!-- 标题 -->
-		<kw-list-cell title="学校" :rightNote="XXMC"></kw-list-cell>
-		<kw-list-cell title="督导时间" :rightNote="YWSJ"></kw-list-cell>
-		<kw-list-cell title="创建人" :rightNote="AUTHOR"></kw-list-cell>
+		<kw-list-cell title="学校" :rightNote="ddjsData.XXMC"></kw-list-cell>
+		<kw-list-cell title="督导时间" :rightNote="ddjsData.YWSJ"></kw-list-cell>
+		<kw-list-cell title="创建人" :rightNote="ddjsData.AUTHOR"></kw-list-cell>
 		<kw-list-cell :show="ddsxCellShow" :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
@@ -16,7 +16,7 @@
 					</view>
 				</view>
 				<view v-show="ddsxShow" class="ddjs-body">
-					<view class="ddjs-text">{{DDSX}}</view>
+          <rich-text :nodes="gzjhData.TXT"></rich-text>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -32,8 +32,7 @@
 					</view>
 				</view>
 				<view v-show="ddjsShow" class="ddjs-body">
-					<kw-editor-preview :content="DDJS"></kw-editor-preview>
-					<!-- <view class="ddjs-text">这里显示内容</view> -->
+					<kw-editor-preview :content="ddjs"></kw-editor-preview>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -49,14 +48,14 @@
 					</view>
 				</view>
 				<view v-show="pgjgShow" class="ddjs-body">
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-          <!-- 这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里这里 -->
-					<!--  -->
-          <view class="ddjs-text">未填写</view>
+					<view v-for="(item, key) in pgContainer" :key="key">
+						<view>
+							<text v-if="item.type == 'text'">{{item.content}}</text>
+							<view v-if="item.type == 'rater'">
+								<uni-rate :value="item.value" :name="item.name" :disabled="true"></uni-rate>
+							</view>
+						</view>
+					</view>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -72,7 +71,7 @@
 					</view>
 				</view>
 				<view v-show="jyzfShow" class="ddjs-body">
-					<view class="ddjs-text">{{DXJY || "未填写"}}</view>
+					<view class="ddjs-text">{{ddjsData.DXJY || "未填写"}}</view>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -88,7 +87,7 @@
 					</view>
 				</view>
 				<view v-show="czwtShow" class="ddjs-body">
-					<view class="ddjs-text">{{CZWT || "未填写"}}</view>
+					<view class="ddjs-text">{{ddjsData.CZWT || "未填写"}}</view>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -119,56 +118,86 @@
 						<uni-icon type="arrowup" color="#c7c7c7" size="20"></uni-icon>
 					</view>
 				</view>
+        <!-- 处理内容 -->
 				<view v-show="hxclyjShow" class="ddjs-body">
-					<view v-if="zgxsdm=='4'">
-						<view>{{ZGJY}}</view>
+          <view class="status-mc">{{ddjsData.STATUS_MC}}</view>
+          <!-- 小问题 -->
+					<view v-if="ddjsData.STATUS =='4'">
+						<view class="text-bold">{{ddjsData.ZGJY}}</view>
 					</view>
-					<view v-if="zgxsdm=='2' || zgxsdm=='5' ">
+          <!-- 整改 -->
+					<view v-if="ddjsData.STATUS=='2' || ddjsData.STATUS=='5' ">
 						<view>经挂牌督导，你单位存在以下问题及建议:</view>
-						<view>{{ZGXSNR}}</view>
-						<view>对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发 {{ZGCLQX}} 日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。</view>
-						<view class="time">{{ZGYWSJ}}</view>
+						<view class="text-bold">{{zgxsData.XSNR}}</view>
+						<view>对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发 
+                <text class="text-bold">{{zgxsData.CLQX}}</text>
+                日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
+            </view>
+						<view class="time">{{zgxsData.YWSJ}}</view>
 					</view>
-					<view v-if="zgxsdm=='3'">
-						<view>我室责任督学于 {{ZGYWSJ}} 对 {{XXMC}} 进行了教育督导，发现该学校(幼儿园)存在以下问题及建议:</view>
-						<view>{{ZGXSNR}}</view>
+          <!-- 协商 -->
+					<view v-if="ddjsData.STATUS=='3'">
+						<view>我室责任督学于 
+                  <text class="text-bold">{{zgxsData.YWSJ}}</text>
+                  对
+                  <text class="text-bold">{{ddjsData.XXMC}}</text>
+                  进行了教育督导，发现该学校(幼儿园)存在以下问题及建议:
+            </view>
+						<view class="text-bold">{{zgxsData.XSNR}}</view>
 						<view>请贵科室（中心）予以支持、配合、协调解决!</view>
-						<view class="time">{{ZGYWSJ}}</view>
+						<view class="time">{{zgxsData.YWSJ}}</view>
 					</view>
-					<view v-if="ZGCLZTDM == '6' ">
+          <!-- 处理状态码==6 整改完成 显示学校整改报告 -->
+					<view v-if="zgxsData.CLZTDM == '6' ">
 						<view>处理结果:</view>
-						<kw-editor-preview :content="ZGCLBG"></kw-editor-preview>
+						<kw-editor-preview :content="this.zgxsData.CLBG"></kw-editor-preview>
 					</view>
 				</view>
 			</view>
 		</kw-list-cell>
-
 	</view>
 </template>
 
 <script>
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
 	import KwEditorPreview from "@kwz/kw-ui/kw-editor-preview.vue"
+  import ddUtils from '../../common/plugins/kwz/ddutils.js'
+  import {uniRate } from "@dcloudio/uni-ui"
+
 	export default {
 		data() {
 			return {
-				// 学校名称
-				XXMC: '',
-				// 督导时间
-				YWSJ: '',
-				// 创建人
-				AUTHOR: '',
-				// 督导事项
-				DDSX: '',
+        // 督导纪实数据
+        ddjsData:{
+          STATUS_MC:"", // 整改类型名称
+          XXMC: '', // 学校名称
+				  YWSJ: '', // 督导时间
+          AUTHOR: '',	// 创建人
+          GZAP_YWID:"", // 工作计划id
+          DXJY: '',	// 亮点 督学建议 典型经验和做法
+          CZWT: '', // 存在问题
+				  ZGJY: '', // 整改意见 小问题
+          STATUS: '1', // 是整改还是协商
+          PGID:"", // 评估id
+        },
+        // 工作计划数据
+        gzjhData: {
+          TXT: "", // 督导事项
+          BZID:"", // 评估标准id
+        },
+        // 评估数据
+        pgbzData: {},
+        // 整改协商数据
+        zgxsData:{
+          XSNR: '', // 整改协商内容
+          CLQX: '', // 处理期限
+          CLBG: {}, // 处理报告
+				  YWSJ: '', // 整改协商时间
+          CLZTDM: '', // 整改协商处理状态代码
+        },
 				// 督导纪实
-				DDJS: {},
-				// 亮点
-				DXJY: '',
-				// 存在问题
-				CZWT: '',
-				// 小问题整改意见
-				ZGJY: '',
-				// contentId
+				ddjs: {},
+				// 督导纪实id
 				contentId: '',
 				// 督导事项显示隐藏
 				ddsxShow: false,
@@ -190,20 +219,11 @@
 				hxclyjShow: false,
 				// 后续处理意见Cell显示隐藏
 				hxclyjCellShow: false,
-				// 是整改还是协商
-				zgxsdm: '1',
-				// 整改业务时间
-				ZGYWSJ: '',
-				ZGCLQX: '',
-				ZGXSNR: '',
-				ZGCLZTDM: '',
-				ZGCLBG: {}
+        raterContainer:{},
+        pgContainer:{}
 			};
 		},
-		components: {
-			KwListCell,
-			KwEditorPreview
-		},
+		components: {uniRate,KwListCell,KwEditorPreview},
 		onLoad(param) {
 			if (param && param.contentId) {
 				this.contentId = param.contentId
@@ -211,6 +231,7 @@
 			}
 		},
 		methods: {
+      // 加载督导纪实数据
 			loadData() {
 				if (this.contentId) {
 					this.$kwz.ajax.ajaxUrl({
@@ -221,130 +242,157 @@
 						},
 						vue: this,
 						then(response) {
-							let datas = response.datas
-							if (datas && datas.CONTENT_ID) {
-								this.XXMC = datas.XXMC
-								this.YWSJ = datas.YWSJ
-								this.AUTHOR = datas.AUTHOR
-								
-								if(datas.GZAP_YWID) {
-									// 加载工作安排信息
-									this.$kwz.ajax.ajaxUrl({
-										url: 'dd_gzap/doSelectByPrimary/DDGZAP',
-										type: 'POST',
-										data: {
-											CONTENT_ID: datas.GZAP_YWID
-										},
-										vue: this,
-										then (response) {
-											let datas = response.datas
-											if(datas && datas.map) {
-												this.ddsxCellShow = true
-												this.DDSX = datas.map.TXT
-											}
-										}
-									})
+              this.ddjsData = response.datas
+							if (this.ddjsData && this.ddjsData.CONTENT_ID) {
+                // 加载工作安排信息
+								if(this.ddjsData.GZAP_YWID) {
+									this.loadGzjhData()
 								}
 								// 格式化督导纪实
-								let ddjs = []
-								let ddjsImage = []
-								let ddjsSplit = this.$kwz.splitHtml(datas.DDJS)
-								if (ddjsSplit && ddjsSplit.length > 0) {
-									for (let i in ddjsSplit) {
-										let content = ddjsSplit[i]
-										if (content.content) {
-											ddjs.push(content.content)
-										}
-										if (content.imageUrl) {
-											ddjsImage.push({
-												type: 'image',
-												content: content.imageUrl,
-												imageUrl: content.realUrl
-											})
-										}
-									}
-								}
-								this.DDJS = {
-									content: ddjs.join(''),
-									images: ddjsImage
-								}
-								
-								this.DXJY = datas.DXJY
-								this.CZWT = datas.CZWT
-								
+                this.setDdjs(this.ddjsData.DDJS)
 								// this.zgbgCellShow = true
-								this.zgxsdm = datas.STATUS
-								this.ZGJY = datas.ZGJY
-								this.hxclyjCellShow = datas.STATUS != '1';
-								
-								if(datas.STATUS == '2' || datas.STATUS == '5') {
-									// 整改通知	|| 协商意见
-									this.$kwz.ajax.ajaxUrl({
-										url: 'dd_zgxs/selectZgxsList',
-										type: 'POST',
-										data: {
-											CONTENT_ID: datas.CONTENT_ID,
-											ZGXSLY: '1'
-										},
-										vue: this,
-										then (response) {
-											let datas = response.datas
-											if(datas && datas.length > 0) {
-												let zgxs = datas[0]
-												this.ZGXSNR = zgxs.XSNR
-												this.ZGCLQX = zgxs.CLQX
-												this.ZGYWSJ = zgxs.YWSJ
-												this.ZGCLZTDM = zgxs.CLZTDM
-												
-												let clgb = []
-												let clgbImage = []
-												let clgbSplit = this.$kwz.splitHtml(zgxs.CLBG)
-												if (clgbSplit && clgbSplit.length > 0) {
-													for (let i in clgbSplit) {
-														let content = clgbSplit[i]
-														if (content.content) {
-															clgb.push(content.content)
-														}
-														if (content.imageUrl) {
-															if (!content.imageUrl.startsWith('http')) {
-																clgbImage.push({
-																	type: 'image',
-																	content: content.imageUrl,
-																	imageUrl: content.realUrl
-																})
-															}
-														}
-													}
-												}
-												let attach = this.$kwz.splitAttachHtml(zgxs.CLBG)
-												this.ZGCLBG = {
-													content: clgb.join(''),
-													images: clgbImage,
-													attachs: attach
-												}
-											}
-										}
-									})
-								// } else if(datas.STATUS == '3') {
-									// 协商意见
+								this.hxclyjCellShow = this.ddjsData.STATUS != '1'
+                // 加载整改通知||协商意见
+								if(this.ddjsData.STATUS == '2' || this.ddjsData.STATUS == '5' || this.ddjsData.STATUS == '3' ) {
+                  this.getZgXs()
 								}
 							}
 						}
 					})
 				}
-			}
-		}
+			},
+      // 加载工作计划信息
+      loadGzjhData(){
+        this.$kwz.ajax.ajaxUrl({
+        	url: 'dd_gzap/doSelectByPrimary/DDGZAP',
+        	type: 'POST',
+        	data: {
+        		CONTENT_ID: this.ddjsData.GZAP_YWID
+        	},
+        	vue: this,
+        	then (response) {
+        		let datas = response.datas
+        		if(datas && datas.map) {
+        			this.ddsxCellShow = true
+              this.gzjhData = datas.map
+              // 当使用rich-text标签渲染督导事项时，需要加父标签
+        			this.gzjhData.TXT = `<div>${datas.map.TXT}</div>`
+              this.loadPgData()
+        		}
+        	}
+        })
+      },
+      // 设置督导纪实内容 将html转成ddjs
+      setDdjs (html) {
+      	let ddjs = []
+      	let ddjsImage = []
+      	let ddjsSplit = this.$kwz.splitHtml(html)
+      	if (ddjsSplit && ddjsSplit.length > 0) {
+      		for (let i in ddjsSplit) {
+      			let content = ddjsSplit[i]
+      			if (content.content) {
+      				ddjs.push(content.content)
+      			}
+      			if (content.imageUrl) {
+      				ddjsImage.push({
+      					type: 'image',
+      					content: content.imageUrl,
+      					imageUrl: content.realUrl
+      				})
+      			}
+      		}
+      	}
+      	this.ddjs = {
+      		content: ddjs.join(''),
+      		images: ddjsImage
+      	}
+      },
+      // 获取整改协商数据
+      getZgXs(){
+        this.$kwz.ajax.ajaxUrl({
+        	url: 'dd_zgxs/selectZgxsList',
+        	type: 'POST',
+        	data: {
+        		CONTENT_ID: this.contentId,
+        		ZGXSLY: '1'
+        	},
+        	vue: this,
+        	then (response) {
+            this.zgxsData = response.datas[0]
+        		if(this.zgxsData) {
+        			this.zgxsData.YWSJ = this.zgxsData.YWSJ.substr(0, 10)
+        			let clgb = []
+        			let clgbImage = []
+        			let clgbSplit = this.$kwz.splitHtml(this.zgxsData.CLBG)
+        			if (clgbSplit && clgbSplit.length > 0) {
+        				for (let i in clgbSplit) {
+        					let content = clgbSplit[i]
+        					if (content.content) {
+        						clgb.push(content.content)
+        					}
+        					if (content.imageUrl) {
+        						if (!content.imageUrl.startsWith('http')) {
+        							clgbImage.push({
+        								type: 'image',
+        								content: content.imageUrl,
+        								imageUrl: content.realUrl
+        							})
+        						}
+        					}
+        				}
+        			}
+        			let attach = this.$kwz.splitAttachHtml(this.zgxsData.CLBG)
+        			this.zgxsData.CLBG = {
+        				content: clgb.join(''),
+        				images: clgbImage,
+        				attachs: attach
+        			}
+        		}
+        	}
+        })
+      },
+      // 加载评估数据
+      loadPgData(){
+        let pgdx = this.ddjsData.USERID ? this.ddjsData.USERID.split(',') : []
+        if(this.gzjhData.BZID && this.ddjsData.PGID && pgdx.length > 0){
+          // 根据bzid取模板数据
+          this.$kwz.ajax.ajaxUrl({
+            url: 'jc_pgbz/selectTbmbglByKey',
+            type: 'POST',
+            data: {
+              BZID: this.gzjhData.BZID
+            },
+            vue: this,
+            then (response) {
+              let mbnr = response.datas.tbmbglData.MBNR
+              if (mbnr) {
+                // 根据当前督学获取打分数据
+                this.$kwz.ajax.ajaxUrl({
+                	url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
+                	type: 'POST',
+                	data: {
+                		PGID: this.ddjsData.PGID,
+                		tbr: this.$kwz.getLoginUser().uid,
+                		MB_ORG_ID: this.ddjsData.ORG_ID
+                	},
+                	vue: this,
+                	then (response) {
+                    let sj = JSON.parse(response.datas.SJ)
+                    this.pgContainer = ddUtils.formatDdpgMb(mbnr, sj)
+                  }
+                })
+              }
+            }
+          })
+        }
+      },
+     
+    }
 	}
 </script>
 
 <style lang="scss">
-	.ddjs-head {
-		height: 55upx;
-	}
-	.ddjs-body {
-		padding: 0 20upx;
-		.time {
-			text-align: right;
-		}
-	}
+  .status-mc{
+    color:#0580c2;
+  }
 </style>

@@ -27,7 +27,7 @@
           </view>
 					<view class="clearfix">
 						<!-- <uni-rate value="3" ></uni-rate> -->
-            <text class="fl">评估标准:{{pgbzMc}}</text>
+            <text class="fl">评估标准:{{pgbzMc || "该标准有误,请联系管理员"}}</text>
             <view class="fr" v-if="ddpgPfShow"><uni-rate :value="ddpgFz" ></uni-rate></view>
 					</view>
         </view>
@@ -355,10 +355,6 @@
 				}
 				this.gzjhShow=false
       },
-			// 修改业务时间
-			changeYwsj (e) {
-				this.ywsj = e.detail.value
-			},
       // 学校确定
       confirmSchool(e){
 				this.xx.name = e.data.name;
@@ -782,13 +778,13 @@
 											}
 										}
 									})
-									
+									// 取所有督学的打分数据
 									if (this.pgid) {
 										this.$kwz.ajax.ajaxUrl({
 											url: 'jc_pgbzmx/getMxByTbr/DDPGBZ',
 											type: 'POST',
 											data: {
-												BID: '',
+												BID: '', 
 												PGID: this.pgid,
 												tbr: this.loginUser.uid,
 												MB_ORG_ID: this.xx.value
@@ -799,7 +795,6 @@
 												if (datas && datas.MXID) {
 													// this.pgid = datas.PGID
 													this.mxid = datas.MXID
-													
 													this.$kwz.ajax.ajaxUrl({
 														url: 'jc_pgbzmx/doSelectByPrimary/DDJL',
 														type: 'POST',
@@ -866,6 +861,10 @@
 					}
 				})
 			},
+      // 修改业务时间
+      changeYwsj (e) {
+      	this.ywsj = e.detail.value
+      },
       blurDxjyzf (e) {
       	this.dxjyzf = e.detail.value
       },

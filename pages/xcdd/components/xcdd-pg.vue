@@ -37,6 +37,7 @@
 		components:{uniRate},
 		methods: {
 			initDdpg() {
+        // 根据bzid取模板数据
 				this.$kwz.ajax.ajaxUrl({
 					url: 'jc_pgbz/selectTbmbglByKey',
 					type: 'POST',
@@ -67,7 +68,7 @@
 									}
 									// 将模板解析成文本+rate器
 									let contentArray = ddUtils.formatDdpgMb(datas.tbmbglData.MBNR, sj)
-									let contentLength = contentArray.length;
+									let contentLength = contentArray.length
 									let raterContainer = {}
 									// 解析需要计算的框 =》 暂时只支持avg
 									for(let i =0 ; i< contentLength; i++){
