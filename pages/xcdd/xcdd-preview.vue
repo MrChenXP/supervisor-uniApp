@@ -4,7 +4,7 @@
 		<kw-list-cell title="学校" :rightNote="ddjsData.XXMC"></kw-list-cell>
 		<kw-list-cell title="督导时间" :rightNote="ddjsData.YWSJ"></kw-list-cell>
 		<kw-list-cell title="创建人" :rightNote="ddjsData.AUTHOR"></kw-list-cell>
-		<kw-list-cell :show="ddsxCellShow" :isArrow="false">
+		<kw-list-cell :show="ddsxCellShow" :isArrow="false" v-if="gzjhData.TXT">
 			<view>
 				<view class="ddjs-head clearfix" @click="ddsxShow = !ddsxShow">
 					<text class="fl">督导事项</text>
@@ -20,7 +20,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow="false" >
+		<kw-list-cell :isArrow="false" v-if="ddjs">
 			<view>
 				<view class="ddjs-head clearfix" @click="ddjsShow = !ddjsShow">
 					<text class="fl">督导纪实</text>
@@ -36,7 +36,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow="false" >
+		<kw-list-cell :isArrow="false" v-if="ddjsData.PGID">
 			<view>
 				<view class="ddjs-head clearfix" @click="pgjgShow = !pgjgShow">
 					<text class="fl">评估结果</text>
@@ -59,7 +59,7 @@
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow="false">
+		<kw-list-cell :isArrow="false" v-if="ddjsData.DXJY">
 			<view>
 				<view class="ddjs-head clearfix" @click="jyzfShow = !jyzfShow">
 					<text class="fl">亮点</text>
@@ -71,11 +71,11 @@
 					</view>
 				</view>
 				<view v-show="jyzfShow" class="ddjs-body">
-					<view class="ddjs-text">{{ddjsData.DXJY || "未填写"}}</view>
+					<view class="ddjs-text">{{ddjsData.DXJY}}</view>
 				</view>
 			</view>
 		</kw-list-cell>
-		<kw-list-cell :isArrow="false">
+		<kw-list-cell :isArrow="false" v-if="ddjsData.CZWT">
 			<view>
 				<view class="ddjs-head clearfix" @click="czwtShow = !czwtShow">
 					<text class="fl">存在问题</text>
@@ -87,7 +87,7 @@
 					</view>
 				</view>
 				<view v-show="czwtShow" class="ddjs-body">
-					<view class="ddjs-text">{{ddjsData.CZWT || "未填写"}}</view>
+					<view class="ddjs-text">{{ddjsData.CZWT}}</view>
 				</view>
 			</view>
 		</kw-list-cell>
@@ -107,7 +107,7 @@
 				</view>
 			</view>
 		</kw-list-cell> -->
-		<kw-list-cell :show="hxclyjCellShow" :isArrow="false">
+		<kw-list-cell :show="ddjsData.STATUS != '1'" :isArrow="false">
 			<view>
 				<view class="ddjs-head clearfix" @click="hxclyjShow = !hxclyjShow">
 					<text class="fl">后续处理意见</text>
@@ -120,7 +120,7 @@
 				</view>
         <!-- 处理内容 -->
 				<view v-show="hxclyjShow" class="ddjs-body">
-          <view class="status-mc">{{ddjsData.STATUS_MC}}</view>
+          <view class="color-blue">{{ddjsData.STATUS_MC}}</view>
           <!-- 小问题 -->
 					<view v-if="ddjsData.STATUS =='4'">
 						<view class="text-bold">{{ddjsData.ZGJY}}</view>
@@ -148,9 +148,11 @@
 						<view class="time">{{zgxsData.YWSJ}}</view>
 					</view>
           <!-- 处理状态码==6 整改完成 显示学校整改报告 -->
-					<view v-if="zgxsData.CLZTDM == '6' ">
+					<view v-if="zgxsData.CLZTDM == '6' || zgxsData.CLZTDM == '26'">
 						<view>处理结果:</view>
+            <!-- kw-editor-preview会把处理报告里的html字符串全部屏蔽。然后变成纯文本。顾用rich-text -->
 						<kw-editor-preview :content="this.zgxsData.CLBG"></kw-editor-preview>
+            <!-- <rich-text :nodes="zgxsData.CLBG"></rich-text> -->
 					</view>
 				</view>
 			</view>
@@ -220,6 +222,7 @@
 				// 后续处理意见Cell显示隐藏
 				hxclyjCellShow: false,
         raterContainer:{},
+        // 评估处理后的模板数据
         pgContainer:{}
 			};
 		},
@@ -251,7 +254,6 @@
 								// 格式化督导纪实
                 this.setDdjs(this.ddjsData.DDJS)
 								// this.zgbgCellShow = true
-								this.hxclyjCellShow = this.ddjsData.STATUS != '1'
                 // 加载整改通知||协商意见
 								if(this.ddjsData.STATUS == '2' || this.ddjsData.STATUS == '5' || this.ddjsData.STATUS == '3' ) {
                   this.getZgXs()
@@ -331,13 +333,13 @@
         						clgb.push(content.content)
         					}
         					if (content.imageUrl) {
-        						if (!content.imageUrl.startsWith('http')) {
+        						// if (!content.imageUrl.startsWith('http')) {
         							clgbImage.push({
         								type: 'image',
         								content: content.imageUrl,
         								imageUrl: content.realUrl
         							})
-        						}
+        						// }
         					}
         				}
         			}
@@ -392,7 +394,4 @@
 </script>
 
 <style lang="scss">
-  .status-mc{
-    color:#0580c2;
-  }
 </style>

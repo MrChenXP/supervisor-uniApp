@@ -1,24 +1,20 @@
 <template>
   <!-- 后续处理意见选择页面 -->
-	<view class="xcdd-hxclyj child-content">
+  <view class="xcdd-hxclyj child-content">
     <!-- 蒙版 -->
     <view class="xcdd-hxclyj-mask" @tap="close"></view>
     <!-- 内容 -->
     <view class="xcdd-hxclyj-content">
-      <!-- 小问题-向学校反馈建议 -->
-      <!-- <view v-if="hxcly.value=='4'" class="xcdd-hxclyj-xwt">
-        <textarea :value="xwtValue" maxlength="4000"></textarea>
-      </view> -->
       <!-- 一般问题-向学校发送整改建议 严重问题-向督导办上报整改建议 -->
       <view v-if="hxcly.value=='2' || hxcly.value=='5'" class="xcdd-hxclyj-ybwt">
-        <kw-list-cell title="编号" :rightNote="ybwtBh"></kw-list-cell>
-        <kw-list-cell title="单位" :rightNote="org.name"></kw-list-cell>
-        <kw-list-cell title="来源渠道" rightNote="经常性督导整改"></kw-list-cell>
+        <kw-list-cell title="编号" :rightNote="ybwtBh" :isArrow="false"></kw-list-cell>
+        <kw-list-cell title="单位" :rightNote="org.name" :isArrow="false"></kw-list-cell>
+        <kw-list-cell title="来源渠道" rightNote="经常性督导整改" :isArrow="false"></kw-list-cell>
         <view class="clyj">
           <view>经挂牌督导，你单位存在以下问题及建议:</view>
           <textarea v-model="czwt" maxlength="4000"></textarea>
           <view>对以上问题要高度重视，采取措施，立即整改。整改报告于本通知下发
-						<uni-number-box :min="0" :max="30" :value="ybwtZgqx"></uni-number-box>
+            <uni-number-box :min="0" :max="30" :value="ybwtZgqx" @change="changeClqx"></uni-number-box>
             日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
           </view>
         </view>
@@ -26,6 +22,7 @@
       </view>
       <!-- 复杂问题-向科室发送协商意见 -->
       <view v-if="hxcly.value=='3'" class="xcdd-hxclyj-fzwt">
+        <kw-list-cell title="编号" :rightNote="ybwtBh" :isArrow="false"></kw-list-cell>
         <picker :range="ksList" range-key="name" :value="fzwtKs.index" @change="changeKs" >
           <kw-list-cell title="科室" :rightNote="fzwtKs.name" ></kw-list-cell>
         </picker>
@@ -41,174 +38,206 @@
         <button @tap="confirm" size="mini" class="fr">确定</button>
       </view>
     </view>
-	</view>
+  </view>
 </template>
 
 <script>
   import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
   import { uniBadge,uniTag,uniIcon,uniNumberBox } from '@dcloudio/uni-ui'
-	export default {
-		data() {
-			return {
+  export default {
+    data() {
+      return {
         ksList:[],
-				zgxsid: '',
-				ybwtBh: '',
-				// ybwtCzwt: '',
-				ybwtZgqx: 0,
-				// ybwtYwsj: '',
-				fzwtKs: {
-					name: '点击选择科室',
-					value: '',
-					index: ''
-				}
-				// fzwtYwsj: ''
-			};
-		},
-		onLoad() {
-			this.getBh()
-		},
-		onShow () {
-			if (!this.ksList || this.ksList.length < 1) {
-				this.getKs()
-			}
-		},
+        ybwtBh: '',
+        // ybwtCzwt: '',
+        ybwtZgqx: 0,
+        // ybwtYwsj: '',
+        fzwtKs: {
+          name: '点击选择科室',
+          value: '',
+          index: ''
+        }
+        // fzwtYwsj: ''
+      };
+    },
     props:{
-			contentId: '',
+      contentId: '',
       // 后续处理意见的状态 
       hxcly: Object,
-			// 机构
-			org: Object,
-			// 存在的问题
-			czwt: String,
-			// 业务时间
-			ywsj: String
+      // 机构
+      org: Object,
+      // 存在的问题
+      czwt: String,
+      // 业务时间
+      ywsj: String,
+      // 业务时间
+      zgxsId: String,
     },
+    onLoad() {
+      if (!this.ybwtBh) {
+        this.getBh()
+      }
+      if (!this.ksList || this.ksList.length < 1) {
+        this.getKs()
+      }
+    },
+   
     components:{uniBadge,uniTag,uniIcon,KwListCell,uniNumberBox },
     methods:{
       // 点击确定
       confirm(){
-				this.$emit("confirm", {
-					callback: this.saveDisposeIdea
-				})
+        this.$emit("confirm", {
+          callback: this.saveDisposeIdea
+        })
       },
       // 点击取消用的
       close () {
         this.$emit("close", {
-					data: this.zgxsid
-				})
+          data: this.zgxsId
+        })
       },
-			saveDisposeIdea (cb) {
-				let contentId = this.contentId ? this.contentId : ''
-				// 发送复杂问题，向科室发送协商
-				if(this.hxcly.value == '3') {
-					this.$kwz.ajax.ajaxUrl({
-						url: 'dd_zgxs/doAdd',
-						type: 'POST',
-						vue: this,
-						data: {
-							ORG_ID_TARGET: this.org.value,
-							BH: this.ybwtBh,
-							ZGXSLYMC: '经常性督导整改',
-							XS_ORG_ID: this.fzwtKs.value,
-							ZGXSLY: '1',
-							ZGXSDM: this.hxcly.value,
-							ZGXSMC: this.hxcly.name,
-							XSNR: this.czwt,
-							YWSJ: this.ywsj,
-							YWID: contentId
-						},
-						then (response) {
-							this.zgxsid = response.datas.ZGXSID
-							this.$kwz.alert('发送成功')
-							if (typeof cb == 'function') {
-								cb.apply(this, [{
-									ZGXSID: response.datas.ZGXSID,
-									ZGBH: this.ybwtBh
-								}])
-							}
-						}
-					})
-				} else {
-					let isSb = this.hxcly.value == '5' ? '1' : '0'
-					this.$kwz.ajax.ajaxUrl({
-						url: 'dd_zgxs/doAdd',
-						type: 'POST',
-						vue: this,
-						data: {
-							ORG_ID_TARGET: this.org.value,
-							BH: this.ybwtBh,
-							ZGXSLYMC: '经常性督导整改',
-							CLQX: this.ybwtZgqx,
-							ZGXSLY: '1',
-							ZGXSDM: this.hxcly.value,
-							ZGXSMC: this.hxcly.name,
-							XSNR: this.czwt,
-							YWSJ: this.ywsj,
-							YWID: contentId,
-							IS_SB: isSb // 是否上报
-						},
-						then (response) {
-							this.zgxsid = response.datas.ZGXSID
-							this.$kwz.alert('发送成功')
-							if (typeof cb == 'function') {
-								cb.apply(this, [{
-									ZGXSID: response.datas.ZGXSID,
-									ZGBH: this.ybwtBh
-								}])
-							}
-						}
-					})
-				}
-			},
-			// 获取编号
-			getBh () {
-				if (!this.ybwtBh) {
-					this.$kwz.ajax.ajaxUrl({
-						url: 'dd_zgxs/getNowTimeString',
-						type: 'POST',
-						vue: this,
-						then (response) {
-							let datas = response.datas
-							if (datas.BH) {
-								this.ybwtBh = datas.BH
-								// let date = new Date()
-								// this.disposeIdea.TIME = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
-							}
-						}
-					})
-				}
-			},
-			getKs () {
-				this.$kwz.ajax.ajaxUrl({
-					url: 'ddjl/getKsList',
-					type: 'post',
-					vue: this,
-					then (respose) {
-						let datas = respose.datas.KSLIST
-						if (datas && datas.length > 0) {
-							let ksList = []
-							for (let i = 0; i < datas.length; i++) {
-								ksList.push({
-									name: datas[i].ORG_MC,
-									value: datas[i].ORG_ID
-								})
-							}
-							this.ksList = ksList
-						}
-					}
-				})
-			},
-			changeKs (e) {
-				let index = e.detail.value
-				this.fzwtKs.index = index
-				this.fzwtKs.name = this.ksList[index].name
-				this.fzwtKs.value = this.ksList[index].value
-			}
+      // 保存ajax
+      saveDisposeIdea (cb) {
+        let contentId = this.contentId ? this.contentId : ''
+        // 发送复杂问题，向科室发送协商
+        if(this.hxcly.value == '3') {
+          if(this.fzwtKs.name == '点击选择科室'){
+            this.$kwz.alert('请选择科室')
+            return
+          } else if(!this.czwt){
+            this.$kwz.alert('请输入存在问题')
+            return
+          }
+          this.$kwz.ajax.ajaxUrl({
+            url: 'dd_zgxs/doAdd',
+            type: 'POST',
+            vue: this,
+            data: {
+              ORG_ID_TARGET: this.org.value,
+              BH: this.ybwtBh,
+              ZGXSLYMC: '经常性督导整改',
+              XS_ORG_ID: this.fzwtKs.value,
+              ZGXSLY: '1',
+              ZGXSDM: "2",
+              ZGXSMC: this.hxcly.name,
+              XSNR: this.czwt,
+              YWSJ: this.ywsj,
+              YWID: contentId
+            },
+            then (response) {
+              this.zgxsId = response.datas.ZGXSID
+              this.$kwz.alert('发送成功')
+              if (typeof cb == 'function') {
+                cb.apply(this, [{
+                  ZGXSID: response.datas.ZGXSID,
+                  ZGBH: this.ybwtBh
+                }])
+              }
+            }
+          })
+        } else {
+          if(!this.czwt){
+            this.$kwz.alert('请输入存在问题')
+            return
+          } else if(!this.ybwtZgqx){
+            this.$kwz.alert('请输入整改期限')
+            return
+          }
+          let isSb = this.hxcly.value == '5' ? '1' : '0'
+          this.$kwz.ajax.ajaxUrl({
+            url: 'dd_zgxs/doAdd',
+            type: 'POST',
+            vue: this,
+            data: {
+              ORG_ID_TARGET: this.org.value,
+              BH: this.ybwtBh,
+              ZGXSLYMC: '经常性督导整改',
+              CLQX: this.ybwtZgqx,
+              ZGXSLY: '1',
+              ZGXSDM: "1",
+              ZGXSMC: this.hxcly.name,
+              XSNR: this.czwt,
+              YWSJ: this.ywsj,
+              YWID: contentId,
+              IS_SB: isSb // 是否上报
+            },
+            then (response) {
+              this.zgxsId = response.datas.ZGXSID
+              this.$kwz.alert('发送成功')
+              if (typeof cb == 'function') {
+                cb.apply(this, [{
+                  ZGXSID: response.datas.ZGXSID,
+                  ZGBH: this.ybwtBh
+                }])
+              }
+            }
+          })
+        }
+      },
+      // 获取编号
+      getBh () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_zgxs/getNowTimeString',
+          type: 'POST',
+          vue: this,
+          then (response) {
+            let datas = response.datas
+            if (datas.BH) {
+              this.ybwtBh = datas.BH
+              // let date = new Date()
+              // this.disposeIdea.TIME = date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日'
+            }
+          }
+        })
+      },
+      // 获取科室列表
+      getKs () {
+        this.$kwz.ajax.ajaxUrl({
+          url: 'ddjl/getKsList',
+          type: 'post',
+          vue: this,
+          then (respose) {
+            let datas = respose.datas.KSLIST
+            if (datas && datas.length > 0) {
+              let ksList = []
+              for (let i = 0; i < datas.length; i++) {
+                ksList.push({
+                  name: datas[i].ORG_MC,
+                  value: datas[i].ORG_ID
+                })
+              }
+              this.ksList = ksList
+            }
+          }
+        })
+      },
+      // 修改处理期限
+      changeClqx(e){
+        this.ybwtZgqx = e
+      },
+      // 科室选择
+      changeKs (e) {
+        let index = e.detail.value
+        this.fzwtKs.index = index
+        this.fzwtKs.name = this.ksList[index].name
+        this.fzwtKs.value = this.ksList[index].value
+      }
     }
-	}
+  }
 </script>
 
 <style lang="scss">
+  .bh{
+    width: 500upx;
+    text-align: right;
+    ._input{
+      color: #999999;
+//       display:inline-block;
+//       width:100rpx;
+//       border:#D9D9D9 solid 2rpx;
+
+    }
+  }
   .xcdd-hxclyj{
     position: fixed;
     top:44upx;
@@ -225,11 +254,11 @@
     .clyj{
       padding: 20upx;
     }
-    input{
-      display: inline-block;
-      width: 100upx;
-      border:#D9D9D9 solid 2upx;
-    }
+//     input{
+//       display: inline-block;
+//       width: 100upx;
+//       border:#D9D9D9 solid 2upx;
+//     }
     .ddsj{
       padding: 20upx;
       text-align: right;

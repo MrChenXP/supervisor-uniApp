@@ -157,9 +157,9 @@
           then (response) {
 						let $kwz = this.$kwz
             $kwz.alert('保存督导评估成功');
-						setTimeout(() => {
-							$kwz.back()
-						}, 1600)
+						$kwz.back()
+					
+      // this.$kwz.redirect({url: 'xcdd'})
           }
         })
 			}
