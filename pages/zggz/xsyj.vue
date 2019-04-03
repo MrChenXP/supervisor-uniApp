@@ -12,7 +12,7 @@
 				<picker :range="searchCondition.DM_DD_ZGXSLY" range-key="DMMX_MC" @change="changeZglx">
 					<kw-list-cell title="整改类型" :right-note="pageParam.zglxMc"></kw-list-cell>
 				</picker>
-				<picker :range="searchCondition.ztList" range-key="name" @change="changeZt">
+				<picker :range="searchCondition.DM_DD_CLZT" range-key="DMMX_MC" @change="changeZt">
 					<kw-list-cell title="状态" :right-note="pageParam.ztMc"></kw-list-cell>
 				</picker>
 			</view>
@@ -111,9 +111,14 @@
 					// 学段选择列表
 					DM_XD: [],
 					// 整改类型选择列表
-					DM_DD_ZGXSLY: [],
+					DM_DD_ZGXSLY: [
+            {DMMX_CODE:"1",DMMX_MC:"全部"},
+            {DMMX_CODE:"1",DMMX_MC:"经常性督导整改"},
+            {DMMX_CODE:"2",DMMX_MC:"投诉整改"},
+            {DMMX_CODE:"3",DMMX_MC:"其他整改"},
+          ],
 					ksList: [],
-					ztList: []
+					DM_DD_CLZT: []
 				},
 				deleteParam: {
 					'_CHECK_ALL_': false
@@ -171,9 +176,26 @@
 		methods: {
 			// 加载数据
 			initData() {
-				this.$kwz.loadVueDms('DM_DD_ZGXSLY,DM_XD', dms => {
-					this.searchCondition = dms || {}
-          // zggz已修改了选择列表为全部，因浅拷贝缘故，顾此页面不做修改
+				this.$kwz.loadVueDms('DM_DD_CLZT,DM_XD', dms => {
+					this.searchCondition.DM_XD = this.$kwz.deepCopy(dms.DM_XD) || {}
+          // 该代码表将整改通知的状态一起放进去了。要将他截出来
+          let DM_DD_CLZT = this.$kwz.deepCopy(dms.DM_DD_CLZT) || {}
+          for (let i in DM_DD_CLZT) {
+          	if(DM_DD_CLZT[i].DMMX_CODE > 20){
+              this.searchCondition.DM_DD_CLZT.push({
+                DMMX_CODE:DM_DD_CLZT[i].DMMX_CODE,
+                DMMX_MC:DM_DD_CLZT[i].DMMX_MC
+              })
+            }
+          }
+          // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
+          this.searchCondition.DM_XD.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          this.searchCondition.DM_DD_CLZT.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          console.log(this.searchCondition.DM_DD_CLZT)
 					this.$kwz.ajax.ajaxUrl({
 						url: 'ddjl/getKsList',
 					  type: 'POST',
@@ -188,11 +210,13 @@
 					          value: datas.KSLIST[i].ORG_ID
 					        })
 					      }
+                ksList.unshift({
+                  name:"全部",value:""
+                })
 					      this.searchCondition.ksList = ksList
 					    }
 						}
 					})
-					this.searchCondition.ztList = [{name: '全部', value: ''}, {name: '督学发出', value: '1'}, {name: '科室处理完毕', value: '2'}]
 				}, this)
 				this.pageList(true)
 			},
@@ -216,9 +240,9 @@
 			},
 			// 选择搜索条件 => 状态
 			changeZt(e) {
-				let checkedOption = this.searchCondition.ztList[e.detail.value]
-				this.pageParam.ztId = checkedOption.value
-				this.pageParam.ztMc = checkedOption.name
+				let checkedOption = this.searchCondition.DM_DD_CLZT[e.detail.value]
+				this.pageParam.ztId = checkedOption.DMMX_CODE
+				this.pageParam.ztMc = checkedOption.DMMX_MC
 			},
 			// 加载列表 type=>true（覆盖式）/false（增量式）
 			pageList(type) {

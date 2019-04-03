@@ -158,7 +158,7 @@
 					}
 				}
 				this.dms = dms
-				
+				console.log(dms)
 				this.showMc(this.user.XBM, 'DM_XB', 'xbMc')
 				this.showMc(this.user.DXLXM, 'DM_DD_DXLX', 'dxlxMc')
 				this.showMc(this.user.SFZJLXM, 'DM_SFZJLX', 'sfzjlxMc')

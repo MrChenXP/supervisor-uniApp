@@ -162,7 +162,7 @@
       // 加载数据
       initData() {
       	this.$kwz.loadVueDms('DM_XD', dms => {
-      		this.searchCondition = dms || {}
+      		this.searchCondition = this.$kwz.deepCopy(dms) || {}
           // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
           this.searchCondition.DM_XD.unshift({
             DMMX_CODE:"",DMMX_MC:"全部"

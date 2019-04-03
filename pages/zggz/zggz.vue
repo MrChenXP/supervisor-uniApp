@@ -9,6 +9,9 @@
 				<picker :range="searchCondition.DM_DD_ZGXSLY" range-key="DMMX_MC" @change="changeZglx">
 					<kw-list-cell title="整改类型" :right-note="pageParam.zglxMc"></kw-list-cell>
 				</picker>
+        <picker :range="searchCondition.DM_DD_CLZT" range-key="DMMX_MC" @change="changeZt">
+        	<kw-list-cell title="状态" :right-note="pageParam.ztMc"></kw-list-cell>
+        </picker>
 			</view>
 		</kw-search>
 		<!-- 分页 -->
@@ -85,6 +88,8 @@
 					zglx: '',
 					xdMc: '',
 					zglxMc: '',
+          ztId: '', // 处理状态代码
+          ztMc: '', // 处理状态名称
 					// 页码
 					page: 1,
 					// 关键字
@@ -96,8 +101,8 @@
 				searchCondition: {
 					// 学段选择列表
 					DM_XD: [],
-					// 整改类型选择列表
-					DM_DD_ZGXSLY: []
+					DM_DD_ZGXSLY: [], // 整改类型选择列表
+          DM_DD_CLZT: [], // 状态
 				},
 				// 删除参数
         deleteParam: {
@@ -152,13 +157,26 @@
 		methods: {
 			// 加载数据
 			initData() {
-				this.$kwz.loadVueDms('DM_DD_ZGXSLY,DM_XD', dms => {
-					this.searchCondition = dms
+				this.$kwz.loadVueDms('DM_DD_CLZT,DM_DD_ZGXSLY,DM_XD', dms => {
+					this.searchCondition = this.$kwz.deepCopy(dms) || {}
+          // 该代码表将整改通知的状态一起放进去了。要将他截出来
+          let DM_DD_CLZT = this.$kwz.deepCopy(dms.DM_DD_CLZT) || {}
+          for (let i in DM_DD_CLZT) {
+          	if(DM_DD_CLZT[i].DMMX_CODE > 20){
+              this.searchCondition.DM_DD_CLZT.push({
+                DMMX_CODE:DM_DD_CLZT[i].DMMX_CODE,
+                DMMX_MC:DM_DD_CLZT[i].DMMX_MC
+              })
+            }
+          }
           // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
           this.searchCondition.DM_XD.unshift({
             DMMX_CODE:"",DMMX_MC:"全部"
           })
           this.searchCondition.DM_DD_ZGXSLY.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          this.searchCondition.DM_DD_CLZT.unshift({
             DMMX_CODE:"",DMMX_MC:"全部"
           })
 				}, this)
@@ -176,6 +194,12 @@
 				this.pageParam.xd = checkedOption.DMMX_CODE
 				this.pageParam.xdMc = checkedOption.DMMX_MC
 			},
+      // 选择搜索条件 => 状态
+      changeZt(e) {
+      	let checkedOption = this.searchCondition.DM_DD_CLZT[e.detail.value]
+      	this.pageParam.ztId = checkedOption.DMMX_CODE
+      	this.pageParam.ztMc = checkedOption.DMMX_MC
+      },
 			// 加载列表 type=>true（覆盖式）/false（增量式）
 			pageList(type) {
 				if (type) {
@@ -188,7 +212,8 @@
 						page: this.pageParam.page,
 						XD: this.pageParam.xd,
 						XXMC: this.pageParam.keyword,
-						ZGXSLY: this.pageParam.zglx
+						ZGXSLY: this.pageParam.zglx,
+            CLZTDM: this.pageParam.ztId,
 					},
 					vue: this,
 					then(data) {
