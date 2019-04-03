@@ -165,8 +165,8 @@
         if (!this.xx.value || !this.data.YWSJ || !this.data.BJ || !this.data.XK || !this.data.JSMC) {
           this.$kwz.alert('学校，听课日期，听课班级，听课学科，听课教师中不能有空')
           return false
-        } else if (!this.ddjs || this.data.FZ < 1 || !this.data.ZHPJ) {
-          this.$kwz.alert('过程记录，定性评价，定性评价中不能有空')
+        } else if (!this.data.GCJL || this.data.FZ < 1 || !this.data.ZHPJ) {
+          this.$kwz.alert('过程记录，定性评价，综合评价中不能有空')
           return false
         }
         if (this.data.MXID) {
@@ -220,7 +220,7 @@
           },
           then (response) {
             this.$kwz.alert('保存成功')
-            this.$kwz.back(1500)
+            this.$kwz.back(500)
           }
         })
       },

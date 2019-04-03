@@ -163,6 +163,11 @@
       initData() {
       	this.$kwz.loadVueDms('DM_XD', dms => {
       		this.searchCondition = dms || {}
+          // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
+          this.searchCondition.DM_XD.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          // 加载学期
       		this.$kwz.ajax.ajaxUrl({
       			url: 'jc_xq/doList',
       			type: 'POST',

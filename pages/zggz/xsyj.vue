@@ -173,6 +173,7 @@
 			initData() {
 				this.$kwz.loadVueDms('DM_DD_ZGXSLY,DM_XD', dms => {
 					this.searchCondition = dms || {}
+          // zggz已修改了选择列表为全部，因浅拷贝缘故，顾此页面不做修改
 					this.$kwz.ajax.ajaxUrl({
 						url: 'ddjl/getKsList',
 					  type: 'POST',
@@ -243,7 +244,6 @@
 							for (let i = 0; i < datas.length; i++) {
 								let tmp = datas[i]
 								deleteParam[tmp.ZGXSID] = false
-                console.log(tmp.CLZTDM)
 								tmp.zgxsClass = this.constParam.zgxsClass[tmp.CLZTDM]
 								// datas[i].ISCS = this.countCs(tmp.YWSJ, tmp.CLQX)
 								//datas[i].SFZGXX = (this.user.orgid === tmp.ORG_ID_TARGET)

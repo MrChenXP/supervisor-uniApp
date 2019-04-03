@@ -138,6 +138,10 @@
 				// 加载代码
 				this.$kwz.loadVueDms('DM_XD', dms => {
 					this.searchCondition = dms || {}
+          // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
+          this.searchCondition.DM_XD.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
 					// 加载学期
 					this.$kwz.ajax.ajaxUrl({
 						url: 'jc_xq/doList',
@@ -176,7 +180,7 @@
 					})
 				}, this)
 			},
-			// 选择搜索条件 => 整改类型
+			// 选择搜索条件 => 学期
 			changeXq(e) {
 				let checkedOption = this.searchCondition.DM_XQ[e.detail.value]
 				this.pageParam.xq = checkedOption.value
@@ -187,8 +191,9 @@
 				let checkedOption = this.searchCondition.DM_XD[e.detail.value]
 				this.pageParam.xd = checkedOption.DMMX_CODE
 				this.pageParam.xdMc = checkedOption.DMMX_MC
+        console.log(this.pageParam)
 			},
-			// 加载列表 type=>true（覆盖式）/false（增量式）
+			// 加载列表 type=>true（覆盖式）/false（增量式）1
 			pageList(type) {
 				if (type) {
 					this.pageParam.page = 1

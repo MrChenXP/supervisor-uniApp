@@ -710,9 +710,9 @@
             vue: this,
             then (response) {
               this.$kwz.alert('保存成功')
-              this.$kwz.redirect({url: 'xcdd'})
               // 点击保存按钮时,将初始zgxsId置空,否则onUnload里的判断会真,会运行删除zgxsId函数
               this.zgxsidOld = ""
+              this.$kwz.redirect({url: 'xcdd'})
             }
           })
         }
@@ -852,9 +852,7 @@
                                 } catch (e) {
                                   console.error(e)
                                 }
-                                
                                 this.ddpgFz = sj.FZ || 0
-                                console.log(this.ddpgFz)
                                 this.ddpgPfShow = true
                               }
                             }
@@ -882,18 +880,13 @@
             let datas = response.datas
             if (datas && datas.map) {
               let gzjh = datas.map
-              
               this.xx.name = gzjh.ORG_ID_TARGET_MC
               this.xx.value = gzjh.ORG_ID_TARGET
-              
               this.sxdx.name = gzjh.JGID_MC || ''
               this.sxdx.value = gzjh.JGID || ''
-              
               this.ywsj = gzjh.YWSJ && gzjh.YWSJ.length > 10 ? gzjh.YWSJ.substr(0, 10) : this.$kwz.formatDate('yyyy-MM-dd')
-              
               let gzjhMc = `${this.xx.name}/${this.sxdx.name}/${this.ywsj}`
               this.gzjh.name = gzjhMc.length > 25 ? (gzjhMc.substr(0, 24) + '...') : gzjhMc
-              
               // this.setDdjs(gzjh.data.TXT)
               if (gzjh.BZID) {
                 this.ddpgShow = true

@@ -138,6 +138,19 @@
         // 从代码表中搜索列表数据
       	this.$kwz.loadVueDms("DM_XXDJ,DM_BXMS,DM_BXLX,DM_XXZDCXLX", dms => {
       		this.searchCondition = dms || {}
+          // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
+          this.searchCondition.DM_BXLX.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          this.searchCondition.DM_BXMS.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          this.searchCondition.DM_XXZDCXLX.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
+          this.searchCondition.DM_XXDJ.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
       	}, this)
       	this.pageList(true)
       },

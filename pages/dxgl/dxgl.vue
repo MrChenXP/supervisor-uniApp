@@ -145,6 +145,10 @@
         // 从代码表中搜索列表数据
       	this.$kwz.loadVueDms("DM_DD_DXLX", dms => {
           this.searchCondition.DM_DD_DXLX = dms.DM_DD_DXLX || []
+          // 给选项加“全部”。其实就是显示全部，实际为空值，后台判断空为全部
+          this.searchCondition.DM_DD_DXLX.unshift({
+            DMMX_CODE:"",DMMX_MC:"全部"
+          })
       	}, this)
       	this.pageList(true)
       },

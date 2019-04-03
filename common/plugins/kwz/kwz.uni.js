@@ -705,6 +705,20 @@ const kwz = {
   loadVueDms (dm = '', cb = () => {}, vue) {
     kwz.getDms(dm, cb, vue)
   },
+  // 深拷贝
+  deepCopy(obj) {
+    let result = Array.isArray(obj) ? [] : {};
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (typeof obj[key] === 'object') {
+          result[key] = kwz.deepCopy(obj[key]);   //递归复制
+        } else {
+          result[key] = obj[key];
+        }
+      }
+    }
+    return result;
+  },
 	// 从本地上传图片：imageOp.success 中返回值决定是否上传当前文件
   uploadImage (imageOp = {}, uploadOp = {}, vue) {
 		let imageSuccess = imageOp.success;
