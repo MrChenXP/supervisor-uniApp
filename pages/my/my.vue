@@ -5,7 +5,8 @@
       <image class="img" src="../../static/images/loginBG.png" mode="scaleToFill"></image>
       <!-- 用户简略信息 -->
       <view class="info">
-        <image class="info-img" src="../../static/images/DefaultImg.png"></image>
+        <image class="info-img" v-if="!imgShow" src="../../static/images/DefaultImg.png"></image>
+        <image class="info-img" v-else :src="user.IMAGE"></image>        
         <view>
           <view class="name-zw">
             <text class="name text-bold" v-if="user.name">{{user.name}}</text>
@@ -46,6 +47,7 @@
 			return {
 				msg: "...",
         loginShow : false,
+        imgShow:false,
 				user: {}
 			}
 		},
@@ -54,7 +56,7 @@
 			this.loadIndexData();
 		},
     computed:{
-    	// 个人资料权限  暂时无用。因为需要pro_id this.$kwz.hasAuth需要先登录才能用，不然报错
+/* 个人资料权限  暂时无用。因为需要pro_id this.$kwz.hasAuth需要先登录才能用，不然报错
 //     	hasXzAuth () {
 //     		return this.$kwz.hasAuth('dd_dxgl/toGrzl')
 //     	},
@@ -65,7 +67,7 @@
 //     	// 切换机构权限
 //     	hasScAuth () {
 //     		return this.$kwz.hasAuth('ddjl/deleteddjl')
-//     	}
+//     	}*/
     },
 		methods: {
 			// 加载工作区数据
@@ -88,13 +90,36 @@
 				this.loginShow = false
 				this.initUser();
 			},
+      // 加载用户数据
 			initUser () {
-				this.user = this.$kwz.getLoginUser();
+        // 这里要用浅拷贝。不然切换tab页头像会消失
+				this.user = this.$kwz.getLoginUser()
+        // 将fid变成本地指向地址
+        this.$kwz.ajax.ajaxUrl({
+          url: 'dd_dxgl/selectByPrimaryKeyGrzl',
+          type: 'POST',
+          vue: this,
+          then (response) {
+            let datas = response.datas
+            this.user.IMAGE = datas.IMAGE
+            let url = `jc_file/doDownload?F_ID=${this.user.IMAGE}`;
+            url += this.$kwz.token ? ('&token=' + this.$kwz.token) : ''
+            this.$kwz.ajax.loadSource(url, (file) => {
+              this.user.IMAGE = file;
+              this.imgShow = true
+            }, this)
+          }
+        })
 			},
+      // 加载图片
+      loadImg(){
+        
+      },
 			// 退出
 			logout () {
 				this.$kwz.logout(false)
         this.user = {}
+        this.imgShow = false
         this.$kwz.alert("已成功退出",this.loginShow = true)
 			}
 		}

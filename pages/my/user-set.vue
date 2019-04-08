@@ -6,7 +6,7 @@
             <view class="head-img">
               <view class="head-img-title">头像</view>
               <view class="head-img-img" @tap="changeIcon">
-                <image :src="user.IMAGE"></image>
+                <image :src="imageUrl"></image>
               </view>
             </view>
           </view>
@@ -101,24 +101,27 @@
 		data() {
 			return {
 				user: {
-					IMAGE: '../../static/images/DefaultImg.png',
-					XM: '',
-					U_USERNAME: '',
-					AGE: '',
-					XBM: '',
-					DXLXM: '',
-					DH: '',
-					SFZJLXM: '',
-					SFZJH: '',
-					MZM: '',
-					BIRTH: '',
-					XL: '',
-					ZYJSZC: '',
-					ZW: '',
-					WORKUNIT: '',
-					JL: ''
+					IMAGE: '', // 图像fid
+					XM: '', // 姓名
+					U_USERNAME: '', // 显示名
+					AGE: '', // 年龄
+					XBM: '', // 性别码
+					DXLXM: '', // 督学类型码
+					DH: '', // 电话
+					SFZJLXM: '', // 身份证件码
+					SFZJH: '', // 身份证件号
+					MZM: '', // 民族码
+					BIRTH: '', // 出生年月
+					XL: '', // 学历
+					ZYJSZC: '', // 专业技术职称
+					ZW: '', // 职务
+					WORKUNIT: '', // 工作单位
+					JL: '', // 简介
+          DXID: "" , // 督学id
+          uid: "", // 用户id
 				},
-				mc: {
+				imageUrl:"../../static/images/DefaultImg.png", // 保存的时候要用到的头像fid
+        mc: {
 					xbMc: '',
 					zyjszcMc: '',
 					xlMc: '',
@@ -158,20 +161,18 @@
 					}
 				}
 				this.dms = dms
-				console.log(dms)
 				this.showMc(this.user.XBM, 'DM_XB', 'xbMc')
 				this.showMc(this.user.DXLXM, 'DM_DD_DXLX', 'dxlxMc')
 				this.showMc(this.user.SFZJLXM, 'DM_SFZJLX', 'sfzjlxMc')
 				this.showMc(this.user.MZM, 'DM_MZ', 'mzMc')
 				this.showMc(this.user.XL, 'DM_XLCC', 'xlMc')
 				this.showMc(this.user.ZYJSZC, 'DM_ZYJSDJ', 'zyjszcMc')
-				
       }, this)
 		},
 		onShow () {
 			this.loadUserSet()
 		},
-    methods:{
+    methods: {
 			// 加载数据
 			loadUserSet () {
 				this.$kwz.ajax.ajaxUrl({
@@ -181,15 +182,20 @@
 					then (response) {
 						let datas = response.datas
 						if (datas) {
+              datas.uid = this.$kwz.getLoginUser().uid
 							this.user = datas
-							
+              // 后台返回的是一个fid，微信不支持，需要将文件下载下来，然后将src指向本地地址
+              let url = `jc_file/doDownload?F_ID=${this.user.IMAGE}`;
+              url += this.$kwz.token ? ('&token=' + this.$kwz.token) : ''
+              this.$kwz.ajax.loadSource(url, (file) => {
+              	this.imageUrl = file;
+              }, this);
 							this.showMc(this.user.XBM, 'DM_XB', 'xbMc')
 							this.showMc(this.user.DXLXM, 'DM_DD_DXLX', 'dxlxMc')
 							this.showMc(this.user.SFZJLXM, 'DM_SFZJLX', 'sfzjlxMc')
 							this.showMc(this.user.MZM, 'DM_MZ', 'mzMc')
 							this.showMc(this.user.XL, 'DM_XLCC', 'xlMc')
 							this.showMc(this.user.ZYJSZC, 'DM_ZYJSDJ', 'zyjszcMc')
-							
 						}
 					}
 				})
@@ -204,29 +210,49 @@
 					this.$kwz.alert('电话不能为空')
 					return false
 				}
-				let data = JSON.parse(JSON.stringify(this.user))
 				this.$kwz.ajax.ajaxUrl({
 					url: 'dd_dxgl/doUpdateGrzl',
 					type: 'POST',
-					data,
+					data:{
+            "MZM": this.user.MZM,  // 民族码
+            "XBM": this.user.XBM,  // 性别码
+            "JL": this.user.JL,  // 简介
+            "DH":this.user.DH,  // 电话
+            "ZYJSZC": this.user.ZYJSZC,  // 专业技术职称
+            "U_ID": this.user.uid,  // 当前用户id
+            "DXID": this.user.DXID, //督学di,用户不一定是督学,顾要传督学id
+            "SFZJLXM": this.user.SFZJLXM,  // 身份证件类型码
+            "IMAGE": this.user.IMAGE,  // 图像uid
+            "XL": this.user.XL,  // 学历
+            "XM": this.user.XM,  // 姓名
+            "U_USERNAME": this.user.U_USERNAME,  // 显示名
+            "SFZJH": this.user.SFZJH,  // 身份证件号
+            "SJ":"",  // 数据库无介绍 传空
+            "BIRTH": this.user.BIRTH,  // 出生年月
+            "ZW": this.user.ZW,  // 职务
+            "WORKUNIT": this.user.WORKUNIT,  // 工作单位
+            "AGE": this.user.AGE  // 年龄
+          },
 					vue: this,
 					then (response) {
+            uni.switchTab({url: 'my'});
 						this.$kwz.alert('保存成功')
-						this.loadUserSet()
+						// this.loadUserSet()
 					}
 				})
 			},
+      // 更改头像
 			changeIcon () {
 				this.$kwz.uploadImage({}, {
 					url: 'jc_jsgl/doUpload',
 					success (data) {
 						let datas = data.datas;
-						if (datas && datas.saveInfos && datas.saveInfos[0]
-							&& datas.saveInfos[0].fId) {
+						if (datas && datas.saveInfos && datas.saveInfos[0] && datas.saveInfos[0].fId) {
+                this.user.IMAGE = datas.saveInfos[0].fId
 								let url = `jc_file/doDownload?F_ID=${datas.saveInfos[0].fId}`;
 								url += this.$kwz.token ? ('&token=' + this.$kwz.token) : ''
 								this.$kwz.ajax.loadSource(url, (file) => {
-									this.user.IMAGE = file;
+									this.imageUrl = file;
 								}, this);
 						}
 					}
