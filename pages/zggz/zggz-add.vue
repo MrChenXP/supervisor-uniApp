@@ -2,7 +2,7 @@
 	<view class="child-content">
     <kw-list-cell title="编号" v-if="!data.ZGXSID" >
       <view slot="rightNote">
-        <view class="bh"><input v-model="data.BH" /></view>
+        <view class="list-right-input"><input v-model="data.BH" /></view>
       </view>
     </kw-list-cell>
     <kw-list-cell v-else title="编号" :rightNote="data.BH" :isArrow="false" ></kw-list-cell>
@@ -244,50 +244,5 @@
 </script>
 
 <style lang="scss">
-  .bh{
-    width: 500upx;
-    text-align: right;
-    ._input{
-      color: #999999;
-    }
-  }
-  .ddjs-head{
-      height: 55upx;
-  }
-  .ddjs-body{
-    padding:0 20upx;
-    textarea{
-      width: 100%;
-      border:#D9D9D9 solid 2upx;
-    }
-    input{
-      display: inline-block;
-      width: 100upx;
-      border:#D9D9D9 solid 2upx;
-    }
-  }
-  .save{
-    width: 710upx;
-    height: 85upx;
-    border-radius: 42.5upx;
-    border: solid 1upx #e1e1e1;
-    margin: 25upx auto;
-    display: flex;
-    background: white;
-    button{
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      border-radius: 42.5upx;
-      background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
-      color: white;
-      line-height: 83upx;
-    }
-    text{
-      color: white;
-    }
-    button:after{
-      border: none;
-    }
-  }
+
 </style>

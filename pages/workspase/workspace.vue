@@ -194,6 +194,11 @@
   }
   .workspace-gn{
     margin-top: 20upx;
+    height: calc(100vh - 94px - 227px);
+    /* #ifdef MP-WEIXIN */
+    height:  calc(100vh - 474upx);
+    /* #endif */
+    overflow: auto;
   }
 </style>
 

@@ -53,6 +53,7 @@
 		},
 		onShow () {
       this.loginShow = !this.$kwz.isLogin()
+    
 			this.loadIndexData();
 		},
     computed:{
@@ -75,7 +76,9 @@
 				// 验证是否属于登陆状态
 				if ( this.$kwz.isLogin()) {
 					this.initUser();
-				}
+				} else {
+          this.user = {}
+        }
 			},
 			// 关闭登陆框
 			closeLogin () {
@@ -111,10 +114,6 @@
           }
         })
 			},
-      // 加载图片
-      loadImg(){
-        
-      },
 			// 退出
 			logout () {
 				this.$kwz.logout(false)

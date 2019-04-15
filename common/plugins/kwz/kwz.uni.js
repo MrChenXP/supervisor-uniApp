@@ -795,7 +795,7 @@ const kwz = {
 			},miils)
 		}
 	},
-	// 日期格式化 日期格式 传入的时间 默认:yyyy-MM-dd格式/当前时间(月份传的时候要-1 想要12月传11进来)
+	// 日期格式化 ==日期格式,传入的时间 默认:yyyy-MM-dd格式/当前时间(月份传的时候要-1 想要12月传11进来)
   formatDate (fmt = 'yyyy-MM-dd', date = new Date()) {
     date = new Date(date)
     let o = {

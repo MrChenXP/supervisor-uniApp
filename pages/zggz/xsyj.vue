@@ -195,7 +195,6 @@
           this.searchCondition.DM_DD_CLZT.unshift({
             DMMX_CODE:"",DMMX_MC:"全部"
           })
-          console.log(this.searchCondition.DM_DD_CLZT)
 					this.$kwz.ajax.ajaxUrl({
 						url: 'ddjl/getKsList',
 					  type: 'POST',
