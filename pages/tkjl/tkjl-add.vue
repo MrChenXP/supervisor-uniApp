@@ -4,7 +4,7 @@
       <kw-list-cell title="学校(校园)" :rightNote="data.MB_ORG_MC" v-if="data.MXID" :isArrow="false"></kw-list-cell>
       <kw-list-cell title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true" v-else></kw-list-cell>
       <kw-list-cell title="听课日期" :rightNote="data.YWSJ" v-if="data.MXID" :isArrow="false"></kw-list-cell>
-      <picker :range="data.YWSJ" mode="date" @change="changeYwsj" :start="startDate" :end="endDate" v-else>
+      <picker :value="data.YWSJ" mode="date" @change="changeYwsj" :start="startDate" :end="endDate" v-else>
         <kw-list-cell title="听课日期" :rightNote="data.YWSJ"></kw-list-cell>
       </picker>
       <kw-list-cell title="听课班级">
@@ -112,8 +112,8 @@
           'MB_ORG_MC': '', // 学校名称
           'MXID': '' // 此条记录的ID
         },
-        startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量
-        endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量
+        startDate: '', // 可填写的最小时间,别放在date对象里,而且一定要事先创建好变量并给时间
+        endDate: '', // 可填写的最大时间,别放在date对象里,而且一定要事先创建好变量并给时间
         tbmbglData: {}, // 老记录模板数据
         isNew:"1"
       }

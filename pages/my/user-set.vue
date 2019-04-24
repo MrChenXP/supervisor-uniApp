@@ -59,7 +59,7 @@
           <view class="list-right-input"><input v-model="user.WORKUNIT" /></view>
         </view>
       </kw-list-cell>
-      <kw-list-cell :isArrow="false">
+      <kw-list-cell :isArrow="false" :border="{bottom:false}">
         <view>
           <view class="ddjs-head clearfix" @click="jlShow = !jlShow">
             <text class="fl">个人简介(1000字以内)</text>
@@ -353,27 +353,6 @@
         width: 100%;
         height: 100%;
       }
-    }
-  }
-  .save{
-    width: 710upx;
-    height: 85upx;
-    border-radius: 42.5upx;
-    border: solid 1upx #e1e1e1;
-    margin: 25upx auto;
-    display: flex;
-    background: white;
-    button{
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      border-radius: 42.5upx;
-      background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
-      color: white;
-      line-height: 83upx;
-    }
-    button:after{
-      border: none;
     }
   }
 </style>

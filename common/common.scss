@@ -20,12 +20,15 @@ view,text,textarea,checkbox-group{
   box-sizing: border-box;
   color: #333333;
 }
+._textarea,textarea{
+  padding: 8upx;
+}
 /* -----------------------------------------------------功能模块，组合使用------------------------------------------ */
 /* -----------------  列表单元右侧输入框(参考整改工作新增) ---------*/
 .list-right-input{
   width: 400upx;
   text-align: right;
-  ._input{
+  ._input,input{
     color: #999999;
   }
 }
@@ -161,6 +164,7 @@ view,text,textarea,checkbox-group{
   }
   textarea{
     border: 1upx solid #dddddd ;
+    width: 100%;
   }
 }
 /* ==================== 一个单独占一行的保存按钮（参考督导纪实新增页保存按钮） ====== */

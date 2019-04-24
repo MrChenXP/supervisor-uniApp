@@ -18,7 +18,7 @@
             日内书面报责任督学，责任督学于接到报告的3日内上报人民政府教育督导室督管员备案。
           </view>
         </view>
-        <view class="ddsj">督导时间:{{ywsj}}</view>
+        <view class="ddsj">督导时间: {{ywsj}}</view>
       </view>
       <!-- 复杂问题-向科室发送协商意见 -->
       <view v-if="hxcly.value=='3'" class="xcdd-hxclyj-fzwt">
@@ -74,6 +74,7 @@
       zgxsId: String,
     },
     onLoad() {
+      console.log(this.ybwtBh)
       if (!this.ybwtBh) {
         this.getBh()
       }
@@ -81,7 +82,6 @@
         this.getKs()
       }
     },
-   
     components:{uniBadge,uniTag,uniIcon,KwListCell,uniNumberBox },
     methods:{
       // 点击确定
@@ -227,25 +227,14 @@
 </script>
 
 <style lang="scss">
-  .bh{
-    width: 500upx;
-    text-align: right;
-    ._input{
-      color: #999999;
-//       display:inline-block;
-//       width:100rpx;
-//       border:#D9D9D9 solid 2rpx;
-
-    }
-  }
   .xcdd-hxclyj{
     position: fixed;
-    top:44upx;
+    top:44px;
     left: 0;
     width: 750upx;
-    padding: 20upx;
+    padding: 80upx 20upx;
     z-index: 1001;
-    background: none;
+    background: rgba(0, 0, 0, 0.2);
     height: calc(100vh - 44px);
     /* #ifdef MP-WEIXIN */
     height: 100vh;
@@ -260,7 +249,7 @@
 //       border:#D9D9D9 solid 2upx;
 //     }
     .ddsj{
-      padding: 20upx;
+      padding: 0 20upx;
       text-align: right;
     }
   }

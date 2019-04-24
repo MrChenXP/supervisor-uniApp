@@ -101,7 +101,7 @@
         </view>
       </kw-list-cell>
     </picker>
-    <kw-list-cell :show="hxclyjXwt">
+    <kw-list-cell :show="hxclyjXwt" :isArrow="false">
       <view>
         <view class="ddjs-body">
           <textarea :value="zgxsyjHide" maxlength="4000" placeholder="请输入反馈意见" @input="blurZgxsyj"></textarea>

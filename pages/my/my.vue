@@ -26,6 +26,9 @@
       <kw-login-cell title="个人资料" thumb="../../static/images/icons/set.png" link="/pages/my/user-set" ></kw-login-cell>
       <kw-login-cell title="修改密码" thumb="../../static/images/icons/change.png" link="/pages/my/revise-password" ></kw-login-cell>
       <kw-login-cell title="切换机构" :border="{bottom:false}" thumb="../../static/images/icons/repeat.png" link="/pages/my/revise-institution" ></kw-login-cell>
+      <!-- #ifndef H5 -->
+      <!-- <kw-login-cell title="扫码签到" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell> -->
+      <!-- #endif -->
     </view>
     
     <!-- 退出登录 -->
@@ -53,7 +56,6 @@
 		},
 		onShow () {
       this.loginShow = !this.$kwz.isLogin()
-    
 			this.loadIndexData();
 		},
     computed:{
@@ -120,7 +122,30 @@
         this.user = {}
         this.imgShow = false
         this.$kwz.alert("已成功退出",this.loginShow = true)
-			}
+			},
+      // 扫码
+      scanCode () {
+        uni.scanCode({
+            success: function (res) {
+                console.log('扫码成功')
+                console.log('条码类型：' + res.scanType);
+                console.log('条码内容：' + res.result);
+            },
+            fail: function (e) {
+            	console.log('接口调用失败的回调函数（识别失败、用户取消等情况下触发')
+              // e.errMsg === "scanCode:fail" 失败
+              // e.errMsg === "scanCode:fail cancel" 取消
+              console.log(e.errMsg)
+            },
+            complete:  function (e) {
+            	console.log('接口调用结束的回调函数（调用成功、失败都会执行）')
+              // e.errMsg === "scanCode:fail" 失败
+              // e.errMsg === "scanCode:fail cancel" 取消
+              console.log(e)
+            },
+        });
+        
+      }
 		}
 	}
 </script>

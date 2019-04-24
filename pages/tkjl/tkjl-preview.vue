@@ -64,7 +64,7 @@
           MXID: ''
         },
         tbmbglData: {}, // 老记录模板数据
-        ddjs:"",
+        ddjs: [],
         isNew: "1"
 			};
 		},

@@ -3,10 +3,10 @@
     <!-- 搜索 -->
     <kw-search placeholder="请输入学校名称" @confirm="searchList">
       <view slot="content">
-        <picker :range="pageParam.startTime" mode="date" @change="changeStart">
+        <picker :value="pageParam.startTime" mode="date" @change="changeStart">
           <kw-list-cell title="开始时间" :rightNote="pageParam.startTime"></kw-list-cell>
         </picker>
-        <picker :range="pageParam.endTime" mode="date" @change="changeEnd">
+        <picker :value="pageParam.endTime" mode="date" @change="changeEnd">
           <kw-list-cell title="结束时间" :rightNote="pageParam.endTime"></kw-list-cell>
         </picker>
       </view>
@@ -74,10 +74,8 @@
 				deleteShow: true,
 				// 搜索以及分页参数
 				pageParam: {
-					// 开始时间
-					startTime: '',
-					// 结束时间
-					endTime: '',
+					startTime: '',  // 开始时间
+					endTime: '',  // 结束时间
 					keyword: '',
 					page: 1
 				},
@@ -121,6 +119,10 @@
       	if (type) {
       		this.pageParam.page = 1
       	}
+        // 为防止返回键返回过来的操作，页面数据因为时间是当前时间被刷新掉了
+        if (this.pageParam.startTime === this.$kwz.formatDate() && this.pageParam.endTime === this.$kwz.formatDate()) {
+          this.pageParam.startTime = this.pageParam.endTime = ""
+        }
       	this.$kwz.ajax.ajaxUrl({
       		url: 'jc_pgbzmx/doSchoolPageList/TKJL',
       		type: 'POST',
@@ -160,6 +162,8 @@
                 this.dataList = []
               }
             }
+          // h5有bug,如果不事先获取时间,在change事件返回的值只有年,没有日月
+          this.pageParam.startTime = this.pageParam.endTime = this.$kwz.formatDate()
       		}
       	})
       },

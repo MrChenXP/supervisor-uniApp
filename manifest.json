@@ -79,17 +79,6 @@
   },
   "h5": {
     "template": "template.h5.html",
-//     "devServer": {  
-//       "port": 8080,  
-//       "disableHostCheck": true,  
-//       "proxy": {  
-//         "/api": {  
-//         "target": "http://www.ddsjd.com",  
-//         "changeOrigin": true,  
-//         "secure": false  
-//         }  
-//       }  
-//     }, 
     "router": {
       "mode": "history",
       "base": "content_m/h5/"
