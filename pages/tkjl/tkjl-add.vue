@@ -9,17 +9,17 @@
       </picker>
       <kw-list-cell title="听课班级">
         <view slot="rightNote">
-          <view class="bh"><input v-model="data.BJ" placeholder="请填写班级"/></view>
+          <view class="list-right-input"><input v-model="data.BJ" placeholder="请填写班级"/></view>
         </view>
       </kw-list-cell>
       <kw-list-cell title="听课学科">
         <view slot="rightNote">
-          <view class="bh"><input v-model="data.XK" placeholder="请填写学科"/></view>
+          <view class="list-right-input"><input v-model="data.XK" placeholder="请填写学科"/></view>
         </view>
       </kw-list-cell>
       <kw-list-cell title="听课教师">
         <view slot="rightNote">
-          <view class="bh"><input v-model="data.JSMC" placeholder="请填写教师名称"/></view>
+          <view class="list-right-input"><input v-model="data.JSMC" placeholder="请填写教师名称"/></view>
         </view>
       </kw-list-cell>
       <kw-list-cell :isArrow="false">
@@ -299,45 +299,5 @@
 </script>
 
 <style lang="scss">
-  .bh{
-    width: 500upx;
-    text-align: right;
-    ._input{
-      color: #999999;
-    }
-  }
-  .ddjs-head{
-      height: 55upx;
-      .fr,button{
-        height: 55upx;
-        line-height:55rpx;
-      }
-    }
-  .ddjs-body{
-      textarea{
-        border:#D9D9D9 solid 2upx;
-        width: 100%;
-      }
-  }
-  .save{
-    width: 710upx;
-    height: 85upx;
-    border-radius: 42.5upx;
-    border: solid 1upx #e1e1e1;
-    margin: 25upx auto;
-    display: flex;
-    background: white;
-    button{
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      border-radius: 42.5upx;
-      background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
-      color: white;
-      line-height: 83upx;
-    }
-    button:after{
-      border: none;
-    }
-  }
+  
 </style>

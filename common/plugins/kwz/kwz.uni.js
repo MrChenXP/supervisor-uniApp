@@ -795,9 +795,9 @@ const kwz = {
 			},miils)
 		}
 	},
-	// 日期格式化 ==日期格式,传入的时间 默认:yyyy-MM-dd格式/当前时间(月份传的时候要-1 想要12月传11进来)
-  formatDate (fmt = 'yyyy-MM-dd', date = new Date()) {
-    date = new Date(date)
+	// 日期格式化 参数:{日期格式,传入的时间} 参数默认:{yyyy-MM-dd格式,当前时间(月份传的时候要-1 想要12月传11进来)}
+  formatDate (fmt = 'yyyy-MM-dd', DefalutDate = new Date()) {
+    let date = new Date(DefalutDate)
     let o = {
       'M+': date.getMonth() + 1,
       'd+': date.getDate(),

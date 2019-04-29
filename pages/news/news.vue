@@ -59,6 +59,10 @@
              then (data) {
                this.news = data.datas
                this.news.LY = this.news.LY || '本站原创'
+               // 若new.TXT为null rict-text组件会报错
+               if(!this.news.TXT){
+                 this.news.TXT = "<p>暂无数据，请联系管理员</p>"
+               }
                // 老显示html方法
                // this.news.TXT = this.$kwz.splitHtml(this.news.TXT)
                // this.newsContent.push(...this.$kwz.splitHtml(this.news.TXT))

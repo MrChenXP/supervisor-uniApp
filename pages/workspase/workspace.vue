@@ -34,7 +34,7 @@
     <!-- 功能 -->
     <view class="workspace-gn" >
     	<kw-list-cell v-for="(item, index) in products" :title="item.PRO_MC" v-bind:key="index" :note="item.PRO_DESC" 
-          :red-dot=redDot[item.PRO_ID] :thumb="item.THUMB" :link="item.LINK" :border="{bottom:index != products.length-1}"></kw-list-cell>
+          :red-dot = redDot[item.PRO_ID] :thumb="item.THUMB" :link="item.LINK" :border="{bottom:index != products.length-1}"></kw-list-cell>
     </view>
     <kw-login v-if="loginShow" @loginSuccess="loginSuccess" @closeLogin="closeLogin" ></kw-login>
 	</view>

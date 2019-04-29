@@ -1,6 +1,6 @@
 <template>
   <view class="child-content">
-    <kw-list-cell v-if="contentId" title="工作计划" :rightNote="gzjh.name" :isArrow="false"></kw-list-cell>
+   <kw-list-cell v-if="contentId" title="工作计划" :rightNote="gzjh.name" :isArrow="false"></kw-list-cell>
     <kw-list-cell v-else title="工作计划" :rightNote="gzjh.name" @click="loadGzjh"></kw-list-cell>
     <kw-list-cell v-if="contentId" title="学校(校园)" :rightNote="xx.name" :isArrow="false"></kw-list-cell>
     <kw-list-cell v-else title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true"></kw-list-cell>

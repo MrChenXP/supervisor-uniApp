@@ -27,7 +27,7 @@
       <kw-login-cell title="修改密码" thumb="../../static/images/icons/change.png" link="/pages/my/revise-password" ></kw-login-cell>
       <kw-login-cell title="切换机构" :border="{bottom:false}" thumb="../../static/images/icons/repeat.png" link="/pages/my/revise-institution" ></kw-login-cell>
       <!-- #ifndef H5 -->
-      <!-- <kw-login-cell title="扫码签到" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell> -->
+      <kw-login-cell title="扫码签到" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell>
       <!-- #endif -->
     </view>
     
@@ -49,14 +49,17 @@
 		data() {
 			return {
 				msg: "...",
+        // 登录页显示隐藏
         loginShow : false,
+        // 默认头像显示隐藏
         imgShow:false,
+        // 用户数据
 				user: {}
 			}
 		},
 		onShow () {
       this.loginShow = !this.$kwz.isLogin()
-			this.loadIndexData();
+			this.loadIndexData()
 		},
     computed:{
 /* 个人资料权限  暂时无用。因为需要pro_id this.$kwz.hasAuth需要先登录才能用，不然报错
@@ -76,7 +79,7 @@
 			// 加载工作区数据
 			loadIndexData () {
 				// 验证是否属于登陆状态
-				if ( this.$kwz.isLogin()) {
+				if (this.$kwz.isLogin()) {
 					this.initUser();
 				} else {
           this.user = {}
@@ -125,27 +128,48 @@
 			},
       // 扫码
       scanCode () {
+        let _this = this
         uni.scanCode({
-            success: function (res) {
-                console.log('扫码成功')
-                console.log('条码类型：' + res.scanType);
-                console.log('条码内容：' + res.result);
+            success: function (response) {
+                let res = JSON.parse(response.result)
+                // console.log('扫码回调')
+                _this.scanCodeAjax(res)
             },
             fail: function (e) {
-            	console.log('接口调用失败的回调函数（识别失败、用户取消等情况下触发')
-              // e.errMsg === "scanCode:fail" 失败
-              // e.errMsg === "scanCode:fail cancel" 取消
-              console.log(e.errMsg)
-            },
-            complete:  function (e) {
-            	console.log('接口调用结束的回调函数（调用成功、失败都会执行）')
-              // e.errMsg === "scanCode:fail" 失败
-              // e.errMsg === "scanCode:fail cancel" 取消
-              console.log(e)
-            },
+            // e.errMsg === "scanCode:fail" 失败   "scanCode:fail cancel" 取消
+              if (e.errMsg === "scanCode:fail") {
+                _this.$kwz.alert("扫码失败,请重新扫码！",2000)
+              }
+            }
         });
         
-      }
+      },
+      // 扫码成功后执行的ajax
+      scanCodeAjax(res) {
+        let TIME = this.$kwz.formatDate("yyyy/MM/dd hh:mm:ss")
+        this.$kwz.ajax.ajaxUrl({
+          url: res.URL,
+          type: 'POST',
+          vue: this,
+          data:{
+            CONTENT_ID: res.CONTENT_ID,
+            SIGNAL: res.SIGNAL,
+            TIME: TIME,
+            U_ID: this.user.uid,
+            STARTTIME: res.STARTTIME,
+            ENDTIME: res.ENDTIME,
+          },
+          then (response) {
+            let data = response.datas
+            // console.log('请求回调')
+            if(data.code < "1005"){
+              this.$kwz.alert(data.info, 2000)
+            } else {
+              console.error(data.info)
+            }
+          }
+        })
+      },
 		}
 	}
 </script>

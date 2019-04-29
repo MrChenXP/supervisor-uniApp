@@ -119,10 +119,6 @@
       	if (type) {
       		this.pageParam.page = 1
       	}
-        // 为防止返回键返回过来的操作，页面数据因为时间是当前时间被刷新掉了
-        if (this.pageParam.startTime === this.$kwz.formatDate() && this.pageParam.endTime === this.$kwz.formatDate()) {
-          this.pageParam.startTime = this.pageParam.endTime = ""
-        }
       	this.$kwz.ajax.ajaxUrl({
       		url: 'jc_pgbzmx/doSchoolPageList/TKJL',
       		type: 'POST',
@@ -162,8 +158,6 @@
                 this.dataList = []
               }
             }
-          // h5有bug,如果不事先获取时间,在change事件返回的值只有年,没有日月
-          this.pageParam.startTime = this.pageParam.endTime = this.$kwz.formatDate()
       		}
       	})
       },

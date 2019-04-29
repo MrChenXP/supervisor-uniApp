@@ -80,7 +80,7 @@
 					xd: '',
 					// 整改类型
 					xq: '',
-					xdMc: '',
+					xdMc: '全部',
 					xqMc: '',
 					// 页码
 					page: 1,
@@ -191,7 +191,6 @@
 				let checkedOption = this.searchCondition.DM_XD[e.detail.value]
 				this.pageParam.xd = checkedOption.DMMX_CODE
 				this.pageParam.xdMc = checkedOption.DMMX_MC
-        console.log(this.pageParam)
 			},
 			// 加载列表 type=>true（覆盖式）/false（增量式）1
 			pageList(type) {
