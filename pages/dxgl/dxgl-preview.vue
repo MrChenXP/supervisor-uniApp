@@ -17,7 +17,7 @@
     <kw-list-cell title="督学类型" :right-note="data.DXLX"></kw-list-cell>
     <kw-list-cell title="手机号码" :right-note="data.DH"></kw-list-cell>
     <kw-list-cell title="归属机构" :right-note="data.ORG_MC"></kw-list-cell>
-    <kw-list-cell title="年龄" :right-note="data.AGE"></kw-list-cell>
+    <kw-list-cell title="年龄" :right-note="String(data.AGE)"></kw-list-cell>
     <kw-list-cell title="性别" :right-note="data.XB"></kw-list-cell>
     <kw-list-cell title="民族" :right-note="data.MZMC"></kw-list-cell>
     <kw-list-cell title="出生年月" :right-note="data.BIRTH"></kw-list-cell>

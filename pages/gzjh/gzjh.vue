@@ -49,10 +49,10 @@
               <view v-if="item.STATUS == '1'" class="fr bj" @click.stop="doDispose(item.CONTENT_ID)">
                 <uni-tag text="处理" v-if="hasClAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
-              <view v-if="item.STATUS == '1'" class="fr bj" @click="toUpdate(item.CONTENT_ID)">
+              <view v-if="item.STATUS == '1'" class="fr bj" @click.stop="toUpdate(item.CONTENT_ID)">
                 <uni-tag text="修改" v-if="hasXgAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
-              <view v-if="item.STATUS == '1'" class="fr bj" @click="toDD(item.CONTENT_ID)">
+              <view v-if="item.STATUS == '1'" class="fr bj" @click.stop="toDD(item.CONTENT_ID)">
                 <uni-tag text="督导" v-if="hasDdAuth" size="small" circle="true" inverted="true" type="primary"></uni-tag>
               </view>
               <view v-if="item.ISQS && item.STATUS == '1'" class="fr bj" @click.stop="doBcj(item.CONTENT_ID)">

@@ -68,7 +68,7 @@
         	</view>
         </view>
         <view v-show="bxtjShow">
-          <kw-list-cell title="占地面积/㎡" :right-note="ndsxData.ZDMJ"></kw-list-cell>
+          <kw-list-cell title="占地面积/㎡" :right-note="String(ndsxData.ZDMJ)"></kw-list-cell>
           <kw-list-cell title="其中：绿化用地面积/㎡" :right-note="ndsxData.LHYDMJ"></kw-list-cell>
           <kw-list-cell title="其中：运动场地面积/㎡" :right-note="ndsxData.YDCDMJ"></kw-list-cell>
           <kw-list-cell title="校舍建筑面积/㎡" :right-note="ndsxData.XSJZMJ"></kw-list-cell>

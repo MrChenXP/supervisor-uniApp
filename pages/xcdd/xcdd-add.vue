@@ -5,7 +5,7 @@
     <kw-list-cell v-if="contentId" title="学校(校园)" :rightNote="xx.name" :isArrow="false"></kw-list-cell>
     <kw-list-cell v-else title="学校(校园)" :rightNote="xx.name" @click="schoolShow=true"></kw-list-cell>
     <kw-list-cell title="随行督学" :rightNote="sxdx.name" @click="sxdxShow=true"></kw-list-cell>
-    <picker :range="ywsj" mode="date" @change="changeYwsj">
+    <picker :value="ywsj" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="ywsj"></kw-list-cell>
     </picker>
     <kw-list-cell :isArrow="false">

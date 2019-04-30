@@ -79,14 +79,15 @@ const kwz = {
 		}
 		return kwz.sessionId;
 	},
-	setSessionId (sessionId = '') {
+	// 将sessionId存到storage中
+  setSessionId (sessionId = '') {
 		kwz.sessionId = sessionId;
 		uni.setStorage({
 			key: '_sessionid',
 			data: sessionId
 		})
 	},
-	ajax: {
+  ajax: {
 		formatParam(op) {
 			if(!op.realUrl) {
 				op.realUrl = op.url
@@ -171,7 +172,6 @@ const kwz = {
 			if (200 == response.statusCode && response.data) {
 				// 设置sessionId
 				kwz.setCookies(response)
-				
 				if(response.data.statusCode != '200' && response.data.msg && response.state != 'SUCCESS' ){
 					kwz.alert(response.data.msg)
 				}
@@ -277,6 +277,7 @@ const kwz = {
 		}
 		return data
 	},
+  // 具体编码方法
 	kwbm(str) {
 		if (kwz.jc_isencode === 'Y' && str) {
 			let regStr = '([^\u0000-\u007F^\u0080-\u00FF]|\u00b7|\u44e3)'
@@ -319,46 +320,19 @@ const kwz = {
 		}
 		return data
 	},
-	// 初始化token
-	initToken(cb = () => {}, vue) {
-		kwz.ajax.ajaxInited = false
-		uni.request({
-			url: kwz.ajax.url('open/loadConfig'),
-			method: 'POST',
-			header: {
-        //#ifdef MP-WEIXIN
-        Cookie: kwz.sessionName + '=' + kwz.getSessionId(),
-        //#endif
-      },
-			success (data) {
-        kwz.setCookies(data)
-				if (data && 200 == data.statusCode && '200' == data.data.statusCode) {
-					let datas = data.data.datas;
-					kwz.jc_isencode = datas.jc_isencode;
-					kwz.jc_isencrypt = datas.jc_isencrypt;
-					kwz.token = datas.token;
-				
-					cb.apply(vue || this)
-				}
-				kwz.ajax.ajaxInited = true;
-			},
-			complete (data) {
-				kwz.setCookies(data)
-			}
-		});
-	},
-	// 初始化访问
+	// 初始化访问 进入项目第一步就是拿sessionId(tomact生成的),拿到id后就是那token id会过期,过期会又会执行一次获取id和token的步骤
 	initVisit(cb) {
 		uni.request({
 			url: kwz.ajax.url('visit.jsp'),
 			method: 'GET',
 			header: {
         //#ifdef MP-WEIXIN
-        Cookie: kwz.sessionName + '='+kwz.getSessionId(),
+        Cookie: kwz.sessionName + '='+kwz.getSessionId(), // 微信不会自动在请求头加这个cookie关键字,需要我们手动在请求头加这个关键字,后台检测id,如果为空,就返回新id
         //#endif
       },
 			success (data) {
         kwz.setCookies(data)
+        // 根据sessionId拿token
 				if (data && data.statusCode == 200) {
 					kwz.initToken(cb)
 				}
@@ -368,7 +342,38 @@ const kwz = {
 			}
 		});
 	},
-	setCookies(data) {
+  // 初始化token
+  initToken(cb = () => {}, vue) {
+  	kwz.ajax.ajaxInited = false
+  	uni.request({
+  		url: kwz.ajax.url('open/loadConfig'),
+  		method: 'POST',
+  		header: {
+        //#ifdef MP-WEIXIN
+        Cookie: kwz.sessionName + '=' + kwz.getSessionId(),
+        //#endif
+      },
+  		success (data) {
+        kwz.setCookies(data)
+  			if (data && 200 == data.statusCode && '200' == data.data.statusCode) {
+  				let datas = data.data.datas;
+  				kwz.jc_isencode = datas.jc_isencode;
+  				kwz.jc_isencrypt = datas.jc_isencrypt;
+  				kwz.token = datas.token;
+  			
+  				cb.apply(vue || this)
+  			}
+  			kwz.ajax.ajaxInited = true;
+  		},
+  		complete (data) {
+  			kwz.setCookies(data)
+  		}
+  	});
+  
+  },
+	// 将sessionId设置到stroage中
+  setCookies(data) {
+    // 将cookies从data中拿出来
 		if (data) {
 			let cookies ;
 			if(data.cookies) {
@@ -384,12 +389,23 @@ const kwz = {
 					})
 				}
 			}
+      // 将sessionId从cookies中拿出来，存到stroage中去
 			if (cookies && cookies.length > 0) {
-				for(var i = 0; i< cookies.length;i++){
-					if(cookies[i].name == kwz.sessionName) {
-						kwz.setSessionId(cookies[i].value);
-						break;
-					}
+				for(var i = 0; i < cookies.length; i++){
+          // 微信开发工具04090版这个name为undefined,需手动把id从字符串拿出来
+					// if(cookies[i].name == kwz.sessionName) { 
+					// 	kwz.setSessionId(cookies[i].value);
+					// 	break;
+					// }
+          // 手动从字符串中截取sessionId
+          let aCok = cookies[i].split(";")
+          for(var j = 0; j < aCok.length; j++){
+            let aCokId = aCok[j].split("=")
+            if(aCokId[0] == kwz.sessionName){
+              kwz.setSessionId(aCokId[1]);
+              break;
+            }
+          }
 				}
 			}
 		}

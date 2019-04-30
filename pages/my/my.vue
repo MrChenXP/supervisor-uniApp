@@ -17,7 +17,6 @@
           </view>
           <view class="info-jg" v-if="user.orgMc">机构：{{user.orgMc}}</view>
         </view>
-        
       </view>
     </view>
    
@@ -27,7 +26,7 @@
       <kw-login-cell title="修改密码" thumb="../../static/images/icons/change.png" link="/pages/my/revise-password" ></kw-login-cell>
       <kw-login-cell title="切换机构" :border="{bottom:false}" thumb="../../static/images/icons/repeat.png" link="/pages/my/revise-institution" ></kw-login-cell>
       <!-- #ifndef H5 -->
-      <kw-login-cell title="扫码签到" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell>
+      <kw-login-cell title="扫码" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell>
       <!-- #endif -->
     </view>
     
@@ -132,7 +131,6 @@
         uni.scanCode({
             success: function (response) {
                 let res = JSON.parse(response.result)
-                // console.log('扫码回调')
                 _this.scanCodeAjax(res)
             },
             fail: function (e) {
@@ -161,7 +159,6 @@
           },
           then (response) {
             let data = response.datas
-            // console.log('请求回调')
             if(data.code < "1005"){
               this.$kwz.alert(data.info, 2000)
             } else {

@@ -18,7 +18,7 @@
           <kw-list-cell title="城乡类型" :rightNote="pageParam.XXZDCXLXDMMC"></kw-list-cell>
         </picker>
         <picker :range="searchCondition.DM_XXDJ" range-key="DMMX_MC" @change="changeXxdj">
-          <kw-list-cell title="学校等级" :rightNote="pageParam.XXDJMCMC"></kw-list-cell>
+          <kw-list-cell title="学校等级" :rightNote="pageParam.XXDJMC"></kw-list-cell>
         </picker>
       </view>
     </kw-search>
@@ -229,7 +229,7 @@
       changeXxdj(e){
         let checkedOption = this.searchCondition.DM_XXDJ[e.detail.value]
         this.pageParam.XXDJ = checkedOption.DMMX_CODE
-        this.pageParam.XXDJMCMC = checkedOption.DMMX_MC
+        this.pageParam.XXDJMC = checkedOption.DMMX_MC
       },
       // 列表卡点击事件
       toDetail(id){

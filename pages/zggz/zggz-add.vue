@@ -8,7 +8,7 @@
     <kw-list-cell v-else title="编号" :rightNote="data.BH" :isArrow="false" ></kw-list-cell>
     <kw-list-cell v-if="!data.ZGXSID" title="学校/单位" :rightNote="data.XXMC" @click="schoolShow=true"></kw-list-cell>
     <kw-list-cell v-else title="学校/单位" :rightNote="data.XXMC" :isArrow="false"></kw-list-cell>
-    <picker v-if="!data.ZGXSID" :range="data.YWSJ" mode="date" @change="changeYwsj">
+    <picker v-if="!data.ZGXSID" :value="data.YWSJ" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="data.YWSJ"></kw-list-cell>
     </picker>
     <kw-list-cell v-else title="时间" :rightNote="data.YWSJ" :isArrow="false"></kw-list-cell>
@@ -108,7 +108,7 @@
       },
       // 更改时间
       changeYwsj (e) {
-      	this.ywsj = e.detail.value
+      	this.data.YWSJ = e.detail.value
       },
       // 学校确定
       confirmSchool(e){

@@ -1,18 +1,18 @@
 <template>
 	<view class="child-content">
-    <kw-list-cell  v-if="!formData.ZGXSID" title="编号">
+    <kw-list-cell title="编号" v-if="!formData.ZGXSID">
       <view slot="rightNote">
-        <view class="bh"><input v-model="formData.BH" /></view>
+        <view class="list-right-input"><input v-model="formData.BH" /></view>
       </view>
     </kw-list-cell>
-    <kw-list-cell  v-else title="编号" :rightNote="formData.BH" :isArrow="false"></kw-list-cell>
+    <kw-list-cell v-else title="编号" :rightNote="formData.BH" :isArrow="false"></kw-list-cell>
     <kw-list-cell v-if="!formData.ZGXSID" title="学校/单位" :rightNote="formData.XXMC" @click="schoolShow=true"></kw-list-cell>
     <kw-list-cell  v-else title="学校/单位" :rightNote="formData.XXMC" :isArrow="false"></kw-list-cell>
     <picker v-if="!formData.ZGXSID" :range="ksList" @change="changeKs" range-key="name">
       <kw-list-cell title="科室/中心" :rightNote="formData.XS_ORG.name"></kw-list-cell>
     </picker>
     <kw-list-cell  v-else title="科室/中心" :rightNote="formData.XS_ORG" :isArrow="false"></kw-list-cell>
-    <picker v-if="!formData.ZGXSID" :range="formData.YWSJ" mode="date" @change="changeYwsj">
+    <picker v-if="!formData.ZGXSID" :value="formData.YWSJ" mode="date" @change="changeYwsj">
       <kw-list-cell title="时间" :rightNote="formData.YWSJ"></kw-list-cell>
     </picker>
     <kw-list-cell  v-else title="时间" :rightNote="formData.YWSJ" :isArrow="false"></kw-list-cell>
@@ -63,8 +63,8 @@
 			return {
         formData: {
           BH: '',
-          XXMC: [''],
-          XS_ORG: [''],
+          XXMC: '',
+          XS_ORG: '',
           YWSJ: '',
           XSNR: '',
           ZGXSID: ''
@@ -258,7 +258,8 @@
         },
       // 更改时间
       changeYwsj (e) {
-      	this.ywsj = e.detail.value
+      	this.formData.YWSJ = e.detail.value
+        
       },
       // 更改科室
       changeKs(e) {
@@ -270,13 +271,6 @@
 </script>
 
 <style lang="scss">
-  .bh{
-    width: 500upx;
-    text-align: right;
-    ._input{
-      color: #999999;
-    }
-  }
   .ddjs-head{
       height: 55upx;
     }
