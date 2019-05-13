@@ -118,7 +118,15 @@
             '5': 'qs',
             '6': 'zgwc',
           }
-        }
+        },
+        // 加载更多状态
+        loadingType: "more",
+        // 加载更多状态对应文字 键名不能改
+        contentText: {
+        	contentdown: "上拉显示更多",
+        	contentrefresh: "正在加载...",
+        	contentnomore: "没有更多数据了"
+        },
       }
     },
     computed: {
@@ -329,6 +337,7 @@
 // 				}
       },
       toAdd (val) {
+        console.log('add sh')
         if (val !== 'add') { // 不是新增就是审核
           this.$kwz.router({url: `zggz-add?id=${val}`})
         } else {

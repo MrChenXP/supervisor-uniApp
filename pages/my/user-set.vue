@@ -41,7 +41,7 @@
       </kw-list-cell>
 
       <kw-list-cell title="民族" :right-note="mc.mzMc" @click="alertMz"></kw-list-cell>
-      <picker :range="user.BIRTH" mode="date" @change="changeBIRTH">
+      <picker :value="user.BIRTH" mode="date" @change="changeBIRTH">
         <kw-list-cell title="出生年月" :rightNote="user.BIRTH"></kw-list-cell>
       </picker>
     </view>
@@ -110,6 +110,7 @@
           U_USERNAME: '', // 显示名
           AGE: '', // 年龄
           XBM: '', // 性别码
+          XBMC: '男', // 性别名称
           DXLXM: '', // 督学类型码
           DH: '', // 电话
           SFZJLXM: '', // 身份证件码
@@ -304,7 +305,6 @@
       // 更改时间
       changeBIRTH (e) {
       	this.user.BIRTH = e.detail.value
-        console.log(this.user.BIRTH)
       },
       confirmXl (data) {
         this.user.XL = data.value

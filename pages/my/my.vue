@@ -78,10 +78,13 @@
 			// 加载工作区数据
 			loadIndexData () {
 				// 验证是否属于登陆状态
+        console.log('验证是否属于登陆状态')
+        console.log(this.$kwz.isLogin())
 				if (this.$kwz.isLogin()) {
 					this.initUser();
 				} else {
           this.user = {}
+          this.$kwz.logout(false)
         }
 			},
 			// 关闭登陆框

@@ -320,14 +320,14 @@ const kwz = {
 		}
 		return data
 	},
-	// 初始化访问 进入项目第一步就是拿sessionId(tomact生成的),拿到id后就是那token id会过期,过期会又会执行一次获取id和token的步骤
+	// 初始化访问 进入项目第一步就是拿sessionId(tomcat生成的),拿到id后就是拿token id会过期,过期会又会执行一次获取id和token的操作
 	initVisit(cb) {
 		uni.request({
 			url: kwz.ajax.url('visit.jsp'),
 			method: 'GET',
 			header: {
         //#ifdef MP-WEIXIN
-        Cookie: kwz.sessionName + '='+kwz.getSessionId(), // 微信不会自动在请求头加这个cookie关键字,需要我们手动在请求头加这个关键字,后台检测id,如果为空,就返回新id
+        Cookie: kwz.sessionName + '='+kwz.getSessionId(), // 微信不会自动在请求头加这个cookie关键字,需要我们手动在请求头加这个关键字 后台会检测id,如果为空,就返回新id
         //#endif
       },
 			success (data) {

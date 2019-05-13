@@ -3,6 +3,7 @@
     <!-- 上部图片 -->
 		<view class="banner">
       <image src="../../static/images/workspace.png" ></image>
+      <view class="trafficbar"></view>
     </view>
     <!-- 统计 -->
     <view class="statistics">
@@ -141,6 +142,7 @@
 </script>
 
 <style lang="scss">
+ 
   .banner{
     z-index: 10;
     width: 100%;
@@ -153,6 +155,20 @@
     image{
       width: 100%;
       height: 254upx;
+    }
+    @keyframes sparkle {
+      from {background-position:0 0;}
+      to {background-position:0 -254upx;}
+    }
+    .trafficbar{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 254upx;
+      background: url(../../static/images/trafficbar.png);
+      animation: sparkle 2500ms linear infinite;
+      opacity: 0.4;
     }
   }
   
@@ -200,5 +216,6 @@
     /* #endif */
     overflow: auto;
   }
+
 </style>
 
