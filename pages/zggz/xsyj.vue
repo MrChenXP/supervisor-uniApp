@@ -44,7 +44,7 @@
                     @tap.stop="checkAction(item.ZGXSID)" />
                 </view>
               </label>  
-              {{item.XXMC}}
+              {{item.XXMC || '未填写'}}
             </view>
             <view class="clearfix time">
               <view class="fl">{{item.ORG_MC || "未填写"}}</view>
@@ -57,15 +57,14 @@
               </view>
               <view v-if="item.CLZTDM < '22' && hasShAuth" class="fr cl">
                 <uni-tag text="审核" size="small" circle="true" inverted="true" type="primary" 
-                  @click="toAdd(item.ZGXSID)" ></uni-tag>
+                  @click.native.stop="toAdd(item.ZGXSID)" ></uni-tag>
               </view>
               <view v-else class="fr cl">
                 <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary" 
-                  @click="doXsyj(item.ZGXSID, 'xx')" v-if="item.CLZTDM < '26' && item.CLZTDM >= '22' && hasClAuth"></uni-tag>
+                  @click.native.stop="doXsyj(item.ZGXSID, 'xx')" v-if="item.CLZTDM < '26' && item.CLZTDM >= '22' && hasClAuth"></uni-tag>
                 <uni-tag text="验收" size="small" circle="true" inverted="true" type="primary" 
-                  @click="doXsyj(item.ZGXSID, 'dx')" v-if="item.CLZTDM < '26' && hasYsAuth"></uni-tag>
+                  @click.native.stop="doXsyj(item.ZGXSID, 'dx')" v-if="item.CLZTDM < '26' && hasYsAuth"></uni-tag>
               </view>
-              
             </view>
           </view>
         </view>
@@ -359,66 +358,15 @@
 
 <style lang="scss">
 	.gn {
-		height: 86upx;
-		padding: 18upx 0;
-    position:sticky;
     top:calc(44px + 195upx);
     /* #ifdef MP-WEIXIN */
     top:195upx;
     /* #endif */
-    background:#f5f5f5;
-		.delete,.add,.check {
-			width: 125upx;
-			height: 50upx;
-			border-radius: 25upx;
-			margin-left: 25upx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-		.delete {
-			border: solid 2upx #e64c48;
-			color: #e64c48;
-		}
-		.add {
-			margin-right: 25upx;
-			border: solid 2upx #68ae1d;
-			color: #68ae1d;
-		}
 	}
-
 	.lists {
-		height: calc(100% - 281upx);
-		padding: 0 20upx;
-		overflow: auto;
 		.list {
-			margin-bottom: 20upx;
-			background: white;
-			padding: 25upx;
-			border-radius: 15upx;
-			display: flex;
-			flex-direction: row;
-      label{
-        display:inline-block;
-      }
-			.check {
-				width: 50upx;
-			}
 			.info {
-				flex-grow: 2;
-        width:100%;
-        .time{
-          overflow: hidden;
-					color: #999999;
-					font-size: 26upx;
-					margin: 10upx 0;
-					view {
-						color: #999999;
-					}
-				}
 				.status {
-					margin: 10upx 0 0;
-					font-size: 24upx;
 					.fs .uni-tag {
 						background-color: #f8dad9;
 						border-color: #f8dad9;

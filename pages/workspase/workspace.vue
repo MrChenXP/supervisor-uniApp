@@ -142,12 +142,12 @@
 </script>
 
 <style lang="scss">
- 
   .banner{
     z-index: 10;
     width: 100%;
     height: 254upx;
     position: sticky;
+    overflow: hidden;
     top:44px;
     /* #ifdef MP-WEIXIN */
     top:0;
@@ -156,18 +156,14 @@
       width: 100%;
       height: 254upx;
     }
-    @keyframes sparkle {
-      from {background-position:0 0;}
-      to {background-position:0 -254upx;}
-    }
     .trafficbar{
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 254upx;
+      height: 854upx;
       background: url(../../static/images/trafficbar.png);
-      animation: sparkle 2500ms linear infinite;
+      animation: sparkle 3s linear infinite;
       opacity: 0.4;
     }
   }

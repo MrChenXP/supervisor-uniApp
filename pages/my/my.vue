@@ -10,10 +10,10 @@
         <view>
           <view class="name-zw">
             <text class="name text-bold" v-if="user.name">{{user.name}}</text>
-            <text class="zw" v-if="user.ddlx">{{user.ddlx}}</text>
-            <view v-else class="text-bold name">
-              请您先登录
-            </view>
+            <text class="zw" v-if="user.ddlx && user.ddlx!='null'">{{user.ddlx}}</text>
+          </view>
+          <view v-if="!user.name" class="text-bold name">
+            请您先登录
           </view>
           <view class="info-jg" v-if="user.orgMc">机构：{{user.orgMc}}</view>
         </view>

@@ -40,25 +40,25 @@
                   <checkbox :checked="deleteParam[item.ZGXSID]" @tap.stop="checkAction(item.ZGXSID)" />
                 </view>
               </label>
-              {{item.XXMC}}
+              {{item.XXMC || '未填写'}}
             </view>
             <view class="clearfix time">
               <view class="fl">整改天数：{{item.CLQX}}天</view>
-              <view class="fr">发出时间：<text :class="{'color_red': item.ISCS}">{{item.YWSJ}}</text></view>
+              <view class="fr">发出时间：<text :class="{'color-red': item.ISCS}">{{item.YWSJ}}</text></view>
             </view>
             <view class="clearfix status">
               <view :class="item.ztClass" class="fl">
                 <uni-tag :text="item.CLZTMC" size="small" type="primary"></uni-tag>
               </view>
-              <view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'" >
+              <view class="fr ys" v-if="item.CLZTDM === '1' && item.IS_SB ==='1'">
                 <uni-tag text="审核" size="small" circle="true" v-if="hasShAuth"
-                  inverted="true" type="primary" @click="toAdd(item.ZGXSID)"></uni-tag>
+                  inverted="true" type="primary" @click.native.stop="toAdd(item.ZGXSID)"></uni-tag>
               </view>
               <view class="fr ys" v-else>
-                <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary"  @click="toZgxs(item.ZGXSID, 'xx')"
+                <uni-tag text="处理" size="small" circle="true" inverted="true" type="primary"  @click.native.stop="toZgxs(item.ZGXSID, 'xx')"
                   v-if="item.CLZTDM < 6 && !(item.SFSH && item.CLZTDM === '1') && hasClAuth"></uni-tag>
                 <uni-tag text="验收" size="small" circle="true" inverted="true" type="primary"
-                  v-if="item.CLZTDM < 6 && hasYsAuth" @click="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
+                  v-if="item.CLZTDM < 6 && hasYsAuth" @click.native.stop="toZgxs(item.ZGXSID, 'dx')"></uni-tag>
               </view>
             </view>
           </view>
@@ -372,74 +372,16 @@
 
 <style lang="scss">
   .gn {
-    height: 86upx;
-    padding: 18upx 0;
-    position:sticky;
     top:calc(44px + 195upx);
     /* #ifdef MP-WEIXIN */
     top:195upx;
     /* #endif */
-    background:#f5f5f5;
-    .delete,
-    .add,
-    .check {
-      width: 125upx;
-      height: 50upx;
-      border-radius: 25upx;
-      margin-left: 25upx;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .delete {
-      border: solid 2upx #e64c48;
-      color: #e64c48;
-    }
-
-    .add {
-      margin-right: 25upx;
-      border: solid 2upx #68ae1d;
-      color: #68ae1d;
-    }
   }
 
   .lists {
-    height: calc(100% - 281upx);
-    padding: 0 20upx;
-    overflow: auto;
-
     .list {
-      margin-bottom: 20upx;
-      background: white;
-      padding: 25upx;
-      border-radius: 15upx;
-      display: flex;
-      flex-direction: row;
-      label{
-        display: inline-block;
-      }
-      .check {
-        width: 50upx;
-      }
-
       .info {
-        flex-grow: 2;
-
-        width:100%;
-        .time{
-          overflow: hidden;
-          color: #999999;
-          font-size: 26upx;
-          margin: 10upx 0;
-
-          view {
-            color: #999999;
-          }
-        }
         .status {
-          margin: 10upx 0 0;
-          font-size: 24upx;
           .fs .uni-tag {
             background-color: #f8dad9;
             border-color: #f8dad9;
@@ -464,7 +406,5 @@
       }
     }
   }
-  .color_red{
-    color: red !important;
-  }
+ 
 </style>

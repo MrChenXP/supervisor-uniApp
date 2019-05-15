@@ -256,5 +256,7 @@
 </script>
 
 <style lang="scss">
-  
+  .lists{
+    padding-top: 20upx;
+  }
 </style>

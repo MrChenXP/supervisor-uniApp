@@ -62,97 +62,76 @@ view,text,textarea,checkbox-group{
     }
   }
   /* --------------- 分页(参考整改工作切换整改协商模块) ----------- */
-	.pager {
+  .pager {
     z-index: 10;
-		height: 95upx;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		border-top: #dedede solid 2upx;
+    height: 95upx;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-top: #dedede solid 2upx;
     position:sticky;
     top:calc(44px + 100upx);
     /* #ifdef MP-WEIXIN */
     top:100upx;
     /* #endif */
     background:#f5f5f5;
-		.zg,.xs {
-			width: 355upx;
-			height: 65upx;
-			text-align: center;
-			line-height: 65upx;
-			font-size: 28upx;
+    .zg,.xs {
+      width: 355upx;
+      height: 65upx;
+      text-align: center;
+      line-height: 65upx;
+      font-size: 28upx;
       color: #00bdfd;
       background-color: #d6f1fb;
-		}
-		.zg {
-			border-radius: 10upx 0 0 10upx;
-		}
-		.xs {
-			border-radius: 0 10upx 10upx 0;
-		}
+    }
+    .zg {
+      border-radius: 10upx 0 0 10upx;
+    }
+    .xs {
+      border-radius: 0 10upx 10upx 0;
+    }
     .active{
       color: #d6f1fb;
-			background-color: #00bdfd;
+      background-color: #00bdfd;
     }
-	}
+  }
 /* -------------- 列表(参考现场督导列表页) ----------- */
 .lists {
-		padding: 18upx 20upx 0;
-    /* padding : 0 20upx; */
-		overflow: auto;
-		.list {
-			margin-bottom: 20upx;
-			background: white;
-			padding: 25upx;
-			border-radius: 15upx;
-			display: flex;
-			flex-direction: row;
+    padding : 0 20upx;
+    overflow: auto;
+    .list {
+      margin-bottom: 20upx;
+      background: white;
+      padding: 25upx;
+      border-radius: 15upx;
+      display: flex;
+      flex-direction: row;
       label{
         display:inline-block;
       }
-			.check {
-				width: 50upx;
-			}
-			.info {
-				flex-grow: 2;
+      .check {
+        width: 50upx;
+      }
+      .info {
+        flex-grow: 2;
         width:100%;
         .time{
           overflow: hidden;
-					color: #999999;
-					font-size: 26upx;
-					margin: 10upx 0;
-					view {
-						color: #999999;
-					}
-				}
-				.status {
-					margin: 10upx 0 0;
-					font-size: 24upx;
-					.xswc .uni-tag {
-						background-color: #dcf0c7;
-						border-color: #dcf0c7;
-						color: #68ae1d;
-					}
-					.xsz .uni-tag {
-						background-color: #f7e6c1;
-						border-color: #f7e6c1;
-						color: #f27506;
-					}
-					.shys .uni-tag {
-						background-color: #d6f1fb;
-						border-color: #d6f1fb;
-						color: #109dea;
-					}
-					.cl .uni-tag {
-						border-color: #00bdfd;
-						color: #00bdfd;
-						font-size: 24upx;
-					}
-				}
-			}
-		}
-	}
+          color: #999999;
+          font-size: 26upx;
+          margin: 10upx 0;
+          view {
+            color: #999999;
+          }
+        }
+        .status {
+          margin: 10upx 0 0;
+          font-size: 24upx;
+        }
+      }
+    }
+  }
 /* --------------- 自定义列表单元(参考督导-新增-督导纪实) ----------- */
 .ddjs-head {
   height: 55upx;
@@ -221,4 +200,24 @@ view,text,textarea,checkbox-group{
 }
 .color-blue{
   color:#0580c2;
+}
+.color-red{
+    color: red !important;
+}
+/* ================================================ 公用动画--------------------------------------- */
+/*------------- 闪烁 ---------*/
+@keyframes blink{
+  0%{opacity: 0;}
+  50%{opacity: 100;}
+  100%{opacity: 0;}
+}
+/*------------- 下滑 ---------*/
+@keyframes glide {
+  from{transform: translateY(-100%);}
+  to{transform: translateY(0);}
+}
+/*------------- 背景上移 ---------*/
+@keyframes sparkle {
+  from {background-position:0 0;}
+  to {background-position:0 -254upx;}
 }
