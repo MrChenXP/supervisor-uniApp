@@ -74,7 +74,6 @@
       zgxsId: String,
     },
     onLoad() {
-      console.log(this.ybwtBh)
       if (!this.ybwtBh) {
         this.getBh()
       }

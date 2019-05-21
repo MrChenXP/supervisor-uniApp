@@ -5,7 +5,7 @@
       "path": "pages/index/index"
     },
     {
-      "path": "pages/workspase/workspace",
+      "path": "pages/workspace/workspace",
       "style": {
         "navigationBarTitleText": "督导工作区"
       }
@@ -196,7 +196,7 @@
         "selectedIconPath": "static/images/icons/index-active.png"
       },
       {
-        "pagePath": "pages/workspase/workspace",
+        "pagePath": "pages/workspace/workspace",
         "text": "工作区",
         "iconPath": "static/images/icons/workspace.png",
         "selectedIconPath": "static/images/icons/workspace-active.png"

@@ -337,7 +337,6 @@
 // 				}
       },
       toAdd (val) {
-        console.log('add sh')
         if (val !== 'add') { // 不是新增就是审核
           this.$kwz.router({url: `zggz-add?id=${val}`})
         } else {
