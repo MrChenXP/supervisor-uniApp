@@ -63,15 +63,16 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	// baseUrl: 'http://www.ddsjd.com:8080/',
-	baseUrl: 'https://app.qgjydd.cn',
+	baseUrl: 'http://www.dd.com:8080/', // 本地
+	// baseUrl: 'https://app.qgjydd.cn', // 广东省 高新网
+  // baseVisit: '/visitlg',  //访问的后缀  龙岗
+  sessionName: 'JSESSIONID', // 本地
+  // sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
 	sessionId: '',
-	// sessionName: 'JSESSIONID',
-	sessionName: 'KSESSIONID1',
 	// 获取本地缓存的sessionId
 	getSessionId () {
 		if (!kwz.sessionId) {
@@ -322,8 +323,9 @@ const kwz = {
 	},
 	// 初始化访问 进入项目第一步就是拿sessionId(tomcat生成的),拿到id后就是拿token id会过期,过期会又会执行一次获取id和token的操作
 	initVisit(cb) {
+    let url = kwz.baseVisit || 'visit.jsp';
 		uni.request({
-			url: kwz.ajax.url('visit.jsp'),
+			url: kwz.ajax.url(url),
 			method: 'GET',
 			header: {
         //#ifdef MP-WEIXIN

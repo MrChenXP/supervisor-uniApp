@@ -309,73 +309,11 @@
 </script>
 
 <style lang="scss">
-	.gn {
-		height: 86upx;
-		padding: 18upx 0;
-    position:sticky;
-    top:calc(44px + 100upx);
-    /* #ifdef MP-WEIXIN */
-    top:100upx;
-    /* #endif */
-    background:#f5f5f5;
-		.delete,.add,.check {
-			width: 125upx;
-			height: 50upx;
-			border-radius: 25upx;
-			margin-left: 25upx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-		.delete {
-			border: solid 2upx #e64c48;
-			color: #e64c48;
-		}
-
-		.add {
-			margin-right: 25upx;
-			border: solid 2upx #68ae1d;
-			color: #68ae1d;
-		}
-	}
-
 	.lists {
 		height: calc(100% - 186upx);
-		padding: 0 20upx;
-		overflow: auto;
-
 		.list {
-			margin-bottom: 20upx;
-			background: white;
-			padding: 25upx;
-			border-radius: 15upx;
-			display: flex;
-			flex-direction: row;
-      label{
-        display: inline-block;
-      }
-			.check {
-				width: 50upx;
-			}
-
 			.info {
-				flex-grow: 2;
-
-				width:100%;
-				.time{
-				  overflow: hidden;
-					color: #999999;
-					font-size: 26upx;
-					margin: 10upx 0;
-
-					view {
-						color: #999999;
-					}
-				}
-
 				.status {
-					margin: 10upx 0 0;
-					font-size: 24upx;
           .wwt .uni-tag {
             background: none;
             border: none;
