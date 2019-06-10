@@ -399,15 +399,21 @@ const kwz = {
 					// 	kwz.setSessionId(cookies[i].value);
 					// 	break;
 					// }
-          // 手动从字符串中截取sessionId
-          let aCok = cookies[i].split(";")
-          for(var j = 0; j < aCok.length; j++){
-            let aCokId = aCok[j].split("=")
-            if(aCokId[0] == kwz.sessionName){
-              kwz.setSessionId(aCokId[1]);
-              break;
+          // 安卓手动从字符串中截取sessionId ios cookies[i]是个对象
+          if (typeof cookies[i] == "string"){
+            let aCok = cookies[i].split(";")
+            for(var j = 0; j < aCok.length; j++){
+              let aCokId = aCok[j].split("=")
+              if(aCokId[0] == kwz.sessionName){
+                kwz.setSessionId(aCokId[1]);
+                break;
+              }
             }
+          } else{
+            kwz.setSessionId(cookies[i].value);
+            break;
           }
+          
 				}
 			}
 		}
