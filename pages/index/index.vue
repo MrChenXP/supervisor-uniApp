@@ -67,6 +67,7 @@
 									this.indexImage.push(this.$kwz.ajax.url('index/visit/doDownload?F_ID=' + ykpic[i].F_ID))
 								}
 							}
+              this.indexImage = this.indexImage.length || ['/static/images/defaults.png']
 							// 首页新闻
 							if (ykinfo && ykinfo.length > 0) {
 								for(let i =0;i<ykinfo.length;i++) {

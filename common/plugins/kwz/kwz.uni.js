@@ -63,11 +63,11 @@ const extend = (...args) => {
 }
 
 const kwz = {
-	baseUrl: 'http://www.dd.com:8080/', // 本地
-	// baseUrl: 'https://app.qgjydd.cn', // 广东省 高新网
-  // baseVisit: '/visitlg',  //访问的后缀  龙岗
-  sessionName: 'JSESSIONID', // 本地
-  // sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
+	// baseUrl: 'http://www.dd.com:8080/', // 本地
+	baseUrl: 'https://app.qgjydd.cn', // 广东省 高新网
+  baseVisit: '/visitlg',  //访问的后缀  龙岗
+  // sessionName: 'JSESSIONID', // 本地
+  sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
 	dev: false, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
