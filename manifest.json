@@ -78,7 +78,12 @@
             "es6" : true,
             "postcss" : true,
             "minified" : true
-        }
+        },
+		"permission": {
+		  "scope.userLocation": {
+		    "desc": "你的位置信息将用于签到和签退"
+		  }
+		}
     },
     "h5" : {
         "template" : "template.h5.html",

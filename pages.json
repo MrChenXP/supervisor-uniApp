@@ -177,6 +177,12 @@
       "style": {
         "navigationBarTitleText": "督学管理"
       }
+    },
+    {
+      "path": "pages/my/revise-position",
+      "style": {
+        "navigationBarTitleText": "签到/签退"
+      }
     }
   ],
   "globalStyle": {

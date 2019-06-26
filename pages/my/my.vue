@@ -28,6 +28,9 @@
       <!-- #ifndef H5 -->
       <kw-login-cell title="扫码" :border="{top:true}" thumb="../../static/images/icons/scanCode.png" @click="scanCode"></kw-login-cell>
       <!-- #endif -->
+			<!-- #ifndef H5 -->
+			<kw-login-cell title="签到(签退)" :border="{top:true}" thumb="../../static/images/icons/position.png" @click="position"></kw-login-cell>
+			<!-- #endif -->
     </view>
     
     <!-- 退出登录 -->
@@ -168,6 +171,16 @@
           }
         })
       },
+			// 定位
+			position () {
+				let vue = this
+				uni.getLocation({
+					success (res) {
+						vue.$kwz.router({url: "/pages/my/revise-position"})
+						console.log(res)
+					}
+				})
+			}
 		}
 	}
 </script>
