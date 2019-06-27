@@ -5,13 +5,20 @@
 				<radio :value="item.value" />
 				<view class="radio-label">{{item.label}}</view>
 			</label>
+      
+      <label class="" v-for="(item, index) in userOrgs" :key="index" :class="{borderBottom: index < userOrgs.length-1}">
+      	<radio :value="item.value" />
+      	<view class="radio-label">{{item.label}}</view>
+      </label>
+      
+      <view class="save">
+        <button @click="radioChange">签到</button>
+      </view>
+      <view class="lists-dkjl">打卡记录</view>
 		</radio-group>
-		<view class="save">
-		  <button @click="radioChange">签到</button>
-		</view>
     
-    <view class="lists-dkjl">打卡记录</view>
-
+		
+    
     <!-- 列表组 -->
     <checkbox-group class="lists">
       <view>
@@ -29,32 +36,48 @@
         </view>
       </view>
     </checkbox-group>
-    <view class="jzgd" @click="loadMore">
-      加载更多
-      <uni-icon type="arrowdown" size="25" color="#999999"></uni-icon>
-    </view> 
-    
+    <uni-load-more :status="loadingType" :contentText="contentText"></uni-load-more>
     
 	</view>
 </template>
 
 <script>
 	import KwListCell from "@kwz/kw-ui/kw-list-cell.vue"
+  import {uniLoadMore} from '@dcloudio/uni-ui'
+
 	export default {
 		components: {
-			KwListCell
+			KwListCell,uniLoadMore
 		},
 		data() {
 			return {
 				userOrgs: [{
 					label: '在您附近未找到学校',
 					value: ''
-				}]
+				}],
+        // 加载更多状态
+        loadingType: "more",
+        // 加载更多状态对应文字 键名不能改
+        contentText: {
+          contentdown: "上拉显示更多",
+          contentrefresh: "正在加载...",
+          contentnomore: "没有更多数据了"
+        },
 			};
 		},
 		onLoad() {
 			// this.loadUserOrgs()
 		},
+    // 上拉加载事件
+    onReachBottom() {
+      // 先把状态变成加载中
+      this.loadingType = "loading"
+      // 然后加载数据
+      // 加载完将数据变为 上拉显示更多 || 没有更多数据了
+      this.loadingType = "more"
+      this.loadingType = "noMore"
+      
+    },
 		methods: {
       // 加载更多
       loadMore(){
@@ -100,22 +123,21 @@
 
 	.save {
 		width: 100%;
-		height: 85upx;
-		border-radius: 42.5upx;
-		border: solid 1upx #e1e1e1;
-		margin: 25upx auto;
+		height: 135upx;
+    margin: 0;
 		display: flex;
 		background: white;
-    position: fixed;
-    top: 90upx;
+    border-radius: 0 !important;
+    border: none !important;
 		button {
+      margin: 25upx auto;
 			padding: 0;
-			margin: 0;
+			margin: 2;
 			width: 100%;
-			border-radius: 42.5upx;
 			background: linear-gradient(90deg, #00befe 0%, #028edf 100%), linear-gradient(#109dea, #109dea);
 			color: white;
 			line-height: 83upx;
+      height: 85upx;
 		}
 
 		button:after {
@@ -124,8 +146,7 @@
 	}
   
   .position-xx{
-    height: 90upx;
-    position: fixed;
+    position: sticky;
     top: 0;
   }
   .jzgd {
@@ -156,15 +177,12 @@
   // 	}
   }
   .lists-dkjl{
-    position: fixed;
-    top: 225upx;
     height: 50upx;
     margin: 0 20upx;
+    background: #f5f5f5;
+    text-shadow: 2upx 2upx 5upx #999999;
   }
   .lists{
-    height: calc(100% - 355upx);
-    position: fixed;
-    top: 275upx;
     .time{
       margin: 0 !important;
     }
