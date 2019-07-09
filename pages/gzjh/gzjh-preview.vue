@@ -44,7 +44,6 @@
 					this.contentId = param.contentId
 					this.$kwz.loadVueDms('DM_SD', dms => {
 						this.sdList = dms.DM_SD
-					
 						// 评估标准
 						this.$kwz.ajax.ajaxUrl({
 							url: 'dd_gzap/doSelectPgbz/DDPGBZ',
@@ -71,7 +70,6 @@
 									})
 								}
 								this.pjList = pgbzList
-								
 								this.loadData()
 							}
 						})
@@ -93,7 +91,6 @@
 					    let datas = response.datas
 					    if (datas && datas.map) {
 								let map = datas.map
-								
 								this.XXMC = map.ORG_ID_TARGET_MC
 								let sdmc = map.YWSJ
 								sdmc = sdmc.length > 10 ? sdmc.substr(0, 9) : sdmc
@@ -107,7 +104,6 @@
 								this.SXDXMC = map.JGID_MC
 								this.QRSXDXMC = map.CJID_MC
 								this.setDdsx(map.TXT)
-								
 								if(map.BZID) {
 									for(let i = 0; i < this.pjList.length; i++) {
 										if(this.pjList[i].value == map.BZID) {

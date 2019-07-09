@@ -170,7 +170,6 @@
                 })
               }
               this.pjList = pgbzList
-              
               this.loadData()
             }
           })
