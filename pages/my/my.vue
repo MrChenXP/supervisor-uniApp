@@ -173,13 +173,7 @@
       },
 			// 定位
 			position () {
-				let vue = this
-				uni.getLocation({
-					success (res) {
-						vue.$kwz.router({url: "/pages/my/revise-position"})
-						console.log(res)
-					}
-				})
+				this.$kwz.router({url: "/pages/my/revise-position"})
 			}
 		}
 	}
