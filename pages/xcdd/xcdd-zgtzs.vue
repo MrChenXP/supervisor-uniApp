@@ -92,7 +92,7 @@ export default {
               this.YWSJ = datas.YWSJ.length > 10 ? datas.YWSJ.substr(0, 10) : datas.YWSJ
               this.STATUSMC = this.zgxszt[datas.CLZTDM]
 
-              if (datas.CLZTDM == '4' || datas.CLZTDM == '5' || datas.CLZTDM == '4') {
+              if (datas.CLZTDM == '4' || datas.CLZTDM == '5' || datas.CLZTDM == '6') {
                 this.cljgCellShow = true
                 let clgb = []
                 let clgbImage = []
