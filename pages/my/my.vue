@@ -72,6 +72,10 @@
 //     	hasXgAuth () {
 //     		return this.$kwz.hasAuth('ddjl/doEdit')
 //     	},
+//			// 签到权限
+// 				hasPositionAuth () {
+// 				return this.$kwz.hasAuth('jc_gps/getOrgByPosition')
+// 				},
 //     	// 切换机构权限
 //     	hasScAuth () {
 //     		return this.$kwz.hasAuth('ddjl/deleteddjl')
