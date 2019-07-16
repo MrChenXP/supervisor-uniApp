@@ -63,12 +63,21 @@ const extend = (...args) => {
 }
 
 const kwz = {
+<<<<<<< HEAD
 	baseUrl: 'http://www.dd.com:8080/', // 本地
 	// baseUrl: 'https://app.qgjydd.cn', // 广东省 高新网
   // baseVisit: '/visitlg',  //访问的后缀  龙岗
   sessionName: 'JSESSIONID', // 本地
   // sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
 	dev: true, // 开发者模式
+=======
+	// baseUrl: 'http://www.dd.com:8080/', // 本地
+	baseUrl: 'https://app.qgjydd.cn', // 广东省 高新网
+  baseVisit: '/visitlg',  //访问的后缀  龙岗
+  // sessionName: 'JSESSIONID', // 本地
+  sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
+	dev: false, // 开发者模式
+>>>>>>> c82134bbd2e9229d42008c869182e6c8325dc18f
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
@@ -470,6 +479,7 @@ const kwz = {
 				}
 				let length = commonMenus.writePathList.length
 				url = url.trim()
+				console.log(url)
 				for(let i = 0; i < length; i++) {
 					if(commonMenus.writePathList[i] == url || (commonMenus.writePathList[i] && commonMenus.writePathList[i].trim() == url)) {
 						return true
