@@ -144,7 +144,6 @@
               }
             }
         });
-        
       },
       // 扫码成功后执行的ajax
       scanCodeAjax(res) {

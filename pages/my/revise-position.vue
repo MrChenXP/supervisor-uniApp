@@ -88,7 +88,6 @@
 		},
 		onLoad() {
 			this.init()
-			// this.loadUserOrgs()
 		},
     // 上拉加载事件
     onReachBottom() {
@@ -102,7 +101,7 @@
     },
 		methods: {
 			init () {
-				// 加载当前签到状态
+				// 加载当前签到状态 
 				this.initPosition()
 				// 加载历史记录
 				this.loadPistionRecords()
@@ -120,6 +119,7 @@
 					}
 				})
 			},
+      // 加载当前签到状态 是签到还是签退
 			initPosition () {
 				this.$kwz.ajax.ajaxUrl({
 					url: 'jc_gps/getCurrentPostionRecord',
@@ -134,7 +134,7 @@
 							// 不存在签到记录,获取当前地理位置，请求附近的学校列表
 							this.loadPosition((res) => {
 								this.$kwz.ajax.ajaxUrl({
-									url: 'jc_gps/jc_gps/getOrgByPosition',
+									url: 'jc_gps/getOrgByPosition',
 									type: 'GET',
 									data: {
 										latitude: res.latitude,
@@ -153,7 +153,8 @@
 					}
 				})
 			},
-			loadPistionRecords () {
+			// 加载打卡历史纪录
+      loadPistionRecords () {
 				this.initPage(true)
 			},
 			// 签到/签出
@@ -168,10 +169,8 @@
 				}
 				positionData.ORG_ID = this.currentRecord.ORG_ID
 				this.loadPosition((res) => {
-					
 					positionData.latitude = res.latitude
 					positionData.longitude = res.longitude
-					
 					this.$kwz.ajax.ajaxUrl({
 						url: 'jc_gps/savePositionRecord',
 						type: 'POST',
@@ -201,10 +200,6 @@
 					}
 				})
 			}
-      // 加载更多
-//       loadMore(){
-//         console.log('loadMore')
-//       }
 		}
 	}
 </script>

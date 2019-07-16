@@ -68,7 +68,7 @@ const kwz = {
   // baseVisit: '/visitlg',  //访问的后缀  龙岗
   sessionName: 'JSESSIONID', // 本地
   // sessionName: 'KSESSIONID1', // 广东 高新 龙岗  
-	dev: false, // 开发者模式
+	dev: true, // 开发者模式
 	token: '', // token
 	jc_isencode: '', // 链接是否编码
 	jc_isencrypt: '', // 链接参数是否加密
@@ -948,6 +948,6 @@ const kwz = {
 
 kwz.initVisit()
 
-// kwz.loginWxMiniProgram()
+kwz.loginWxMiniProgram()
 
 export default kwz;
