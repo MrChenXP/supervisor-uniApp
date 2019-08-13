@@ -17,7 +17,7 @@
           <view class="list-right-input"><input v-model="data.XK" placeholder="请填写学科"/></view>
         </view>
       </kw-list-cell>
-      <kw-list-cell title="听课教师">
+      <kw-list-cell title="授课教师">
         <view slot="rightNote">
           <view class="list-right-input"><input v-model="data.JSMC" placeholder="请填写教师名称"/></view>
         </view>

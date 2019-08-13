@@ -72,18 +72,18 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx024df8615282267c",
+        "appid" : "wx68d34bd321ef986c",
         "setting" : {
             "urlCheck" : true,
             "es6" : true,
             "postcss" : true,
             "minified" : true
         },
-		"permission": {
-		  "scope.userLocation": {
-		    "desc": "你的位置信息将用于签到和签退"
-		  }
-		}
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "你的位置信息将用于签到和签退"
+            }
+        }
     },
     "h5" : {
         "template" : "template.h5.html",
