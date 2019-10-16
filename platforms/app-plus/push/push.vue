@@ -32,7 +32,6 @@
 			uni.getProvider({
 				service: "push",
 				success: (e) => {
-					console.log("success", e);
 					this.provider = e.provider;
 				},
 				fail: (e) => {

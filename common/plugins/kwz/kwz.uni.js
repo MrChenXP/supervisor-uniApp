@@ -470,7 +470,6 @@ const kwz = {
 				}
 				let length = commonMenus.writePathList.length
 				url = url.trim()
-				console.log(url)
 				for(let i = 0; i < length; i++) {
 					if(commonMenus.writePathList[i] == url || (commonMenus.writePathList[i] && commonMenus.writePathList[i].trim() == url)) {
 						return true
@@ -926,21 +925,15 @@ const kwz = {
 		uni.login({
 			provider: 'weixin',
 			success: function (res) {
-				console.log('login')
-				console.log(res);
 			}
 		});
 		uni.checkSession({
 			success: function (res) {
-				console.log('check session')
-				console.log(res);
 			}
 		})
 // 		uni.getUserInfo({
 // 			provider:"weixin",
 // 			success (res) {
-// 				console.log('get user info')
-// 				console.log(res)
 // 			}
 // 		})
 		//#endif

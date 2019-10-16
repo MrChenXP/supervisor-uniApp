@@ -28,7 +28,7 @@
 				plus.orientation.getCurrentOrientation(function (o) {
 					that.value = "alpha：" + o.alpha + "\nbeta：" + o.beta + "\ngamma：" + o.gamma;
 				}, function (e) {
-					console.log("获取失败:" + e.message);
+					console.error("获取失败:" + e.message);
 				});
 			},
 			watchOrient: function () {
@@ -41,7 +41,7 @@
 				}, function (e) {
 					plus.orientation.clearWatch(id);
 					id = null;
-					console.log("监听失败:" + e.message);
+					console.error("监听失败:" + e.message);
 				});
 			},
 			watchStop: function () {
@@ -49,7 +49,7 @@
 					plus.orientation.clearWatch(id);
 					id = null;
 				} else {
-					console.log("没有监听设备方向变化");
+					console.error("没有监听设备方向变化");
 				}
 			}
 		}

@@ -108,7 +108,6 @@
                 });
             },
             send() { //发送反馈
-                console.log(JSON.stringify(this.sendDate));
                 let imgs = this.imageList.map((value, index) => {
                     return {
                         name: "image" + index,
@@ -133,7 +132,6 @@
                         }
                     },
                     fail: (res) => {
-                        console.log(res)
                     }
                 });
             }
